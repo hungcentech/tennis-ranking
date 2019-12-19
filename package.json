@@ -1,0 +1,52 @@
+{
+  "name": "pro_mern_stack",
+  "version": "1.0.0",
+  "description": "testing project from the book",
+  "main": "server.js",
+  "dependencies": {
+    "@types/whatwg-fetch": "0.0.33",
+    "babel-polyfill": "^6.26.0",
+    "body-parser": "^1.19.0",
+    "bootstrap": "^3.4.1",
+    "core-js": "^3.4.8",
+    "express": "^4.17.1",
+    "mongodb": "^3.3.5",
+    "source-map-support": "^0.5.16"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.7.4",
+    "@babel/core": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
+    "@babel/preset-react": "^7.7.4",
+    "@babel/register": "^7.7.4",
+    "babel-loader": "^8.0.6",
+    "eslint-config-airbnb": "^18.0.1",
+    "html-loader": "^0.5.5",
+    "html-webpack-plugin": "^3.2.0",
+    "nodemon": "^2.0.1",
+    "prop-types": "^15.7.2",
+    "react": "^16.12.0",
+    "react-bootstrap": "^0.33.1",
+    "react-dom": "^16.12.0",
+    "react-router": "^3.2.5",
+    "react-router-bootstrap": "^0.23.3",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-middleware": "^3.7.2",
+    "webpack-dev-server": "^3.9.0",
+    "webpack-hot-middleware": "^2.25.0",
+    "whatwg-fetch": "^3.0.0"
+  },
+  "scripts": {
+    "compile-client": "webpack --mode production",
+    "watch-client": "webpack-dev-server --mode development --hot --inline",
+    "compile-server": "babel server --out-dir dist --source-maps",
+    "watch-server": "babel server --out-dir dist --source-maps --watch",
+    "start-server": "nodemon -w dist dist/server.js",
+    "start": "npm run watch-server & npm run start-server",
+    "___test____": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint --ext js,jsx src server webpack.config.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
