@@ -1,5 +1,6 @@
 // -----------------------------------------------------------------------------
 
+import PropTypes from "prop-types";
 import React from "react";
 
 // -----------------------------------------------------------------------------
@@ -48,15 +49,23 @@ export default class NumInput extends React.Component {
   // -------------------------------------
 
   render() {
-    return <input type="text" {...this.props} value={this.state.value} onBlur={this.onBlur} onChange={this.onChange} />;
+    return (
+      <input
+        type="text"
+        {...this.props}
+        value={this.state.value}
+        onBlur={this.onBlur}
+        onChange={this.onChange}
+      />
+    );
   }
 }
 
 // -------------------------------------
 
-// NumInput.propTypes = {
-//   value: React.PropTypes.number,
-//   onChange: React.PropTypes.func.isRequired
-// };
+NumInput.propTypes = {
+  value: PropTypes.number,
+  onChange: PropTypes.func.isRequired
+};
 
 // -----------------------------------------------------------------------------

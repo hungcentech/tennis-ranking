@@ -1,5 +1,6 @@
 // -----------------------------------------------------------------------------
 
+import PropTypes from "prop-types";
 import React from "react";
 
 // -----------------------------------------------------------------------------
@@ -70,7 +71,10 @@ export default class DateInput extends React.Component {
 
   render() {
     const className = !this.state.valid && !this.state.focused ? "invalid" : null;
-    const value = this.state.focused || !this.state.valid ? this.state.value : this.displayFormat(this.props.value);
+    const value =
+      this.state.focused || !this.state.valid
+        ? this.state.value
+        : this.displayFormat(this.props.value);
     return (
       <input
         type="text"
@@ -89,11 +93,11 @@ export default class DateInput extends React.Component {
 
 // -------------------------------------
 
-// DateInput.propTypes = {
-//   value: React.PropTypes.object,
-//   onChange: React.PropTypes.func.isRequired,
-//   onValidityChange: React.PropTypes.func,
-//   name: React.PropTypes.string.isRequired
-// };
+DateInput.propTypes = {
+  value: PropTypes.object,
+  onChange: PropTypes.func.isRequired,
+  onValidityChange: PropTypes.func,
+  name: PropTypes.string.isRequired
+};
 
 // -----------------------------------------------------------------------------

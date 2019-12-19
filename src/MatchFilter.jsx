@@ -1,5 +1,6 @@
 // -----------------------------------------------------------------------------
 
+import PropTypes from "prop-types";
 import React, { Component } from "react";
 import {
   Col,
@@ -85,9 +86,9 @@ export default class MatchFilter extends Component {
 
 // -------------------------------------
 
-// MatchFilter.propTypes = {
-//   setFilter: React.PropTypes.func.isRequired,
-//   initFilter: React.PropTypes.object.isRequired
-// };
+MatchFilter.propTypes = {
+  setFilter: PropTypes.func.isRequired,
+  initFilter: PropTypes.object.isRequired
+};
 
 // -----------------------------------------------------------------------------

@@ -1,5 +1,6 @@
 // -----------------------------------------------------------------------------
 
+import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { Link } from "react-router";
 import { Button, Glyphicon, Table, Panel } from "react-bootstrap";
@@ -16,7 +17,7 @@ const MatchRow = props => {
   return (
     <tr>
       <td>
-        <Link to={`/matchs/${props.match._id}`}>{props.match._id.substr(-4)}</Link>
+        <Link to={`/matches/${props.match._id}`}>{props.match._id.substr(-4)}</Link>
       </td>
       <td>{props.match.status}</td>
       <td>{props.match.owner}</td>
@@ -35,16 +36,16 @@ const MatchRow = props => {
 
 // -------------------------------------
 
-// MatchRow.propTypes = {
-//   match: React.PropTypes.object.isRequired,
-//   deleteMatch: React.PropTypes.func.isRequired
-// };
+MatchRow.propTypes = {
+  match: PropTypes.object.isRequired,
+  deleteMatch: PropTypes.func.isRequired
+};
 
 // -----------------------------------------------------------------------------
 
 class MatchTable extends Component {
   render() {
-    const matchRows = this.props.matchs.map(match => (
+    const matchRows = this.props.matches.map(match => (
       <MatchRow key={match._id} match={match} deleteMatch={this.props.deleteMatch} />
     ));
     return (
@@ -69,10 +70,10 @@ class MatchTable extends Component {
 
 // -------------------------------------
 
-// MatchTable.propTypes = {
-//   matchs: React.PropTypes.array.isRequired,
-//   deleteMatch: React.PropTypes.func.isRequired
-// };
+MatchTable.propTypes = {
+  matches: PropTypes.array.isRequired,
+  deleteMatch: PropTypes.func.isRequired
+};
 
 // -----------------------------------------------------------------------------
 
@@ -81,7 +82,7 @@ class MatchList extends Component {
     super();
     this.state = {
       filterExpanded: true,
-      matchs: [],
+      matches: [],
       toastVisible: false,
       toastMessage: "",
       toastType: "success"
@@ -96,7 +97,7 @@ class MatchList extends Component {
   // -------------------------------------
 
   deleteMatch(id) {
-    fetch(`/api/matchs/${id}`, { method: "DELETE" }).then(response => {
+    fetch(`/api/matches/${id}`, { method: "DELETE" }).then(response => {
       if (!response.ok) this.showError("Failed to delete match");
       else this.loadData();
     });
@@ -147,7 +148,7 @@ class MatchList extends Component {
   // -------------------------------------
 
   loadData() {
-    let uri = `/api/matchs${this.props.location.search}`;
+    let uri = `/api/matches${this.props.location.search}`;
     fetch(uri)
       .then(response => {
         if (response.ok) {
@@ -158,7 +159,7 @@ class MatchList extends Component {
                 match.created = new Date(match.created);
                 if (match.completionDate) match.completionDate = new Date(match.completionDate);
               });
-              this.setState({ matchs: data.records });
+              this.setState({ matches: data.records });
             })
             .catch(err => {
               this.showError("Server connection error: " + err.message);
@@ -167,7 +168,7 @@ class MatchList extends Component {
           response
             .json()
             .then(err => {
-              this.showError("Failed to fetch matchs: " + err.message);
+              this.showError("Failed to fetch matches: " + err.message);
             })
             .catch(err => {
               this.showError("Server connection error: " + err.message);
@@ -194,7 +195,7 @@ class MatchList extends Component {
             </Panel.Body>
           </Panel.Collapse>
         </Panel>
-        {/* <MatchTable matchs={this.state.matchs} deleteMatch={this.deleteMatch} /> */}
+        {/* <MatchTable matches={this.state.matches} deleteMatch={this.deleteMatch} /> */}
         {/* <Toast
           showing={this.state.toastVisible}
           message={this.state.toastMessage}
@@ -208,10 +209,10 @@ class MatchList extends Component {
 
 // -------------------------------------
 
-// MatchList.propTypes = {
-//   location: React.PropTypes.object.isRequired
-//   router: React.PropTypes.object,
-// };
+MatchList.propTypes = {
+  location: PropTypes.object.isRequired,
+  router: PropTypes.object
+};
 
 // -----------------------------------------------------------------------------
 

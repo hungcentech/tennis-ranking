@@ -17,6 +17,7 @@
     "@babel/preset-react": "^7.7.4",
     "@babel/register": "^7.7.4",
     "babel-loader": "^8.0.6",
+    "babel-polyfill": "^6.26.0",
     "html-loader": "^0.5.5",
     "html-webpack-plugin": "^3.2.0",
     "nodemon": "^2.0.1",
@@ -26,12 +27,12 @@
     "react-dom": "^16.12.0",
     "react-router": "^3.2.5",
     "react-router-bootstrap": "^0.23.3",
+    "source-map-support": "^0.5.16",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
     "webpack-dev-middleware": "^3.7.2",
     "webpack-dev-server": "^3.9.0",
-    "webpack-hot-middleware": "^2.25.0",
-    "source-map-support": "^0.5.16"
+    "webpack-hot-middleware": "^2.25.0"
   },
   "scripts": {
     "compile": "webpack --mode production",
