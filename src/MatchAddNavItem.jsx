@@ -82,16 +82,6 @@ class MatchAddNavItem extends React.Component {
     this.hideModal();
     const form = document.forms.matchAdd;
 
-    // type: "required", // "single/double"
-    // format: "required", // "Set: 1, Game: 6-5, Tiebeak: No, DecidingPoint: 50"
-    // status: "required", // validMatchStatus
-    // teams: "required", // "{a: [{id: "", name: ""}, {id: "", name: ""}], b: [{id: "", name: ""}, {id: "", name: ""}]}"
-    // scores: "required", // {set: [0, 0], game: [3, 4], point: [40, 15]}
-    // referee: "required", // {id: "", name: ""}
-    // created: "optional", // Date("2019-12-15T09:16:24.324+07:00")
-    // begin_date: "optional", // Date("2019-12-15T09:16:24.358+07:00")
-    // end_date: "optional" // Date("2019-12-15T09:16:24.545+07:00")
-
     fetch("/api/matches", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -160,7 +150,7 @@ class MatchAddNavItem extends React.Component {
               <FormGroup>
                 <Col sm={3} componentClass={ControlLabel}>Teams:</Col>
                   <FormControl componentClass="select" name="playerA1" value={this.state.match.teams.a[0].id} onChange={this.handleChange} autoFocus>
-                    {this.props.players.map(player => (<option value={player.id}>{player.name}</option>))}                    
+                    {this.props.players.map(player => (<option value={player.id}>{player.name}</option>))}
                   </FormControl>
                 <Col sm={3} componentClass={ControlLabel}>Teams</Col>
                 <Col sm={9}>

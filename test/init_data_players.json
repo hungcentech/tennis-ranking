@@ -1,0 +1,26 @@
+[
+  {
+    "name": "MinhA",
+    "facebook": "Nghiem Van Minh",
+    "forehand": "right",
+    "backhand": "two-handed",
+    "ntrp_rating": 3.5,
+    "club_rating": {
+      "total": 18,
+      "win": 12,
+      "rank": 1
+    }
+  },
+  {
+    "name": "Hợp",
+    "facebook": "Hop Levan",
+    "forehand": "left",
+    "backhand": "one-handed",
+    "ntrp_rating": 3.5,
+    "club_rating": {
+      "total": 15,
+      "win": 4,
+      "rank": 9
+    }
+  }
+]
