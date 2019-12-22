@@ -2,16 +2,7 @@
 
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import {
-  Col,
-  Row,
-  FormGroup,
-  FormControl,
-  ControlLabel,
-  InputGroup,
-  ButtonToolbar,
-  Button
-} from "react-bootstrap";
+import { Col, Row, FormGroup, FormControl, ControlLabel, InputGroup, ButtonToolbar, Button } from "react-bootstrap";
 
 // -----------------------------------------------------------------------------
 
@@ -22,7 +13,7 @@ export default class MatchFilter extends Component {
         <Row>
           <Col xs={6} sm={4} md={3} lg={2}>
             <FormGroup controlId="formControlsSelect">
-              <ControlLabel>Status</ControlLabel>
+              <ControlLabel>Trạng thái</ControlLabel>
               <FormControl
                 componentClass="select"
                 placeholder="select"
@@ -32,12 +23,9 @@ export default class MatchFilter extends Component {
                 }}
               >
                 <option value="">(Any)</option>
-                <option value="New">New</option>
-                <option value="Open">Open</option>
-                <option value="Assigned">Assigned</option>
-                <option value="Fixed">Fixed</option>
-                <option value="Verified">Verified</option>
-                <option value="Closed">Closed</option>
+                <option value="new">New</option>
+                <option value="playing">Playing</option>
+                <option value="finished">Finished</option>
               </FormControl>
             </FormGroup>
           </Col>
@@ -87,8 +75,7 @@ export default class MatchFilter extends Component {
 // -------------------------------------
 
 MatchFilter.propTypes = {
-  setFilter: PropTypes.func.isRequired,
-  initFilter: PropTypes.object.isRequired
+  setFilter: PropTypes.func.isRequired
 };
 
 // -----------------------------------------------------------------------------

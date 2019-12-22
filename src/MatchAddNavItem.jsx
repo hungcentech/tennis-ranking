@@ -150,7 +150,7 @@ class MatchAddNavItem extends React.Component {
               <FormGroup>
                 <Col sm={3} componentClass={ControlLabel}>Teams:</Col>
                   <FormControl componentClass="select" name="playerA1" value={this.state.match.teams.a[0].id} onChange={this.handleChange} autoFocus>
-                    {this.props.players.map(player => (<option value={player.id}>{player.name}</option>))}
+                    {/* {this.props.players.map(player => (<option value={player.id}>{player.name}</option>))} */}
                   </FormControl>
                 <Col sm={3} componentClass={ControlLabel}>Teams</Col>
                 <Col sm={9}>

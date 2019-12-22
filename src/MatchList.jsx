@@ -14,19 +14,41 @@ const MatchRow = props => {
     props.deleteMatch(props.match._id);
   }
 
+  const dateFormat = date => {
+    // return `${date.getDate()}-${1 + date.getMonth()}-${date.getFullYear()} ${1 + date.getHours()}:${date.getMinutes()}`;
+    return date.toLocaleString();
+  };
+
   return (
     <tr>
       <td>
         <Link to={`/matches/${props.match._id}`}>{props.match._id.substr(-4)}</Link>
       </td>
+      {/* <td>{props.match.type}</td> */}
+      {/* <td>{props.match.rule}</td> */}
       <td>{props.match.status}</td>
-      <td>{props.match.owner}</td>
-      <td>{props.match.created.toDateString()}</td>
-      <td>{props.match.effort}</td>
-      <td>{props.match.completionDate ? props.match.completionDate.toDateString() : ""}</td>
-      <td>{props.match.title}</td>
       <td>
-        <Button bsStyle="danger" bsSize="xsmall" onClick={onDeleteClick} disabled>
+        {props.match.team_1[0]
+          ? props.match.team_1[0].name
+          : "" + props.match.team_1[1]
+          ? " " + props.match.team_1[1].name
+          : ""}
+      </td>
+      <td>
+        {props.match.team_2[0]
+          ? props.match.team_2[0].name
+          : "" + props.match.team_2[1]
+          ? " " + props.match.team_2[1].name
+          : ""}
+      </td>
+      <td>
+        {props.match.scores.game[0]}-{props.match.scores.game[1]}
+      </td>
+      <td>{props.match.referee}</td>
+      <td>{props.match.begin ? dateFormat(new Date(props.match.begin)) : ""}</td>
+      <td>{props.match.end ? dateFormat(new Date(props.match.end)) : ""}</td>
+      <td>
+        <Button bsStyle="danger" bsSize="xsmall" onClick={onDeleteClick}>
           <Glyphicon glyph="trash" />
         </Button>
       </td>
@@ -52,13 +74,16 @@ class MatchTable extends Component {
       <Table bordered condensed hover responsive>
         <thead>
           <tr>
-            <th>Id</th>
-            <th>Status</th>
-            <th>Owner</th>
-            <th>Created</th>
-            <th>Effort</th>
-            <th>Completion Date</th>
-            <th>Title</th>
+            <th>Mã số</th>
+            {/* <th>Đơn/Đôi</th> */}
+            {/* <th>Luật</th> */}
+            <th>Trạng thái</th>
+            <th>Đôi 1</th>
+            <th>Đôi 2</th>
+            <th>Tỉ số</th>
+            <th>Trọng tài</th>
+            <th>Bắt đầu</th>
+            <th>Kết thúc</th>
             <th></th>
           </tr>
         </thead>
@@ -119,9 +144,7 @@ class MatchList extends Component {
 
   setFilter(query) {
     this.props.router.push({ pathname: this.props.location.pathname, query });
-    console.log(
-      `MatchList.setFilter(): router location: ${JSON.stringify(this.props.router.location)}`
-    );
+    console.log(`MatchList.setFilter(): router location: ${JSON.stringify(this.props.router.location)}`);
   }
 
   // -------------------------------------
@@ -191,17 +214,17 @@ class MatchList extends Component {
           </Panel.Heading>
           <Panel.Collapse>
             <Panel.Body>
-              {/* <MatchFilter setFilter={this.setFilter} filter={this.props.location.query} /> */}
+              <MatchFilter setFilter={this.setFilter} filter={this.props.location.query} />
             </Panel.Body>
           </Panel.Collapse>
         </Panel>
-        {/* <MatchTable matches={this.state.matches} deleteMatch={this.deleteMatch} /> */}
-        {/* <Toast
+        <MatchTable matches={this.state.matches} deleteMatch={this.deleteMatch} />
+        <Toast
           showing={this.state.toastVisible}
           message={this.state.toastMessage}
           onDismiss={this.dismissToast}
           bsStyle={this.state.toastType}
-        /> */}
+        />
       </div>
     );
   }

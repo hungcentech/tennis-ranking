@@ -1,0 +1,2 @@
+mongoimport --db tennis-rankings --collection matches --jsonArray server/models/init_data_matches.json --host=127.0.0.1
+mongoimport --db tennis-rankings --collection players --jsonArray server/models/init_data_players.json --host=127.0.0.1
