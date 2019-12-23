@@ -2,7 +2,7 @@
 
 import PropTypes from "prop-types";
 import React from "react";
-import { Alert, Collapse } from "react-bootstrap";
+// import { Alert, Collapse } from "react-bootstrap";
 
 // -----------------------------------------------------------------------------
 
@@ -24,17 +24,17 @@ export default class Toast extends React.Component {
 
   render() {
     return (
-      <Collapse in={this.props.showing}>
-        <div style={{ position: "fixed", top: 30, left: 0, right: 0, textAlign: "center" }}>
-          <Alert
+      // <Collapse in={this.props.showing}>
+      <div style={{ position: "fixed", top: 30, left: 0, right: 0, textAlign: "center" }}>
+        {/* <Alert
             style={{ display: "inline-block", width: 500 }}
             bsStyle={this.props.bsStyle}
             onDismiss={this.props.onDismiss}
-          >
-            {this.props.message}
-          </Alert>
-        </div>
-      </Collapse>
+          > */}
+        {this.props.message}
+        {/* </Alert> */}
+      </div>
+      // </Collapse>
     );
   }
 }

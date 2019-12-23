@@ -1,16 +1,14 @@
 // -----------------------------------------------------------------------------
 
-import PropTypes from "prop-types";
 import React from "react";
 import ReactDOM from "react-dom";
 import { Router, Route, Redirect, browserHistory, withRouter } from "react-router";
 
-import { Navbar, Nav, NavItem, NavDropdown, MenuItem, Glyphicon } from "react-bootstrap";
-import { LinkContainer } from "react-router-bootstrap";
-
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
+
+import TennisRankingsApp from "./apps/TennisRankingsApp.jsx";
 
 import MatchList from "./MatchList.jsx";
 // import MatchEdit from "./MatchEdit.jsx";
@@ -18,35 +16,6 @@ import MatchAddNavItem from "./MatchAddNavItem.jsx";
 // import PlayerList from "./PlayerList.jsx";
 // import PlayerEdit from "./PlayerEdit.jsx";
 // import PlayerAddNavItem from "./PlayerAddNavItem.jsx";
-
-// -----------------------------------------------------------------------------
-
-const contentNode = document.getElementById("contents");
-const NotFound = () => <p>Page Not Found</p>;
-
-// -----------------------------------------------------------------------------
-
-// const Header = () => (
-//   <Navbar fluid>
-//     <Navbar.Header>
-//       <Navbar.Brand>Tennis Rankings</Navbar.Brand>
-//     </Navbar.Header>
-//     <Nav>
-//       <LinkContainer to="/matches">
-//         <NavItem>Matches</NavItem>
-//       </LinkContainer>
-//       <LinkContainer to="/players">
-//         <NavItem>Players</NavItem>
-//       </LinkContainer>
-//     </Nav>
-//     <Nav pullRight>
-//       <MatchAddNavItem />
-//       <NavDropdown id="user-dropdown" title={<Glyphicon glyph="option-horizontal" />} noCaret>
-//         <MenuItem>Logout</MenuItem>
-//       </NavDropdown>
-//     </Nav>
-//   </Navbar>
-// );
 
 // -----------------------------------------------------------------------------
 
@@ -84,30 +53,11 @@ let theme = createMuiTheme({
   }
 });
 
-// ------------------------------------
-
-const TennisRankingsApp = props => (
-  <div>
-    {/* <Header /> */}
-    <div className="container-fluid">
-      {props.children}
-      <hr />
-      <h5>
-        <small>
-          Tennis Rankings @ <a href="https://">CLB Tennis Gió Mùa</a>.
-        </small>
-      </h5>
-    </div>
-  </div>
-);
-
 // -------------------------------------
 
-TennisRankingsApp.propTypes = {
-  children: PropTypes.object.isRequired
-};
+const NotFound = () => <p>Page Not Found</p>;
 
-// -----------------------------------------------------------------------------
+// -------------------------------------
 
 const App = () => (
   <ThemeProvider theme={theme}>
@@ -121,13 +71,15 @@ const App = () => (
         {/* <Route path="players/:id" component={PlayerEdit} /> */}
         <Route path="*" component={NotFound} />
       </Route>
-    </Router>{" "}
+    </Router>
   </ThemeProvider>
 );
 
-// -----------------------------------------------------------------------------
+// -------------------------------------
 
-ReactDOM.render(<App />, contentNode);
+ReactDOM.render(<App />, document.getElementById("contents"));
+
+// -------------------------------------
 
 if (module.hot) {
   module.hot.accept();

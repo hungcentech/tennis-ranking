@@ -3,9 +3,12 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { Link } from "react-router";
-import { Button, Glyphicon, Table, Panel } from "react-bootstrap";
-import MatchFilter from "./MatchFilter.jsx";
-import Toast from "./Toast.jsx";
+
+import { Table } from "@material-ui/core/Table";
+// import { Button, Glyphicon, Table, Panel } from "react-bootstrap";
+
+// import MatchFilter from "./MatchFilter.jsx";
+// import Toast from "./Toast.jsx";
 
 // -----------------------------------------------------------------------------
 
@@ -28,34 +31,28 @@ const MatchRow = props => {
         <Link to={`/matches/${props.match._id}`}>{props.match.status}</Link>
       </td>
       <td style={{ textAlign: "right" }}>
-        {props.match.teams && props.match.teams.length > 0
-          ? props.match.teams[0].map(r => r.name).join(", ")
-          : ""}
+        {props.match.teams && props.match.teams.length > 0 ? props.match.teams[0].map(r => r.name).join(", ") : ""}
       </td>
       <td style={{ textAlign: "center" }}>
         {props.match.scores && props.match.scores.games ? props.match.scores.games.join(" : ") : ""}
       </td>
       <td style={{ textAlign: "left" }}>
-        {props.match.teams && props.match.teams.length > 1
-          ? props.match.teams[1].map(r => r.name).join(", ")
-          : ""}
+        {props.match.teams && props.match.teams.length > 1 ? props.match.teams[1].map(r => r.name).join(", ") : ""}
       </td>
       {/* <td>{props.match.begin ? dateFormat(new Date(props.match.begin)) : ""}</td> */}
-      <td style={{ textAlign: "center" }}>
-        {props.match.end ? dateFormat(new Date(props.match.end)) : ""}
-      </td>
+      <td style={{ textAlign: "center" }}>{props.match.end ? dateFormat(new Date(props.match.end)) : ""}</td>
       {/* <td>{props.match.referees ? props.match.referees.map(r => r.name).join(", ") : ""}</td> */}
       <td style={{ textAlign: "center" }}>
-        <Button bsStyle="info" bsSize="xsmall">
+        {/* <Button bsStyle="info" bsSize="xsmall">
           <Link to={`/matches/${props.match._id}`}>
             <Glyphicon glyph="edit" />
           </Link>
-        </Button>
+        </Button> */}
       </td>
       <td style={{ textAlign: "center" }}>
-        <Button bsStyle="danger" bsSize="xsmall" onClick={onDeleteClick} disabled>
+        {/* <Button bsStyle="danger" bsSize="xsmall" onClick={onDeleteClick} disabled>
           <Glyphicon glyph="trash" />
-        </Button>
+        </Button> */}
       </td>
     </tr>
   );
@@ -76,25 +73,29 @@ class MatchTable extends Component {
       <MatchRow key={match._id} match={match} deleteMatch={this.props.deleteMatch} />
     ));
     return (
-      <Table bordered condensed hover responsive>
-        <thead>
-          <tr>
-            {/* <th>Id</th> */}
-            {/* <th>Đơn/Đôi</th> */}
-            {/* <th>Luật</th> */}
-            <th style={{ textAlign: "center" }}>Status</th>
-            <th style={{ textAlign: "right" }}>Team 1</th>
-            <th style={{ textAlign: "center" }}>Score</th>
-            <th style={{ textAlign: "left" }}>Team 2</th>
-            {/* <th>Bắt đầu</th> */}
-            <th style={{ textAlign: "center" }}>Finish</th>
-            {/* <th>Trọng tài</th> */}
-            <th style={{ textAlign: "center" }}>Edit</th>
-            <th style={{ textAlign: "center" }}>x</th>
-          </tr>
-        </thead>
-        <tbody>{matchRows}</tbody>
-      </Table>
+      <div>
+        {/* <Table bordered condensed hover responsive> */}
+        <table>
+          <thead>
+            <tr>
+              {/* <th>Id</th> */}
+              {/* <th>Đơn/Đôi</th> */}
+              {/* <th>Luật</th> */}
+              <th style={{ textAlign: "center" }}>Status</th>
+              <th style={{ textAlign: "right" }}>Team 1</th>
+              <th style={{ textAlign: "center" }}>Score</th>
+              <th style={{ textAlign: "left" }}>Team 2</th>
+              {/* <th>Bắt đầu</th> */}
+              <th style={{ textAlign: "center" }}>Finish</th>
+              {/* <th>Trọng tài</th> */}
+              <th style={{ textAlign: "center" }}>Edit</th>
+              <th style={{ textAlign: "center" }}>x</th>
+            </tr>
+          </thead>
+          <tbody>{matchRows}</tbody>
+        </table>
+        {/* </Table> */}
+      </div>
     );
   }
 }
@@ -150,9 +151,7 @@ class MatchList extends Component {
 
   setFilter(query) {
     this.props.router.push({ pathname: this.props.location.pathname, query });
-    console.log(
-      `MatchList.setFilter(): router location: ${JSON.stringify(this.props.router.location)}`
-    );
+    console.log(`MatchList.setFilter(): router location: ${JSON.stringify(this.props.router.location)}`);
   }
 
   // -------------------------------------
@@ -216,23 +215,27 @@ class MatchList extends Component {
   render() {
     return (
       <div>
-        <Panel bsStyle="info" defaultExpanded>
-          <Panel.Heading>
-            <Panel.Title>Filter</Panel.Title>
-          </Panel.Heading>
-          <Panel.Collapse>
-            <Panel.Body>
-              <MatchFilter setFilter={this.setFilter} filter={this.props.location.query} />
-            </Panel.Body>
-          </Panel.Collapse>
-        </Panel>
+        {/* <Panel bsStyle="info" defaultExpanded> */}
+        <div>
+          {/* <Panel.Heading> */}
+          {/* <Panel.Title> */}
+          <div>Filter</div>
+          {/* </Panel.Title> */}
+          {/* </Panel.Heading> */}
+          {/* <Panel.Collapse> */}
+          {/* <Panel.Body> */}
+          {/* <MatchFilter setFilter={this.setFilter} filter={this.props.location.query} /> */}
+          {/* </Panel.Body> */}
+          {/* </Panel.Collapse> */}
+        </div>
+        {/* </Panel> */}
         <MatchTable matches={this.state.matches} deleteMatch={this.deleteMatch} />
-        <Toast
+        {/* <Toast
           showing={this.state.toastVisible}
           message={this.state.toastMessage}
           onDismiss={this.dismissToast}
           bsStyle={this.state.toastType}
-        />
+        /> */}
       </div>
     );
   }
