@@ -21,34 +21,39 @@ const MatchRow = props => {
 
   return (
     <tr>
-      <td>
-        <Link to={`/matches/${props.match._id}`}>{props.match._id.substr(-4)}</Link>
-      </td>
+      {/* <td><Link to={`/matches/${props.match._id}`}>{props.match._id.substr(-4)}</Link></td> */}
       {/* <td>{props.match.type}</td> */}
-      {/* <td>{props.match.rule}</td> */}
-      <td>{props.match.status}</td>
-      <td>
-        {props.match.team_1[0]
-          ? props.match.team_1[0].name
-          : "" + props.match.team_1[1]
-          ? " " + props.match.team_1[1].name
+      {/* <td>{props.match.rules}</td> */}
+      <td style={{ textAlign: "center" }}>
+        <Link to={`/matches/${props.match._id}`}>{props.match.status}</Link>
+      </td>
+      <td style={{ textAlign: "right" }}>
+        {props.match.teams && props.match.teams.length > 0
+          ? props.match.teams[0].map(r => r.name).join(", ")
           : ""}
       </td>
-      <td>
-        {props.match.team_2[0]
-          ? props.match.team_2[0].name
-          : "" + props.match.team_2[1]
-          ? " " + props.match.team_2[1].name
+      <td style={{ textAlign: "center" }}>
+        {props.match.scores && props.match.scores.games ? props.match.scores.games.join(" : ") : ""}
+      </td>
+      <td style={{ textAlign: "left" }}>
+        {props.match.teams && props.match.teams.length > 1
+          ? props.match.teams[1].map(r => r.name).join(", ")
           : ""}
       </td>
-      <td>
-        {props.match.scores.game[0]}-{props.match.scores.game[1]}
+      {/* <td>{props.match.begin ? dateFormat(new Date(props.match.begin)) : ""}</td> */}
+      <td style={{ textAlign: "center" }}>
+        {props.match.end ? dateFormat(new Date(props.match.end)) : ""}
       </td>
-      <td>{props.match.referee}</td>
-      <td>{props.match.begin ? dateFormat(new Date(props.match.begin)) : ""}</td>
-      <td>{props.match.end ? dateFormat(new Date(props.match.end)) : ""}</td>
-      <td>
-        <Button bsStyle="danger" bsSize="xsmall" onClick={onDeleteClick}>
+      {/* <td>{props.match.referees ? props.match.referees.map(r => r.name).join(", ") : ""}</td> */}
+      <td style={{ textAlign: "center" }}>
+        <Button bsStyle="info" bsSize="xsmall">
+          <Link to={`/matches/${props.match._id}`}>
+            <Glyphicon glyph="edit" />
+          </Link>
+        </Button>
+      </td>
+      <td style={{ textAlign: "center" }}>
+        <Button bsStyle="danger" bsSize="xsmall" onClick={onDeleteClick} disabled>
           <Glyphicon glyph="trash" />
         </Button>
       </td>
@@ -74,17 +79,18 @@ class MatchTable extends Component {
       <Table bordered condensed hover responsive>
         <thead>
           <tr>
-            <th>Mã số</th>
+            {/* <th>Id</th> */}
             {/* <th>Đơn/Đôi</th> */}
             {/* <th>Luật</th> */}
-            <th>Trạng thái</th>
-            <th>Đôi 1</th>
-            <th>Đôi 2</th>
-            <th>Tỉ số</th>
-            <th>Trọng tài</th>
-            <th>Bắt đầu</th>
-            <th>Kết thúc</th>
-            <th></th>
+            <th style={{ textAlign: "center" }}>Status</th>
+            <th style={{ textAlign: "right" }}>Team 1</th>
+            <th style={{ textAlign: "center" }}>Score</th>
+            <th style={{ textAlign: "left" }}>Team 2</th>
+            {/* <th>Bắt đầu</th> */}
+            <th style={{ textAlign: "center" }}>Finish</th>
+            {/* <th>Trọng tài</th> */}
+            <th style={{ textAlign: "center" }}>Edit</th>
+            <th style={{ textAlign: "center" }}>x</th>
           </tr>
         </thead>
         <tbody>{matchRows}</tbody>
@@ -144,7 +150,9 @@ class MatchList extends Component {
 
   setFilter(query) {
     this.props.router.push({ pathname: this.props.location.pathname, query });
-    console.log(`MatchList.setFilter(): router location: ${JSON.stringify(this.props.router.location)}`);
+    console.log(
+      `MatchList.setFilter(): router location: ${JSON.stringify(this.props.router.location)}`
+    );
   }
 
   // -------------------------------------

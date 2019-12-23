@@ -6,9 +6,9 @@
     "backhand": "two-handed",
     "ntrp_rating": 3.5,
     "club_rating": {
-      "total": 18,
-      "win": 12,
-      "rank": 1
+      "total": 34,
+      "win": 20,
+      "rank": 3
     }
   },
   {
@@ -18,9 +18,57 @@
     "backhand": "one-handed",
     "ntrp_rating": 3.5,
     "club_rating": {
-      "total": 15,
-      "win": 4,
+      "total": 23,
+      "win": 9,
+      "rank": 8
+    }
+  },
+  {
+    "name": "Sơn",
+    "facebook": "Son Le",
+    "forehand": "right",
+    "backhand": "two-handed",
+    "ntrp_rating": 3.5,
+    "club_rating": {
+      "total": 29,
+      "win": 10,
       "rank": 9
+    }
+  },
+  {
+    "name": "Mạnh",
+    "facebook": "Vu Hoang Manh",
+    "forehand": "right",
+    "backhand": "two-handed",
+    "ntrp_rating": 3.5,
+    "club_rating": {
+      "total": 33,
+      "win": 16,
+      "rank": 9
+    }
+  },
+  {
+    "name": "MinhE",
+    "facebook": "Minh Nguyen Quang",
+    "forehand": "right",
+    "backhand": "two-handed",
+    "ntrp_rating": 3.5,
+    "club_rating": {
+      "total": 32,
+      "win": 14,
+      "rank": 7
+    }
+  },
+  {
+    "name": "Hùng",
+    "facebook": "Le Manh Hung",
+    "forehand": "left",
+    "backhand": "two-handed",
+    "ntrp_rating": 3.5,
+    "club_rating": {
+      "total": 32,
+      "win": 19,
+      "rank": 2
     }
   }
 ]

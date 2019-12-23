@@ -1,24 +1,39 @@
 [
   {
     "type": "double",
-    "rule": "Set: 1, Game: 6-5, Tiebeak: No, DecidingPoint: 50",
+    "rules": "Set: 1, Game: 6-5, Tiebeak: No, DecidingPoint: 50",
     "status": "finished",
-    "team_1": [{ "id": "5dfba170e4c251a6a30d0788", "name": "MinhA" }],
-    "team_2": [{ "id": "5dfc4beb69e826fa84a861f0", "name": "Hợp" }, {}],
-    "scores": { "set": [0, 0], "game": [6, 4], "point": [40, 15] },
-    "referee": null,
-    "begin": "2019-12-15T09:16:24+07:00",
-    "end": "2019-12-15T09:42:15+07:00"
+    "teams": [
+      [
+        { "id": "5e0053cd88a9de7b50877061", "name": "MinhE" },
+        { "id": "5e0053cd88a9de7b50877062", "name": "Hùng" }
+      ],
+      [{ "id": "5e00528f88a9de7b50877031", "name": "Mạnh" }]
+    ],
+    "referees": [{ "id": "5e00528f88a9de7b50877030", "name": "Sơn" }],
+    "scores": { "sets": [0, 0], "games": [6, 3], "points": [0, 0] },
+    "begin": "2019-12-22T13:25:24+07:00",
+    "end": "2019-12-22T13:50:15+07:00"
   },
   {
     "type": "double",
-    "rule": "Set: 1, Game: 6-5, Tiebeak: No, DecidingPoint: 50",
+    "rules": "Set: 1, Game: 6-5, Tiebeak: No, DecidingPoint: 50",
     "status": "playing",
-    "team_1": [{ "id": "5dfc4beb69e826fa84a861f0", "name": "Hợp" }, {}],
-    "team_2": [{ "id": "5dfba170e4c251a6a30d0788", "name": "MinhA" }],
-    "scores": { "set": [0, 0], "game": [3, 4], "point": [40, 15] },
-    "referee": null,
-    "begin": "2019-12-15T10:12:55+07:00",
-    "end": null
+    "teams": [
+      [
+        { "id": "5e00528f88a9de7b5087702f", "name": "Hợp" },
+        { "id": "5e00528f88a9de7b50877031", "name": "Mạnh" }
+      ],
+      [
+        { "id": "5e0053cd88a9de7b50877061", "name": "MinhE" },
+        { "id": "5e00528f88a9de7b50877030", "name": "Sơn" }
+      ]
+    ],
+    "referees": [
+      { "id": "5e00528f88a9de7b5087702e", "name": "MinhA" },
+      { "id": "5e0053cd88a9de7b50877062", "name": "Hùng" }
+    ],
+    "scores": { "sets": [0, 0], "games": [3, 5], "points": [40, 15] },
+    "begin": "2019-12-22T13:59:55+07:00"
   }
 ]

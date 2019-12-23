@@ -3,7 +3,7 @@
 import SourceMapSupport from "source-map-support";
 SourceMapSupport.install();
 
-import logger from "./loaders/logger";
+import logger from "./logger";
 import config from "./config";
 
 import http from "http";

@@ -8,9 +8,8 @@ import config from "../../config";
 export default (db, app) => {
   // --- get all ---
   app.get("/api/matches", (req, res) => {
-    logger.debug(`GET /api/matches : filter = ${JSON.stringify(req.query)}`);
-    const filter = {};
-    if (req.query.status) filter.status = req.query.status;
+    logger.debug(`GET /api/matches : query = ${JSON.stringify(req.query)}`);
+    const filter = req.query;
     // if (req.query.effort_lte || req.query.effort_gte) filter.effort = {};
     // if (req.query.effort_gte) filter.effort.$gte = parseInt(req.query.effort_gte, 10);
     // if (req.query.effort_lte) filter.effort.$lte = parseInt(req.query.effort_lte, 10);
