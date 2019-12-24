@@ -3,7 +3,7 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { withRouter } from "react-router";
-import Toast from "./Toast.jsx";
+import Toast from "./Toast.jsx/index.js";
 
 // -----------------------------------------------------------------------------
 

@@ -30,22 +30,16 @@ const MatchRow = props => {
         <Link to={`/matches/${props.match._id}`}>{props.match.status}</Link>
       </td>
       <td style={{ textAlign: "right" }}>
-        {props.match.teams && props.match.teams.length > 0
-          ? props.match.teams[0].map(r => r.name).join(", ")
-          : ""}
+        {props.match.teams && props.match.teams.length > 0 ? props.match.teams[0].map(r => r.name).join(", ") : ""}
       </td>
       <td style={{ textAlign: "center" }}>
         {props.match.scores && props.match.scores.games ? props.match.scores.games.join(" : ") : ""}
       </td>
       <td style={{ textAlign: "left" }}>
-        {props.match.teams && props.match.teams.length > 1
-          ? props.match.teams[1].map(r => r.name).join(", ")
-          : ""}
+        {props.match.teams && props.match.teams.length > 1 ? props.match.teams[1].map(r => r.name).join(", ") : ""}
       </td>
       {/* <td>{props.match.begin ? dateFormat(new Date(props.match.begin)) : ""}</td> */}
-      <td style={{ textAlign: "center" }}>
-        {props.match.end ? dateFormat(new Date(props.match.end)) : ""}
-      </td>
+      <td style={{ textAlign: "center" }}>{props.match.end ? dateFormat(new Date(props.match.end)) : ""}</td>
       {/* <td>{props.match.referees ? props.match.referees.map(r => r.name).join(", ") : ""}</td> */}
       <td style={{ textAlign: "center" }}>
         {/* <Button bsStyle="info" bsSize="xsmall">
@@ -156,9 +150,7 @@ class MatchList extends Component {
 
   setFilter(query) {
     this.props.router.push({ pathname: this.props.location.pathname, query });
-    console.log(
-      `MatchList.setFilter(): router location: ${JSON.stringify(this.props.router.location)}`
-    );
+    console.log(`MatchList.setFilter(): router location: ${JSON.stringify(this.props.router.location)}`);
   }
 
   // -------------------------------------

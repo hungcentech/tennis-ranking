@@ -12,11 +12,7 @@ import { useTheme } from "@material-ui/core/styles";
 export default function(props) {
   const theme = useTheme();
 
-  return (
-    <div>
-      <hr />
-    </div>
-  );
+  return <div></div>;
 }
 
 // -----------------------------------------------------------------------------

@@ -10,9 +10,9 @@ import { blue, pink } from "@material-ui/core/colors";
 
 import TennisRankingsApp from "./apps/TennisRankingsApp.jsx";
 
-import MatchList from "./MatchList.jsx";
+import MatchList from "./layouts/MatchList.jsx";
 // import MatchEdit from "./MatchEdit.jsx";
-import MatchAddNavItem from "./MatchAddNavItem.jsx";
+// import MatchAddNavItem from "./components/MatchAddNavItem.jsx";
 // import PlayerList from "./PlayerList.jsx";
 // import PlayerEdit from "./PlayerEdit.jsx";
 // import PlayerAddNavItem from "./PlayerAddNavItem.jsx";
@@ -20,6 +20,9 @@ import MatchAddNavItem from "./MatchAddNavItem.jsx";
 // -----------------------------------------------------------------------------
 
 let theme = createMuiTheme({
+  root: {
+    margin: { spacing: 2 }
+  },
   // typography: {
   //   h5: {
   //     fontWeight: 500,
@@ -35,21 +38,19 @@ let theme = createMuiTheme({
   //     disableRipple: true
   //   }
   // },
-  // palette: {
-  // primary: {
-  //   main: "#64b5f6"
-  // },
-  // secondary: {
-  //   main: "#e57373"
-  // },
-  // error: {
-  //   main: "#cf6679"
-  // },
-  // type: "dark"
-  // }
   palette: {
     primary: blue,
     secondary: pink
+    // primary: {
+    //   main: "#64b5f6"
+    // },
+    // secondary: {
+    //   main: "#e57373"
+    // },
+    // error: {
+    //   main: "#cf6679"
+    // }
+    // type: "dark"
   }
 });
 
