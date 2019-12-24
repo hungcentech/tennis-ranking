@@ -7,15 +7,16 @@ import { Router, Route, Redirect, browserHistory, withRouter } from "react-route
 
 import { useTheme } from "@material-ui/core/styles";
 
-// import { Navbar, Nav, NavItem, NavDropdown, MenuItem, Glyphicon } from "react-bootstrap";
-// import { LinkContainer } from "react-router-bootstrap";
-
 // -----------------------------------------------------------------------------
 
 export default function(props) {
   const theme = useTheme();
 
-  return <div>BOTTOM_NAV</div>;
+  return (
+    <div>
+      <hr />
+    </div>
+  );
 }
 
 // -----------------------------------------------------------------------------

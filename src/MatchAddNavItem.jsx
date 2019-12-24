@@ -3,18 +3,6 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { withRouter } from "react-router";
-import {
-  NavItem,
-  Glyphicon,
-  Modal,
-  Form,
-  FormGroup,
-  Col,
-  FormControl,
-  ControlLabel,
-  Button,
-  ButtonToolbar
-} from "react-bootstrap";
 import Toast from "./Toast.jsx";
 
 // -----------------------------------------------------------------------------
@@ -117,12 +105,13 @@ class MatchAddNavItem extends React.Component {
 
   render() {
     return (
-      <NavItem>
+      <div>
+        {/* <NavItem>
         <div onClick={this.showModal}>
           <Glyphicon glyph="plus" /> Add Match
         </div>
 
-        {/* prettier-ignore */}
+        {/ prettier-ignore /}
         <Modal show={this.state.showing} onHide={this.hideModal}>
           <Modal.Header closeButton>
             <Modal.Title>Add Match</Modal.Title>
@@ -150,7 +139,7 @@ class MatchAddNavItem extends React.Component {
               <FormGroup>
                 <Col sm={3} componentClass={ControlLabel}>Teams:</Col>
                   <FormControl componentClass="select" name="playerA1" value={this.state.match.teams.a[0].id} onChange={this.handleChange} autoFocus>
-                    {/* {this.props.players.map(player => (<option value={player.id}>{player.name}</option>))} */}
+                    {/ {this.props.players.map(player => (<option value={player.id}>{player.name}</option>))} /}
                   </FormControl>
                 <Col sm={3} componentClass={ControlLabel}>Teams</Col>
                 <Col sm={9}>
@@ -172,7 +161,8 @@ class MatchAddNavItem extends React.Component {
           onDismiss={this.dismissToast}
           bsStyle={this.state.toastType}
         />
-      </NavItem>
+      </NavItem> */}
+      </div>
     );
   }
 }

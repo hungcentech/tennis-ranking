@@ -5,7 +5,6 @@ import React, { Component } from "react";
 import { Link } from "react-router";
 
 import { Table } from "@material-ui/core/Table";
-// import { Button, Glyphicon, Table, Panel } from "react-bootstrap";
 
 // import MatchFilter from "./MatchFilter.jsx";
 // import Toast from "./Toast.jsx";
@@ -31,16 +30,22 @@ const MatchRow = props => {
         <Link to={`/matches/${props.match._id}`}>{props.match.status}</Link>
       </td>
       <td style={{ textAlign: "right" }}>
-        {props.match.teams && props.match.teams.length > 0 ? props.match.teams[0].map(r => r.name).join(", ") : ""}
+        {props.match.teams && props.match.teams.length > 0
+          ? props.match.teams[0].map(r => r.name).join(", ")
+          : ""}
       </td>
       <td style={{ textAlign: "center" }}>
         {props.match.scores && props.match.scores.games ? props.match.scores.games.join(" : ") : ""}
       </td>
       <td style={{ textAlign: "left" }}>
-        {props.match.teams && props.match.teams.length > 1 ? props.match.teams[1].map(r => r.name).join(", ") : ""}
+        {props.match.teams && props.match.teams.length > 1
+          ? props.match.teams[1].map(r => r.name).join(", ")
+          : ""}
       </td>
       {/* <td>{props.match.begin ? dateFormat(new Date(props.match.begin)) : ""}</td> */}
-      <td style={{ textAlign: "center" }}>{props.match.end ? dateFormat(new Date(props.match.end)) : ""}</td>
+      <td style={{ textAlign: "center" }}>
+        {props.match.end ? dateFormat(new Date(props.match.end)) : ""}
+      </td>
       {/* <td>{props.match.referees ? props.match.referees.map(r => r.name).join(", ") : ""}</td> */}
       <td style={{ textAlign: "center" }}>
         {/* <Button bsStyle="info" bsSize="xsmall">
@@ -151,7 +156,9 @@ class MatchList extends Component {
 
   setFilter(query) {
     this.props.router.push({ pathname: this.props.location.pathname, query });
-    console.log(`MatchList.setFilter(): router location: ${JSON.stringify(this.props.router.location)}`);
+    console.log(
+      `MatchList.setFilter(): router location: ${JSON.stringify(this.props.router.location)}`
+    );
   }
 
   // -------------------------------------
@@ -215,20 +222,20 @@ class MatchList extends Component {
   render() {
     return (
       <div>
+        <hr />
         {/* <Panel bsStyle="info" defaultExpanded> */}
-        <div>
-          {/* <Panel.Heading> */}
-          {/* <Panel.Title> */}
-          <div>Filter</div>
-          {/* </Panel.Title> */}
-          {/* </Panel.Heading> */}
-          {/* <Panel.Collapse> */}
-          {/* <Panel.Body> */}
-          {/* <MatchFilter setFilter={this.setFilter} filter={this.props.location.query} /> */}
-          {/* </Panel.Body> */}
-          {/* </Panel.Collapse> */}
-        </div>
+        {/* <Panel.Heading> */}
+        {/* <Panel.Title> */}
+        <div>Filter</div>
+        {/* </Panel.Title> */}
+        {/* </Panel.Heading> */}
+        {/* <Panel.Collapse> */}
+        {/* <Panel.Body> */}
+        {/* <MatchFilter setFilter={this.setFilter} filter={this.props.location.query} /> */}
+        {/* </Panel.Body> */}
+        {/* </Panel.Collapse> */}
         {/* </Panel> */}
+        <hr />
         <MatchTable matches={this.state.matches} deleteMatch={this.deleteMatch} />
         {/* <Toast
           showing={this.state.toastVisible}

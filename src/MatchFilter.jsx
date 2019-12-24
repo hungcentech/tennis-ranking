@@ -3,17 +3,6 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 
-// import {
-//   Col,
-//   Row,
-//   FormGroup,
-//   FormControl,
-//   ControlLabel,
-//   InputGroup,
-//   ButtonToolbar,
-//   Button
-// } from "react-bootstrap";
-
 // -----------------------------------------------------------------------------
 
 export default class MatchFilter extends Component {

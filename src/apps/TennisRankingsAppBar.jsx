@@ -5,52 +5,51 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Router, Route, Redirect, browserHistory, withRouter } from "react-router";
 
-import { useTheme } from "@material-ui/core/styles";
-import { AppBar, Toolbar, IconButton, Typography, Tabs } from "@material-ui/core";
-
-// import { Navbar, Nav, NavItem, NavDropdown, MenuItem, Glyphicon } from "react-bootstrap";
-// import { LinkContainer } from "react-router-bootstrap";
+import { withStyles } from "@material-ui/core/styles";
+import { AppBar, Toolbar, Button, IconButton, Typography } from "@material-ui/core";
+import MenuIcon from "@material-ui/icons/Menu";
 
 // -----------------------------------------------------------------------------
 
-// const Header = () => (
-//   <Navbar fluid>
-//     <Navbar.Header>
-//       <Navbar.Brand>Tennis Rankings</Navbar.Brand>
-//     </Navbar.Header>
-//     <Nav>
-//       <LinkContainer to="/matches">
-//         <NavItem>Matches</NavItem>
-//       </LinkContainer>
-//       <LinkContainer to="/players">
-//         <NavItem>Players</NavItem>
-//       </LinkContainer>
-//     </Nav>
-//     <Nav pullRight>
-//       <MatchAddNavItem />
-//       <NavDropdown id="user-dropdown" title={<Glyphicon glyph="option-horizontal" />} noCaret>
-//         <MenuItem>Logout</MenuItem>
-//       </NavDropdown>
-//     </Nav>
-//   </Navbar>
-// );
+const styles = theme => ({
+  root: {
+    flexGrow: 1
+  },
+  flex: {
+    flex: 1
+  },
+  menuButton: {
+    marginLeft: -8,
+    marginRight: 8
+  },
+  toolbarMargin: theme.mixins.toolbar
+});
 
 // -----------------------------------------------------------------------------
 
-export default function TennisRankingsAppBar(props) {
-  const theme = useTheme();
-
-  return (
-    <AppBar position="fixed" color="inherit">
-      Tennis Rankings
+const TennisRankingsAppBar = withStyles(styles)(({ classes }) => (
+  <div className={classes.root}>
+    <AppBar position="fixed">
+      <Toolbar>
+        <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
+          <MenuIcon />
+        </IconButton>
+        <Typography variant="h6" color="inherit" className={classes.flex}>
+          TGM Rankings
+        </Typography>
+        <Button color="inherit">Login</Button>
+      </Toolbar>
     </AppBar>
-  );
-}
+    <div className={classes.toolbarMargin} />
+  </div>
+));
 
 // ------------------------------------
 
-TennisRankingsAppBar.propTypes = {
-  // classes: PropTypes.object.isRequired
-};
+TennisRankingsAppBar.propTypes = {};
+
+// ------------------------------------
+
+export default TennisRankingsAppBar;
 
 // -----------------------------------------------------------------------------
