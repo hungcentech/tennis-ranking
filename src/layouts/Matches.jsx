@@ -5,8 +5,7 @@ import React from "react";
 
 import { withStyles } from "@material-ui/core/styles";
 
-import TennisRankingsAppBar from "./TennisRankingsAppBar.jsx";
-import TennisRankingsBottomNav from "./TennisRankingsBottomNav.jsx";
+import RoutedAppBar from "../components/RoutedAppBar.jsx";
 
 // -----------------------------------------------------------------------------
 
@@ -25,24 +24,23 @@ const styles = theme => ({
 
 // -----------------------------------------------------------------------------
 
-const TennisRankingsApp = withStyles(styles)(({ classes, children }) => {
+const MatchesLayout = withStyles(styles)(({ classes, children }) => {
   return (
     <div>
-      <TennisRankingsAppBar />
+      <RoutedAppBar />
       <div>{children}</div>
-      <TennisRankingsBottomNav />
     </div>
   );
 });
 
 // -------------------------------------
 
-TennisRankingsApp.propTypes = {
+MatchesLayout.propTypes = {
   children: PropTypes.object.isRequired
 };
 
 // ------------------------------------
 
-export default TennisRankingsApp;
+export default MatchesLayout;
 
 // -----------------------------------------------------------------------------

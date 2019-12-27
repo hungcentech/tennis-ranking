@@ -7,7 +7,7 @@ import { Router, Route, Redirect, browserHistory, withRouter } from "react-route
 
 import { withStyles } from "@material-ui/core/styles";
 import { AppBar, Toolbar, Button, IconButton, Typography } from "@material-ui/core";
-import MenuIcon from "@material-ui/icons/Menu";
+import HomeIcon from "@material-ui/icons/Home";
 
 // -----------------------------------------------------------------------------
 
@@ -18,7 +18,7 @@ const styles = theme => ({
   flex: {
     flex: 1
   },
-  menuButton: {
+  homeButton: {
     marginLeft: -8,
     marginRight: 8
   },
@@ -27,15 +27,15 @@ const styles = theme => ({
 
 // -----------------------------------------------------------------------------
 
-const TennisRankingsAppBar = withStyles(styles)(({ classes }) => (
+const RoutedAppBar = withStyles(styles)(({ classes, title }) => (
   <div className={classes.root}>
     <AppBar position="fixed">
       <Toolbar>
-        <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
-          <MenuIcon />
+        <IconButton className={classes.homeButton} color="inherit" aria-label="Home" href="/">
+          <HomeIcon />
         </IconButton>
         <Typography variant="h6" color="inherit" className={classes.flex}>
-          TGM Rankings
+          {title}
         </Typography>
         <Button color="inherit">Login</Button>
       </Toolbar>
@@ -46,10 +46,10 @@ const TennisRankingsAppBar = withStyles(styles)(({ classes }) => (
 
 // ------------------------------------
 
-TennisRankingsAppBar.propTypes = {};
+RoutedAppBar.propTypes = {};
 
 // ------------------------------------
 
-export default TennisRankingsAppBar;
+export default RoutedAppBar;
 
 // -----------------------------------------------------------------------------

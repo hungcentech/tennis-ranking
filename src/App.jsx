@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------------
 
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import { Router, Route, Redirect, browserHistory, withRouter } from "react-router";
 
@@ -8,75 +8,53 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { blue, pink } from "@material-ui/core/colors";
 
-import TennisRankingsApp from "./apps/TennisRankingsApp.jsx";
-
-import MatchList from "./layouts/MatchList.jsx";
-// import MatchEdit from "./MatchEdit.jsx";
-// import MatchAddNavItem from "./components/MatchAddNavItem.jsx";
-// import PlayerList from "./PlayerList.jsx";
-// import PlayerEdit from "./PlayerEdit.jsx";
-// import PlayerAddNavItem from "./PlayerAddNavItem.jsx";
+import Home from "./layouts/Home.jsx";
+// import Matches from "./layouts/Matches.jsx";
+// import Match from "./layouts/Match.jsx";
+import Players from "./layouts/Players.jsx";
+// import Player from "./layouts/Player.jsx";
+// import Teams from "./layouts/Teams.jsx";
+// import Team from "./layouts/Team.jsx";
 
 // -----------------------------------------------------------------------------
 
-let theme = createMuiTheme({
-  root: {
-    margin: { spacing: 2 }
-  },
-  // typography: {
-  //   h5: {
-  //     fontWeight: 500,
-  //     fontSize: 26,
-  //     letterSpacing: 0.5
-  //   }
-  // },
-  // shape: {
-  //   borderRadius: 8
-  // },
-  // props: {
-  //   MuiTab: {
-  //     disableRipple: true
-  //   }
-  // },
+let muiTheme = createMuiTheme({
   palette: {
-    primary: blue,
-    secondary: pink
+    primary: pink,
+    secondary: blue,
     // primary: {
     //   main: "#64b5f6"
     // },
     // secondary: {
     //   main: "#e57373"
     // },
-    // error: {
-    //   main: "#cf6679"
-    // }
-    // type: "dark"
+    error: {
+      main: "#cf6679"
+    },
+    type: "dark"
   }
 });
 
 // -------------------------------------
 
-const NotFound = () => <p>Page Not Found</p>;
-
-// -------------------------------------
-
-const App = () => (
-  <ThemeProvider theme={theme}>
-    <div>
-      <CssBaseline />
-      <Router history={browserHistory}>
-        <Redirect from="/" to="/matches" />
-        <Route path="/" component={TennisRankingsApp}>
-          <Route path="matches" component={withRouter(MatchList)} />
-          {/* <Route path="matches/:id" component={MatchEdit} /> */}
-          {/* <Route path="players" component={withRouter(PlayerList)} /> */}
-          {/* <Route path="players/:id" component={PlayerEdit} /> */}
-          <Route path="*" component={NotFound} />
-        </Route>
-      </Router>
-    </div>
-  </ThemeProvider>
-);
+const App = () => {
+  return (
+    <ThemeProvider theme={muiTheme}>
+      <div>
+        <CssBaseline />
+        <Router history={browserHistory}>
+          {/* <Redirect from="/" to="/home" /> */}
+          <Route path="/" component={Home} />
+          <Route path="players" component={withRouter(Players)} />
+          {/* <Route path="matches" component={Matches} /> */}
+          {/* <Route path="matches/:id" component={withRouter(Match)} /> */}
+          {/* <Route path="players/:id" component={Player} /> */}
+          <Route path="*" component={withRouter(Home)} />
+        </Router>
+      </div>
+    </ThemeProvider>
+  );
+};
 
 // -------------------------------------
 
