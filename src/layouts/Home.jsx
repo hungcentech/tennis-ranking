@@ -23,10 +23,10 @@ const styles = theme => ({
   },
   image: {
     position: "relative",
-    height: 200,
+    height: 180,
     [theme.breakpoints.down("xs")]: {
       width: "100% !important", // Overrides inline-style
-      height: 110
+      height: 120
     },
     "&:hover, &$focusVisible": {
       zIndex: 1,
@@ -92,42 +92,36 @@ const styles = theme => ({
 const HomeLayout = withStyles(styles)(({ classes, router }) => {
   const menus = [
     {
-      id: "1",
+      // imgUrl: "/img/sport4.jpeg",
+      title: "Rankings",
+      url: "/rankings",
+      width: "33.3333%"
+    },
+    {
+      // imgUrl: "/img/court2.jpeg",
+      title: "Matches",
+      url: "/matches",
+      width: "33.3333%"
+    },
+    {
       imgUrl: "/img/sport5.jpeg",
       title: "Players",
       url: "/players",
       width: "33.3333%"
     },
     {
-      id: "2",
-      imgUrl: "/img/court2.jpeg",
-      title: "Matches",
-      url: "/matches",
-      width: "33.3333%"
-    },
-    {
-      id: "3",
-      imgUrl: "/img/sport4.jpeg",
-      title: "Rankings",
-      url: "/rankings",
-      width: "33.3333%"
-    },
-    {
-      id: "4",
-      imgUrl: "/img/team2.jpeg",
-      title: "Teams",
-      width: "33.3333%"
-    },
-    {
-      id: "5",
-      imgUrl: "/img/guests1.jpeg",
+      // imgUrl: "/img/guests1.jpeg",
       title: "Guests",
       width: "33.3333%"
     },
     {
-      id: "6",
-      imgUrl: "/img/logout1.jpeg",
-      title: "Logout",
+      // imgUrl: "/img/team2.jpeg",
+      title: "Clubs",
+      width: "33.3333%"
+    },
+    {
+      // imgUrl: "/img/logout1.jpeg",
+      title: "More...",
       width: "33.3333%"
     }
   ];

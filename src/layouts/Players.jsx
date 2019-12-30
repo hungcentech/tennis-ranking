@@ -12,6 +12,7 @@ import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
+import { TextField } from "@material-ui/core";
 import { Paper, Grid } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 
@@ -26,30 +27,32 @@ const styles = theme => {
       flex: 1
     },
     content: {
-      maxWidth: "100vw",
-      margin: theme.spacing(0)
+      maxWidth: "96vw",
+      margin: theme.spacing(0),
+      padding: theme.spacing(0)
     },
     card: {
-      // backgroundImage: "url('/img/sport5.jpeg')"
+      width: "96vw",
+      margin: theme.spacing(0)
     },
     cardMedia: {
-      margin: theme.spacing(2, 1),
+      margin: theme.spacing(2),
       padding: theme.spacing(1),
-      width: "32vw",
-      height: "32vw",
+      width: "28vw",
+      height: "28vw",
       borderRadius: "50%",
       background: `radial-gradient(center, ${theme.palette.primary[300]}, ${theme.palette.primary[300]})`
     },
     cardTitle: {
       textAlign: "center",
-      margin: theme.spacing(1),
-      width: "33.333vw"
+      margin: theme.spacing(-1, 2, 2, 2),
+      width: "28vw"
     },
     cardText: {
-      // maxHeight: 100
+      minHeight: 200
     },
     cardActions: {
-      // justifyContent: "flex-end"
+      justifyContent: "flex-end"
     }
   };
 };
@@ -57,12 +60,29 @@ const styles = theme => {
 // -----------------------------------------------------------------------------
 
 const PlayerCard = withStyles(styles)(({ classes, router, info }) => {
+  const CardRow = ({ label, text }) => {
+    return (
+      <Grid container spacing={1}>
+        <Grid item xs={4}>
+          <Typography variant="caption" align="right" display="block" color="textSecondary" noWrap>
+            {label}
+          </Typography>
+        </Grid>
+        <Grid item xs={8}>
+          <Typography variant="caption" align="left" display="block" color="textPrimary" noWrap>
+            {text}
+          </Typography>
+        </Grid>
+      </Grid>
+    );
+  };
+
   return (
     <Card
       className={classes.card}
-      onClick={() => {
-        router.push(`/players/${info._id}`);
-      }}
+      // onClick={() => {
+      //   router.push(`/players/${info._id}`);
+      // }}
     >
       <CardActionArea>
         <Grid container spacing={0}>
@@ -74,26 +94,34 @@ const PlayerCard = withStyles(styles)(({ classes, router, info }) => {
               title={`${info.name} (${info.facebook})`}
               className={classes.cardMedia}
             />
-            <Paper elevation={0}>
-              <Typography gutterBottom variant="h6" component="h2" className={classes.cardTitle}>
-                {`${info.name}`}
-              </Typography>
-            </Paper>
+            <Typography variant="h6" component="h2" className={classes.cardTitle}>
+              {`${info.name}`}
+            </Typography>
           </Grid>
           <Grid item xs={8}>
             <CardContent>
-              <Typography
-                variant="body2"
-                color="textSecondary"
-                component="p"
-                className={classes.cardText}
-              >
+              {/* <Typography variant="body2" color="textSecondary" className={classes.cardText}>
                 {info.facebook} is a talented {info.ntrp_rating}-NTRP tennis player. His{" "}
                 {info.backhand} backhand is highly efficient when returning serves. He wins many
                 winners from all over the court with his magical {info.forehand}-handed forehand.
                 His current standing on club rankings is number{" "}
                 {info.club_rating ? info.club_rating.rank : "unknown"}.
-              </Typography>
+              </Typography> */}
+              <CardRow label="Facebook" text={info.facebook} />
+              <hr />
+              <CardRow label="Plays" text={info.play_style} />
+              <CardRow label="Forehand" text={`${info.forehand}`} />
+              <CardRow label="Backhand" text={`${info.backhand}`} />
+              <CardRow
+                label="Win/Lost/Total"
+                text={`${info.club_rating.win} / ${info.club_rating.total -
+                  info.club_rating.win} / ${info.club_rating.total}`}
+              />
+              <CardRow
+                label="Win-rate"
+                text={`${Math.round((info.club_rating.win / info.club_rating.total) * 1000) / 10}%`}
+              />
+              <CardRow label="Ranking" text={info.club_rating.rank} />
             </CardContent>
           </Grid>
         </Grid>
