@@ -18,6 +18,10 @@ import Players from "./layouts/Players.jsx";
 
 // -----------------------------------------------------------------------------
 
+const appUrl = "/tennisrankings/";
+
+// -----------------------------------------------------------------------------
+
 let muiTheme = createMuiTheme({
   palette: {
     primary: pink,
@@ -35,7 +39,7 @@ let muiTheme = createMuiTheme({
   }
 });
 
-// -------------------------------------
+// -----------------------------------------------------------------------------
 
 const App = () => {
   return (
@@ -43,8 +47,8 @@ const App = () => {
       <div>
         <CssBaseline />
         <Router history={browserHistory}>
-          {/* <Redirect from="/" to="/home" /> */}
-          <Route path="/" component={Home} />
+          {/* <Redirect from={appUrl} to={appUrl + "home"} /> */}
+          <Route path={appUrl} component={Home} />
           <Route path="players" component={withRouter(Players)} />
           {/* <Route path="matches" component={Matches} /> */}
           {/* <Route path="matches/:id" component={withRouter(Match)} /> */}
@@ -56,11 +60,11 @@ const App = () => {
   );
 };
 
-// -------------------------------------
+// -----------------------------------------------------------------------------
 
 ReactDOM.render(<App />, document.getElementById("contents"));
 
-// -------------------------------------
+// -----------------------------------------------------------------------------
 
 if (module.hot) {
   module.hot.accept();

@@ -20,6 +20,10 @@ import RoutedAppBar from "../components/RoutedAppBar.jsx";
 
 // -----------------------------------------------------------------------------
 
+const appUrl = "/tennisrankings/";
+
+// -----------------------------------------------------------------------------
+
 const styles = theme => {
   // console.log(theme);
   return {
@@ -90,7 +94,7 @@ const PlayerCard = withStyles(styles)(({ classes, router, info }) => {
             <CardMedia
               component="img"
               alt={info.name}
-              image={info.img ? info.img : "/img/nadal.jpeg"}
+              image={info.img ? info.img : appUrl + "img/nadal.jpeg"}
               title={`${info.name} (${info.facebook})`}
               className={classes.cardMedia}
             />
@@ -127,7 +131,7 @@ const PlayerCard = withStyles(styles)(({ classes, router, info }) => {
         </Grid>
       </CardActionArea>
       {/* <CardActions className={classes.cardActions}>
-        <Button size="small" color="secondary" href="/players">
+        <Button size="small" color="secondary" href=appUrl + "players">
           More
         </Button>
       </CardActions> */}
@@ -148,7 +152,7 @@ const PlayersLayout = withStyles(styles)(({ classes, router }) => {
   const [data, setPlayers] = useState({ players: [] });
 
   useEffect(() => {
-    let uri = `/api/players`;
+    let uri = appUrl + "api/players";
     fetch(uri)
       .then(response => {
         if (response.ok) {

@@ -2,12 +2,12 @@
   "name": "Tennis Rankings",
   "icons": [
     {
-      "src": "/favicon.ico",
+      "src": "/tennisrankings/favicon.ico",
       "sizes": "16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "/android-icon-192x192.png",
+      "src": "/tennisrankings/android-icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "density": "4.0"

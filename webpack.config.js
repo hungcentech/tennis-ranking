@@ -1,3 +1,5 @@
+var path = require("path");
+
 module.exports = {
   entry: {
     app: ["./src/App.jsx"]
@@ -32,7 +34,7 @@ module.exports = {
   devServer: {
     port: 8000,
     proxy: {
-      "/api/*": {
+      "*/api/*": {
         target: "http://localhost:3000"
       }
     },

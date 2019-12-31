@@ -11,6 +11,10 @@ import HomeIcon from "@material-ui/icons/Home";
 
 // -----------------------------------------------------------------------------
 
+const appUrl = "/tennisrankings/";
+
+// -----------------------------------------------------------------------------
+
 const styles = theme => ({
   root: {
     flexGrow: 1
@@ -31,13 +35,15 @@ const RoutedAppBar = withStyles(styles)(({ classes, title }) => (
   <div className={classes.root}>
     <AppBar position="fixed">
       <Toolbar>
-        <IconButton className={classes.homeButton} color="inherit" aria-label="Home" href="/">
+        <IconButton className={classes.homeButton} color="inherit" aria-label="Home" href={appUrl}>
           <HomeIcon />
         </IconButton>
         <Typography variant="h6" color="inherit" className={classes.flex}>
           {title}
         </Typography>
-        <Button color="inherit">Login</Button>
+        <Button color="inherit" href={appUrl + "login"}>
+          Login
+        </Button>
       </Toolbar>
     </AppBar>
     <div className={classes.toolbarMargin} />

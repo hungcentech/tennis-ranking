@@ -11,6 +11,10 @@ import RoutedAppBar from "../components/RoutedAppBar.jsx";
 
 // -----------------------------------------------------------------------------
 
+const appUrl = "/tennisrankings/";
+
+// -----------------------------------------------------------------------------
+
 const styles = theme => ({
   root: {
     flex: 1
@@ -92,35 +96,35 @@ const styles = theme => ({
 const HomeLayout = withStyles(styles)(({ classes, router }) => {
   const menus = [
     {
-      // imgUrl: "/img/sport4.jpeg",
+      imgUrl: appUrl + "img/sport4.jpeg",
       title: "Rankings",
-      url: "/rankings",
+      url: appUrl + "rankings",
       width: "33.3333%"
     },
     {
-      // imgUrl: "/img/court2.jpeg",
+      imgUrl: appUrl + "img/court2.jpeg",
       title: "Matches",
-      url: "/matches",
+      url: appUrl + "matches",
       width: "33.3333%"
     },
     {
-      imgUrl: "/img/sport5.jpeg",
+      imgUrl: appUrl + "img/sport5.jpeg",
       title: "Players",
-      url: "/players",
+      url: appUrl + "players",
       width: "33.3333%"
     },
     {
-      // imgUrl: "/img/guests1.jpeg",
+      imgUrl: appUrl + "/img/guests1.jpeg",
       title: "Guests",
       width: "33.3333%"
     },
     {
-      // imgUrl: "/img/team2.jpeg",
+      imgUrl: appUrl + "/img/team2.jpeg",
       title: "Clubs",
       width: "33.3333%"
     },
     {
-      // imgUrl: "/img/logout1.jpeg",
+      imgUrl: appUrl + "/img/logout1.jpeg",
       title: "More...",
       width: "33.3333%"
     }
