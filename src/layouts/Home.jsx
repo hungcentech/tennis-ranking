@@ -7,11 +7,8 @@ import { withStyles } from "@material-ui/core/styles";
 
 import ButtonBase from "@material-ui/core/ButtonBase";
 import Typography from "@material-ui/core/Typography";
-import RoutedAppBar from "../components/RoutedAppBar.jsx";
 
-// -----------------------------------------------------------------------------
-
-const appUrl = "/tennisrankings/";
+import config from "../config";
 
 // -----------------------------------------------------------------------------
 
@@ -93,46 +90,47 @@ const styles = theme => ({
 
 // -----------------------------------------------------------------------------
 
-const HomeLayout = withStyles(styles)(({ classes, router }) => {
+const Home = withStyles(styles)(({ classes, router }) => {
   const menus = [
     {
-      imgUrl: appUrl + "img/sport4.jpeg",
+      imgUrl: config.appUrl + "img/sport4.jpeg",
       title: "Rankings",
-      url: appUrl + "rankings",
+      url: config.appUrl + "rankings",
       width: "33.3333%"
     },
     {
-      imgUrl: appUrl + "img/court2.jpeg",
+      imgUrl: config.appUrl + "img/court2.jpeg",
       title: "Matches",
-      url: appUrl + "matches",
+      url: config.appUrl + "matches",
       width: "33.3333%"
     },
     {
-      imgUrl: appUrl + "img/sport5.jpeg",
+      imgUrl: config.appUrl + "img/sport5.jpeg",
       title: "Players",
-      url: appUrl + "players",
+      url: config.appUrl + "players",
       width: "33.3333%"
     },
     {
-      imgUrl: appUrl + "/img/guests1.jpeg",
+      imgUrl: config.appUrl + "/img/guests1.jpeg",
       title: "Guests",
       width: "33.3333%"
     },
     {
-      imgUrl: appUrl + "/img/team2.jpeg",
+      imgUrl: config.appUrl + "/img/team2.jpeg",
       title: "Clubs",
       width: "33.3333%"
     },
     {
-      imgUrl: appUrl + "/img/logout1.jpeg",
+      imgUrl: config.appUrl + "/img/logout1.jpeg",
       title: "More...",
       width: "33.3333%"
     }
   ];
 
+  console.log("Home(): router =", router);
+
   return (
     <div className={classes.root}>
-      <RoutedAppBar title="TGM Rankings" />
       <div className={classes.content}>
         {menus.map(item => (
           <ButtonBase
@@ -153,12 +151,7 @@ const HomeLayout = withStyles(styles)(({ classes, router }) => {
             />
             <span className={classes.imageBackdrop} />
             <span className={classes.imageButton}>
-              <Typography
-                component="span"
-                variant="subtitle1"
-                color="inherit"
-                className={classes.imageTitle}
-              >
+              <Typography component="span" variant="subtitle1" color="inherit" className={classes.imageTitle}>
                 {item.title}
                 <span className={classes.imageMarked} />
               </Typography>
@@ -172,12 +165,12 @@ const HomeLayout = withStyles(styles)(({ classes, router }) => {
 
 // -------------------------------------
 
-HomeLayout.propTypes = {
-  router: PropTypes.object.isRequired
+Home.propTypes = {
+  // router: PropTypes.object.isRequired
 };
 
 // ------------------------------------
 
-export default HomeLayout;
+export default Home;
 
 // -----------------------------------------------------------------------------

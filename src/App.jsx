@@ -1,24 +1,22 @@
 // -----------------------------------------------------------------------------
 
+import PropTypes from "prop-types";
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import { Router, Route, Redirect, browserHistory, withRouter } from "react-router";
 
+import { createMuiTheme, ThemeProvider, withStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { blue, pink } from "@material-ui/core/colors";
 
+import RoutedAppBar from "./components/RoutedAppBar.jsx";
 import Home from "./layouts/Home.jsx";
-// import Matches from "./layouts/Matches.jsx";
-// import Match from "./layouts/Match.jsx";
-import Players from "./layouts/Players.jsx";
-// import Player from "./layouts/Player.jsx";
-// import Teams from "./layouts/Teams.jsx";
-// import Team from "./layouts/Team.jsx";
+import MatchEdit from "./layouts/MatchEdit.jsx";
+import MatchList from "./layouts/MatchList.jsx";
+import PlayerEdit from "./layouts/PlayerEdit.jsx";
+import PlayerList from "./layouts/PlayerList.jsx";
 
-// -----------------------------------------------------------------------------
-
-const appUrl = "/tennisrankings/";
+import config from "./config";
 
 // -----------------------------------------------------------------------------
 
@@ -26,45 +24,69 @@ let muiTheme = createMuiTheme({
   palette: {
     primary: pink,
     secondary: blue,
-    // primary: {
-    //   main: "#64b5f6"
-    // },
-    // secondary: {
-    //   main: "#e57373"
-    // },
     error: {
       main: "#cf6679"
-    },
-    type: "dark"
+    }
+    // type: "dark"
   }
 });
 
-// -----------------------------------------------------------------------------
-
-const App = () => {
-  return (
-    <ThemeProvider theme={muiTheme}>
-      <div>
-        <CssBaseline />
-        <Router history={browserHistory}>
-          {/* <Redirect from={appUrl} to={appUrl + "home"} /> */}
-          <Route path={appUrl} component={Home} />
-          <Route path="players" component={withRouter(Players)} />
-          {/* <Route path="matches" component={Matches} /> */}
-          {/* <Route path="matches/:id" component={withRouter(Match)} /> */}
-          {/* <Route path="players/:id" component={Player} /> */}
-          <Route path="*" component={withRouter(Home)} />
-        </Router>
-      </div>
-    </ThemeProvider>
-  );
+const styles = theme => {
+  return {
+    root: {
+      flex: 1
+    }
+  };
 };
 
 // -----------------------------------------------------------------------------
 
-ReactDOM.render(<App />, document.getElementById("contents"));
+const App = withStyles(styles)(({ classes, router, children }) => {
+  const [account, setAccount] = useState(null);
+
+  return (
+    <div className={classes.root}>
+      <RoutedAppBar router={router} account={account} />
+      {children}
+    </div>
+  );
+});
+
+// -------------------------------------
+
+App.propTypes = {
+  router: PropTypes.object.isRequired
+};
 
 // -----------------------------------------------------------------------------
+
+const RoutedApp = () => {
+  return (
+    <ThemeProvider theme={muiTheme}>
+      <CssBaseline />
+      <Router history={browserHistory}>
+        <Redirect from="/tennisrankings" to="/tennisrankings/home" />
+        <Route path="/tennisrankings" component={withRouter(App)}>
+          <Route path="players" component={withRouter(PlayerList)} />
+          <Route path="players/:id" component={withRouter(PlayerEdit)} />
+          <Route path="matches" component={MatchList} />
+          <Route path="matches/:id" component={withRouter(MatchEdit)} />
+          <Route path="*" component={withRouter(Home)} />
+        </Route>
+      </Router>
+    </ThemeProvider>
+  );
+};
+
+// -------------------------------------
+
+RoutedApp.propTypes = {};
+
+// -----------------------------------------------------------------------------
+
+ReactDOM.render(<RoutedApp />, document.getElementById("contents"));
+
+// -------------------------------------
 
 if (module.hot) {
   module.hot.accept();

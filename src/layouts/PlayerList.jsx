@@ -16,11 +16,7 @@ import { TextField } from "@material-ui/core";
 import { Paper, Grid } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 
-import RoutedAppBar from "../components/RoutedAppBar.jsx";
-
-// -----------------------------------------------------------------------------
-
-const appUrl = "/tennisrankings/";
+import config from "../config";
 
 // -----------------------------------------------------------------------------
 
@@ -84,9 +80,9 @@ const PlayerCard = withStyles(styles)(({ classes, router, info }) => {
   return (
     <Card
       className={classes.card}
-      // onClick={() => {
-      //   router.push(`/players/${info._id}`);
-      // }}
+      onClick={() => {
+        router.push(`/players/${info._id}`);
+      }}
     >
       <CardActionArea>
         <Grid container spacing={0}>
@@ -94,7 +90,7 @@ const PlayerCard = withStyles(styles)(({ classes, router, info }) => {
             <CardMedia
               component="img"
               alt={info.name}
-              image={info.img ? info.img : appUrl + "img/nadal.jpeg"}
+              image={info.img ? info.img : config.appUrl + "img/nadal.jpeg"}
               title={`${info.name} (${info.facebook})`}
               className={classes.cardMedia}
             />
@@ -104,13 +100,6 @@ const PlayerCard = withStyles(styles)(({ classes, router, info }) => {
           </Grid>
           <Grid item xs={8}>
             <CardContent>
-              {/* <Typography variant="body2" color="textSecondary" className={classes.cardText}>
-                {info.facebook} is a talented {info.ntrp_rating}-NTRP tennis player. His{" "}
-                {info.backhand} backhand is highly efficient when returning serves. He wins many
-                winners from all over the court with his magical {info.forehand}-handed forehand.
-                His current standing on club rankings is number{" "}
-                {info.club_rating ? info.club_rating.rank : "unknown"}.
-              </Typography> */}
               <CardRow label="Facebook" text={info.facebook} />
               <hr />
               <CardRow label="Plays" text={info.play_style} />
@@ -118,23 +107,14 @@ const PlayerCard = withStyles(styles)(({ classes, router, info }) => {
               <CardRow label="Backhand" text={`${info.backhand}`} />
               <CardRow
                 label="Win/Lost/Total"
-                text={`${info.club_rating.win} / ${info.club_rating.total -
-                  info.club_rating.win} / ${info.club_rating.total}`}
+                text={`${info.club_rating.win} / ${info.club_rating.total - info.club_rating.win} / ${info.club_rating.total}`}
               />
-              <CardRow
-                label="Win-rate"
-                text={`${Math.round((info.club_rating.win / info.club_rating.total) * 1000) / 10}%`}
-              />
+              <CardRow label="Win-rate" text={`${Math.round((info.club_rating.win / info.club_rating.total) * 1000) / 10}%`} />
               <CardRow label="Ranking" text={info.club_rating.rank} />
             </CardContent>
           </Grid>
         </Grid>
       </CardActionArea>
-      {/* <CardActions className={classes.cardActions}>
-        <Button size="small" color="secondary" href=appUrl + "players">
-          More
-        </Button>
-      </CardActions> */}
     </Card>
   );
 });
@@ -142,17 +122,17 @@ const PlayerCard = withStyles(styles)(({ classes, router, info }) => {
 // -------------------------------------
 
 PlayerCard.propTypes = {
-  // router: PropTypes.object.isRequired,
+  router: PropTypes.object.isRequired,
   info: PropTypes.object.isRequired
 };
 
 // -----------------------------------------------------------------------------
 
-const PlayersLayout = withStyles(styles)(({ classes, router }) => {
-  const [data, setPlayers] = useState({ players: [] });
+const PlayerList = withStyles(styles)(({ classes, router }) => {
+  const [data, setData] = useState({ players: [] });
 
   useEffect(() => {
-    let uri = appUrl + "api/players";
+    let uri = config.appUrl + "api/players";
     fetch(uri)
       .then(response => {
         if (response.ok) {
@@ -163,7 +143,7 @@ const PlayersLayout = withStyles(styles)(({ classes, router }) => {
                 player.created = new Date(player.created);
                 if (player.completionDate) player.completionDate = new Date(player.completionDate);
               });
-              setPlayers({ players: data.records });
+              setData({ players: data.records });
             })
             .catch(err => {
               console.log("Server connection error: " + err.message);
@@ -186,7 +166,6 @@ const PlayersLayout = withStyles(styles)(({ classes, router }) => {
 
   return (
     <div className={classes.root}>
-      <RoutedAppBar title="Players" />
       <Grid container spacing={2} className={classes.content}>
         {data.players
           ? data.players.map(item => (
@@ -204,12 +183,12 @@ const PlayersLayout = withStyles(styles)(({ classes, router }) => {
 
 // -------------------------------------
 
-PlayersLayout.propTypes = {
+PlayerList.propTypes = {
   router: PropTypes.object.isRequired
 };
 
 // ------------------------------------
 
-export default PlayersLayout;
+export default PlayerList;
 
 // -----------------------------------------------------------------------------
