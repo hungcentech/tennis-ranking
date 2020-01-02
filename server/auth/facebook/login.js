@@ -8,8 +8,6 @@ import config from "../../config";
 // -----------------------------------------------------------------------------
 
 export default async (db, app, passport) => {
-  var user = {};
-
   // -------------------------------------
 
   passport.serializeUser(function(user, cb) {
@@ -25,20 +23,34 @@ export default async (db, app, passport) => {
       {
         clientID: config.auth.facebook.clientId,
         clientSecret: config.auth.facebook.clientSecret,
-        callbackURL: config.auth.facebook.loginCallbackURL
+        callbackURL: config.auth.facebook.appUrl + config.auth.facebook.login.cbUrl,
+        profileFields: [
+          "id",
+          "displayName",
+          "first_name",
+          "last_name",
+          "middle_name",
+          "name_format",
+          "short_name",
+          "link",
+          "picture.type(large)",
+          "birthday",
+          "gender",
+          "email"
+        ]
       },
       (accessToken, refreshToken, profile, cb) => {
         try {
-          user = {
+          logger.debug("FacebookStrategy(): profile = " + JSON.stringify(profile));
+          let user = {
+            ...profile._json,
             accessToken: accessToken,
-            expireDate: new Date(new Date().getTime() + 30 * 60 * 1000),
-            refreshToken: refreshToken,
-            profile: profile
+            expireDate: new Date(new Date().getTime() + 30 * 60 * 1000)
           };
-          logger.debug("authFacebookLoginCb(): user = " + JSON.stringify(user));
 
-          return cb(null, profile);
+          return cb(null, user);
         } catch (err) {
+          logger.debug("FacebookStrategy(): err = " + JSON.stringify(err));
           return cb(err);
         }
       }
@@ -47,25 +59,40 @@ export default async (db, app, passport) => {
 
   // -------------------------------------
 
-  app.get("/auth/facebook/login", passport.authenticate("facebook", { scope: [] }));
-
-  // -------------------------------------
-
   app.get(
-    "/auth/facebook/cb/login",
+    config.auth.facebook.login.url,
     passport.authenticate("facebook", {
-      successRedirect: "https://bme.hust.edu.vn/tennisrankings/auth/facebook/cb/login/success",
-      failureRedirect: "https://bme.hust.edu.vn/tennisrankings/auth/facebook/cb/login/failed"
+      scope: [
+        // "user_friends"
+      ]
     })
   );
 
   // -------------------------------------
 
-  app.get("/auth/facebook/cb/login/success", (req, res) => {
-    logger.debug("/auth/facebook/cb/login/success: req.user = " + JSON.stringify(req.user));
-    logger.debug("/auth/facebook/cb/login/success: user     = " + JSON.stringify(user));
+  app.get(
+    config.auth.facebook.login.cbUrl,
+    passport.authenticate("facebook", {
+      successRedirect: config.auth.facebook.appDomain + config.auth.facebook.appUrl + config.auth.facebook.login.cbUrlSuccess,
+      failureRedirect: config.auth.facebook.appDomain + config.auth.facebook.appUrl + config.auth.facebook.login.cbUrlFailure
+    })
+  );
 
-    res.json(user);
+  // -------------------------------------
+
+  app.get(config.auth.facebook.login.cbUrlSuccess, (req, res) => {
+    logger.debug(config.auth.facebook.login.cbUrlSuccess + ": login success. User = " + JSON.stringify(req.user));
+
+    res.json(req.user);
+  });
+
+  // -------------------------------------
+
+  app.get(config.auth.facebook.login.cbUrlFailure, (req, res) => {
+    logger.debug(config.auth.facebook.login.cbUrlFailure + ": login failure. params = " + JSON.stringify(req.params));
+    logger.debug(config.auth.facebook.login.cbUrlFailure + ": login failure. err = " + JSON.stringify(req.err));
+
+    res.json(req.params);
   });
 
   // -------------------------------------

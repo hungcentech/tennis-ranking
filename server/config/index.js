@@ -42,7 +42,15 @@ export default {
     facebook: {
       clientId: "2600052983556145",
       clientSecret: "6ed2042383cbca0addd8ab764c2e6cca",
-      loginCallbackURL: "https://bme.hust.edu.vn/tennisrankings/auth/facebook/cb/login"
+      // appUrl: "https://bme.hust.edu.vn/tennisrankings",
+      appDomain: "http://localhost",
+      appUrl: "/tennisrankings",
+      login: {
+        url: "/auth/facebook/login",
+        cbUrl: "/auth/facebook/cb/login",
+        cbUrlSuccess: "/auth/facebook/cb/login/success",
+        cbUrlFailure: "/auth/facebook/cb/login/failure"
+      }
     }
   }
 };
