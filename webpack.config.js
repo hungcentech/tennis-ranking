@@ -34,10 +34,7 @@ module.exports = {
   devServer: {
     port: 8000,
     proxy: {
-      "/login": {
-        target: "http://localhost:3000"
-      },
-      "/logout": {
+      "/auth/*": {
         target: "http://localhost:3000"
       },
       "/api/*": {

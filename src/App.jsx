@@ -41,7 +41,7 @@ const styles = theme => {
 
 // -----------------------------------------------------------------------------
 
-const App = withStyles(styles)(({ classes, router, children }) => {
+const RoutedApp = withStyles(styles)(({ classes, router, children }) => {
   const [account, setAccount] = useState(null);
 
   return (
@@ -54,19 +54,19 @@ const App = withStyles(styles)(({ classes, router, children }) => {
 
 // -------------------------------------
 
-App.propTypes = {
+RoutedApp.propTypes = {
   router: PropTypes.object.isRequired
 };
 
 // -----------------------------------------------------------------------------
 
-const RoutedApp = () => {
+const App = () => {
   return (
     <ThemeProvider theme={muiTheme}>
       <CssBaseline />
       <Router history={browserHistory}>
         <Redirect from="/tennisrankings" to="/tennisrankings/home" />
-        <Route path="/tennisrankings" component={withRouter(App)}>
+        <Route path="/tennisrankings" component={withRouter(RoutedApp)}>
           <Route path="players" component={withRouter(PlayerList)} />
           <Route path="players/:id" component={withRouter(PlayerEdit)} />
           <Route path="matches" component={MatchList} />
@@ -80,11 +80,11 @@ const RoutedApp = () => {
 
 // -------------------------------------
 
-RoutedApp.propTypes = {};
+App.propTypes = {};
 
 // -----------------------------------------------------------------------------
 
-ReactDOM.render(<RoutedApp />, document.getElementById("contents"));
+ReactDOM.render(<App />, document.getElementById("contents"));
 
 // -------------------------------------
 

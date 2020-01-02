@@ -1,3 +1,5 @@
 export default {
-  appUrl: "/tennisrankings/"
+  appUrl: "/tennisrankings",
+  loginUrl: "/auth/facebook/login",
+  logoutUrl: "/auth/facebook/logout"
 };

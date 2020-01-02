@@ -90,7 +90,7 @@ const PlayerCard = withStyles(styles)(({ classes, router, info }) => {
             <CardMedia
               component="img"
               alt={info.name}
-              image={info.img ? info.img : config.appUrl + "img/nadal.jpeg"}
+              image={info.img ? info.img : config.appUrl + "/img/nadal.jpeg"}
               title={`${info.name} (${info.facebook})`}
               className={classes.cardMedia}
             />
@@ -107,9 +107,13 @@ const PlayerCard = withStyles(styles)(({ classes, router, info }) => {
               <CardRow label="Backhand" text={`${info.backhand}`} />
               <CardRow
                 label="Win/Lost/Total"
-                text={`${info.club_rating.win} / ${info.club_rating.total - info.club_rating.win} / ${info.club_rating.total}`}
+                text={`${info.club_rating.win} / ${info.club_rating.total -
+                  info.club_rating.win} / ${info.club_rating.total}`}
               />
-              <CardRow label="Win-rate" text={`${Math.round((info.club_rating.win / info.club_rating.total) * 1000) / 10}%`} />
+              <CardRow
+                label="Win-rate"
+                text={`${Math.round((info.club_rating.win / info.club_rating.total) * 1000) / 10}%`}
+              />
               <CardRow label="Ranking" text={info.club_rating.rank} />
             </CardContent>
           </Grid>
@@ -132,7 +136,7 @@ const PlayerList = withStyles(styles)(({ classes, router }) => {
   const [data, setData] = useState({ players: [] });
 
   useEffect(() => {
-    let uri = config.appUrl + "api/players";
+    let uri = config.appUrl + "/api/players";
     fetch(uri)
       .then(response => {
         if (response.ok) {

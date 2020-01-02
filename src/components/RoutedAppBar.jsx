@@ -57,13 +57,22 @@ const RoutedAppBar = withStyles(styles)(({ classes, router, account }) => {
     <div className={classes.root}>
       <AppBar position="fixed">
         <Toolbar>
-          <IconButton className={classes.homeButton} color="inherit" aria-label="Home" href={config.appUrl + "home"}>
+          <IconButton
+            className={classes.homeButton}
+            color="inherit"
+            aria-label="Home"
+            href={config.appUrl + "/home"}
+          >
             <HomeIcon />
           </IconButton>
           <Typography variant="h6" color="inherit" className={classes.flex}>
             {getTitle()}
           </Typography>
-          <IconButton className={classes.accountButton} color="inherit" href={config.appUrl + (account ? "logout" : "login")}>
+          <IconButton
+            className={classes.accountButton}
+            color="inherit"
+            href={config.appUrl + (account ? config.logoutUrl : config.loginUrl)}
+          >
             {account ? <LogoutIcon /> : <LoginIcon />}
           </IconButton>
         </Toolbar>

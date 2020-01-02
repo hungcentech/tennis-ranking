@@ -93,21 +93,21 @@ const styles = theme => ({
 const Home = withStyles(styles)(({ classes, router }) => {
   const menus = [
     {
-      imgUrl: config.appUrl + "img/sport4.jpeg",
+      imgUrl: config.appUrl + "/img/sport4.jpeg",
       title: "Rankings",
-      url: config.appUrl + "rankings",
+      url: config.appUrl + "/rankings",
       width: "33.3333%"
     },
     {
-      imgUrl: config.appUrl + "img/court2.jpeg",
+      imgUrl: config.appUrl + "/img/court2.jpeg",
       title: "Matches",
-      url: config.appUrl + "matches",
+      url: config.appUrl + "/matches",
       width: "33.3333%"
     },
     {
-      imgUrl: config.appUrl + "img/sport5.jpeg",
+      imgUrl: config.appUrl + "/img/sport5.jpeg",
       title: "Players",
-      url: config.appUrl + "players",
+      url: config.appUrl + "/players",
       width: "33.3333%"
     },
     {
@@ -151,7 +151,12 @@ const Home = withStyles(styles)(({ classes, router }) => {
             />
             <span className={classes.imageBackdrop} />
             <span className={classes.imageButton}>
-              <Typography component="span" variant="subtitle1" color="inherit" className={classes.imageTitle}>
+              <Typography
+                component="span"
+                variant="subtitle1"
+                color="inherit"
+                className={classes.imageTitle}
+              >
                 {item.title}
                 <span className={classes.imageMarked} />
               </Typography>

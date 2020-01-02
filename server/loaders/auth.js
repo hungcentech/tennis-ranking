@@ -1,21 +1,19 @@
 // -----------------------------------------------------------------------------
 
 import logger from "../logger";
-import playerApiLoader from "../api/player";
-import matchApiLoader from "../api/match";
+import facebookAuthLoader from "../auth/facebook";
 
 // -----------------------------------------------------------------------------
 
 export default async (db, app) => {
   try {
-    logger.info("api(): ------------ Loading APIs... ---------");
+    logger.info("auth(): ----------- Loading Auth... ---------");
 
-    await playerApiLoader(db, app);
-    await matchApiLoader(db, app);
+    await facebookAuthLoader(db, app);
 
-    logger.info("api(): ------------ APIs loaded ! -----------");
+    logger.info("auth(): ----------- Auth loaded ! -----------");
   } catch (err) {
-    logger.warn("api(): Error: " + JSON.stringify(err));
+    logger.warn("auth(): Error: " + JSON.stringify(err));
     throw err;
   }
 };

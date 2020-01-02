@@ -1,8 +1,6 @@
 // -----------------------------------------------------------------------------
 
 import logger from "../logger";
-import config from "../config";
-
 import webpackLoader from "./webpack";
 import dbLoader from "./db";
 import expressLoader from "./express";

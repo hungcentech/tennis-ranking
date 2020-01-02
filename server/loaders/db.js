@@ -1,10 +1,10 @@
 // -----------------------------------------------------------------------------
 
-import logger from "../logger";
-import config from "../config";
-
 import { MongoClient } from "mongodb";
 import mongoose from "mongoose";
+
+import logger from "../logger";
+import config from "../config";
 
 // -----------------------------------------------------------------------------
 

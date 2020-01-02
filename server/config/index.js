@@ -34,10 +34,17 @@ export default {
 
   // API configs
   api: {
-    prefix: "/apis"
-  }
+    prefix: "/api"
+  },
 
-  //
+  // Auth
+  auth: {
+    facebook: {
+      clientId: "2600052983556145",
+      clientSecret: "6ed2042383cbca0addd8ab764c2e6cca",
+      loginCallbackURL: "https://bme.hust.edu.vn/tennisrankings/auth/facebook/cb/login"
+    }
+  }
 };
 
 // -----------------------------------------------------------------------------
