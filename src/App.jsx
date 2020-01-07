@@ -1,9 +1,10 @@
 // -----------------------------------------------------------------------------
 
 import PropTypes from "prop-types";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Router, Route, Redirect, browserHistory, withRouter } from "react-router";
 
 import { createMuiTheme, ThemeProvider, withStyles } from "@material-ui/core/styles";
@@ -14,7 +15,6 @@ import RoutedAppBar from "./components/RoutedAppBar.jsx";
 import Home from "./components/Home.jsx";
 import PlayerList from "./components/PlayerList.jsx";
 
-import config from "./config";
 import { initStore } from "./redux";
 
 // -----------------------------------------------------------------------------
@@ -48,6 +48,15 @@ const styles = theme => {
 // -----------------------------------------------------------------------------
 
 const RoutedApp = withStyles(styles)(({ classes, router, children }) => {
+  const appUrl = useSelector(state => state.config.appUrl);
+  // const dispatch = useDispatch();
+
+  let location = appUrl ? router.location.pathname.substr(appUrl.length) : router.location.pathname;
+
+  // useEffect(() => {
+  //   dispatch({ type: "change location", payload: location });
+  // }, []);
+
   return (
     <div className={classes.root}>
       <RoutedAppBar router={router} />

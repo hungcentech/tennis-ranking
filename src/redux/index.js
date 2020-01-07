@@ -5,14 +5,21 @@ import { createStore } from "redux";
 // -----------------------------------------------------------------------------
 
 export const INITIAL_STATE = {
-  lastUpdated: 0,
-
-  user: {},
+  // consts //
 
   config: {
     appUrl: "/tennisrankings",
     loginUrl: "/auth/facebook/login",
     logoutUrl: "/auth/facebook/logout"
+  },
+
+  locations: {
+    "/home": { appBar: { title: "Tennis Rankings", leftBtn: { icon: "ArrowBack" }, rightBtn: { icon: "Facebook" } } },
+    "/my_club": { appBar: { title: "My Club" } },
+    "/rankings": { appBar: { title: "Rankings" } },
+    "/new_match": { appBar: { title: "New Match" } },
+    "/history": { appBar: { title: "Recent Matches" } },
+    "/players": { appBar: { title: "Players" } }
   },
 
   homeItems: [
@@ -38,14 +45,18 @@ export const INITIAL_STATE = {
     }
   ],
 
-  locations: {
-    "/home": { appBarTitle: "Tennis Rankings" },
-    "/my_club": { appBarTitle: "My Club" },
-    "/rankings": { appBarTitle: "Rankings" },
-    "/new_match": { appBarTitle: "New Match" },
-    "/history": { appBarTitle: "Recent Matches" },
-    "/players": { appBarTitle: "Players" }
-  }
+  // variables //
+
+  user: {
+    uid: undefined,
+    token: undefined
+  },
+
+  // location: undefined, // appUrl ? router.location.pathname.substr(appUrl.length) : router.location.pathname;
+
+  lastUpdated: 0
+
+  // -- -- //
 };
 
 // -----------------------------------------------------------------------------

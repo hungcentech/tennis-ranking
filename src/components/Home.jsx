@@ -5,18 +5,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { withStyles } from "@material-ui/core/styles";
-
-import {
-  Grid,
-  Paper,
-  Card,
-  CardActionArea,
-  CardMedia,
-  CardContent,
-  Typography,
-  CardActions,
-  Button
-} from "@material-ui/core";
+import { Grid, Paper, Card, CardActionArea, CardMedia, CardContent, Typography, CardActions, Button } from "@material-ui/core";
 
 // -----------------------------------------------------------------------------
 
@@ -46,19 +35,12 @@ const styles = theme => {
 
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-
 const Home = withStyles(styles)(({ classes, router }) => {
   const appUrl = useSelector(state => state.config.appUrl);
   const items = useSelector(state => state.homeItems);
 
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch({ type: "change location", payload: "home" });
-  }, []);
-
-  console.log("items:", items);
+  // DEBUG
+  // console.log("items:", items);
 
   return (
     <div className={classes.root}>
@@ -72,11 +54,7 @@ const Home = withStyles(styles)(({ classes, router }) => {
               }}
             >
               <CardActionArea>
-                <CardMedia
-                  className={classes.media}
-                  image={appUrl + item.imgUrl}
-                  title={item.title}
-                />
+                <CardMedia className={classes.media} image={appUrl + item.imgUrl} title={item.title} />
                 {/* <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">
                       Lizard
