@@ -3,10 +3,33 @@
 import PropTypes from "prop-types";
 import React from "react";
 import ReactDOM from "react-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { Router, Route, Redirect, browserHistory, withRouter } from "react-router";
 
 import { withStyles } from "@material-ui/core/styles";
 import { AppBar, Toolbar, Button, IconButton, Typography, SvgIcon } from "@material-ui/core";
+import {
+  red,
+  pink,
+  purple,
+  deepPurple,
+  indigo,
+  blue,
+  lightBlue,
+  cyan,
+  teal,
+  green,
+  lightGreen,
+  lime,
+  yellow,
+  amber,
+  orange,
+  deepOrange,
+  brown,
+  grey,
+  blueGrey
+} from "@material-ui/core/colors";
+
 import HomeIcon from "@material-ui/icons/Home";
 import LoginIcon from "@material-ui/icons/Facebook";
 import LogoutIcon from "@material-ui/icons/OpenInNewRounded";
@@ -35,45 +58,42 @@ const styles = theme => ({
 
 // -----------------------------------------------------------------------------
 
-const RoutedAppBar = withStyles(styles)(({ classes, router, account }) => {
-  const getTitle = () => {
-    try {
-      let items = router.location.pathname.split("/");
-      switch (items[2]) {
-        case "rankings":
-          return "Rankings";
-        case "players":
-          return "Players";
-        case "matches":
-          return "Matches";
-      }
-    } catch (err) {
-      console.log("Error getting title: " + err);
-    }
-    return "TGM Rankings";
-  };
+const RoutedAppBar = withStyles(styles)(({ classes, router }) => {
+  const appUrl = useSelector(state => state.config.appUrl);
+  const loginUrl = useSelector(state => state.config.loginUrl);
+
+  const user = useSelector(state => state.user);
+
+  const location = router.location.pathname
+    ? router.location.pathname.substr(appUrl ? appUrl.length : 0)
+    : "/";
+  const appBarTitle = useSelector(state => state.locations[location].appBarTitle);
+
+  // DEBUG:
+  // console.log("[DEBUG-Home]: state =", location);
+  // console.log("[DEBUG-Home]: router =", router.location.pathname);
 
   return (
     <div className={classes.root}>
-      <AppBar position="fixed">
+      <AppBar color="inherit" position="fixed">
         <Toolbar>
           <IconButton
             className={classes.homeButton}
             color="inherit"
             aria-label="Home"
-            href={config.appUrl + "/home"}
+            href={appUrl + "/home"}
           >
             <HomeIcon />
           </IconButton>
           <Typography variant="h6" color="inherit" className={classes.flex}>
-            {getTitle()}
+            {appBarTitle}
           </Typography>
           <IconButton
             className={classes.accountButton}
             color="inherit"
-            href={config.appUrl + (account ? config.logoutUrl : config.loginUrl)}
+            href={appUrl + (user ? appUrl : appUrl + loginUrl)}
           >
-            {account ? <LogoutIcon /> : <LoginIcon />}
+            {user ? <LogoutIcon /> : <LoginIcon />}
           </IconButton>
         </Toolbar>
       </AppBar>
@@ -86,7 +106,6 @@ const RoutedAppBar = withStyles(styles)(({ classes, router, account }) => {
 
 RoutedAppBar.propTypes = {
   router: PropTypes.object.isRequired
-  // user: PropTypes.object.isRequired
 };
 
 // ------------------------------------

@@ -3,8 +3,6 @@
 import PropTypes from "prop-types";
 import React, { useState, useEffect } from "react";
 
-import { blue, pink } from "@material-ui/core/colors";
-
 import Card from "@material-ui/core/Card";
 import CardActionArea from "@material-ui/core/CardActionArea";
 import CardActions from "@material-ui/core/CardActions";
@@ -16,12 +14,11 @@ import { TextField } from "@material-ui/core";
 import { Paper, Grid } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 
-import config from "../config";
+import { useDispatch, useSelector } from "react-redux";
 
 // -----------------------------------------------------------------------------
 
 const styles = theme => {
-  // console.log(theme);
   return {
     root: {
       flex: 1
@@ -60,6 +57,8 @@ const styles = theme => {
 // -----------------------------------------------------------------------------
 
 const PlayerCard = withStyles(styles)(({ classes, router, info }) => {
+  const appUrl = useSelector(state => state.config.appUrl);
+
   const CardRow = ({ label, text }) => {
     return (
       <Grid container spacing={1}>
@@ -90,7 +89,7 @@ const PlayerCard = withStyles(styles)(({ classes, router, info }) => {
             <CardMedia
               component="img"
               alt={info.name}
-              image={info.img ? info.img : config.appUrl + "/img/nadal.jpeg"}
+              image={info.img ? info.img : appUrl + "/img/nadal.jpeg"}
               title={`${info.name} (${info.facebook})`}
               className={classes.cardMedia}
             />
@@ -133,10 +132,12 @@ PlayerCard.propTypes = {
 // -----------------------------------------------------------------------------
 
 const PlayerList = withStyles(styles)(({ classes, router }) => {
+  const appUrl = useSelector(state => state.config.appUrl);
+
   const [data, setData] = useState({ players: [] });
 
   useEffect(() => {
-    let uri = config.appUrl + "/api/players";
+    let uri = appUrl + "/api/players";
     fetch(uri)
       .then(response => {
         if (response.ok) {

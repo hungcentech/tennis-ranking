@@ -73,26 +73,44 @@ export default async (db, app, passport) => {
   app.get(
     config.auth.facebook.login.cbUrl,
     passport.authenticate("facebook", {
-      successRedirect: config.auth.facebook.appDomain + config.auth.facebook.appUrl + config.auth.facebook.login.cbUrlSuccess,
-      failureRedirect: config.auth.facebook.appDomain + config.auth.facebook.appUrl + config.auth.facebook.login.cbUrlFailure
+      successRedirect:
+        config.auth.facebook.appDomain +
+        config.auth.facebook.appUrl +
+        config.auth.facebook.login.cbUrlSuccess,
+      failureRedirect:
+        config.auth.facebook.appDomain +
+        config.auth.facebook.appUrl +
+        config.auth.facebook.login.cbUrlFailure
     })
   );
 
   // -------------------------------------
 
   app.get(config.auth.facebook.login.cbUrlSuccess, (req, res) => {
-    logger.debug(config.auth.facebook.login.cbUrlSuccess + ": login success. User = " + JSON.stringify(req.user));
+    logger.debug(
+      config.auth.facebook.login.cbUrlSuccess +
+        ": login success. User = " +
+        JSON.stringify(req.user)
+    );
 
-    res.json(req.user);
+    // res.json(req.user);
+    res.redirect(
+      config.auth.facebook.appUrl + "/home?uid=" + req.user.id + "&token=" + req.user.accessToken
+    );
   });
 
   // -------------------------------------
 
   app.get(config.auth.facebook.login.cbUrlFailure, (req, res) => {
-    logger.debug(config.auth.facebook.login.cbUrlFailure + ": login failure. params = " + JSON.stringify(req.params));
-    logger.debug(config.auth.facebook.login.cbUrlFailure + ": login failure. err = " + JSON.stringify(req.err));
-
-    res.json(req.params);
+    logger.debug(
+      config.auth.facebook.login.cbUrlFailure +
+        ": login failed. params = " +
+        JSON.stringify(req.params)
+    );
+    logger.debug(
+      config.auth.facebook.login.cbUrlFailure + ": login failure. err = " + JSON.stringify(req.err)
+    );
+    res.redirect(config.auth.facebook.appUrl);
   });
 
   // -------------------------------------
