@@ -32,6 +32,11 @@ export default {
   // Express server port
   port: 3000,
 
+  // App general
+  // appDomain: "https://bme.hust.edu.vn",
+  appDomain: "http://localhost",
+  appUrl: "/tennisrankings",
+
   // API configs
   api: {
     prefix: "/api"
@@ -42,9 +47,6 @@ export default {
     facebook: {
       clientId: "2600052983556145",
       clientSecret: "6ed2042383cbca0addd8ab764c2e6cca",
-      // appUrl: "https://bme.hust.edu.vn/tennisrankings",
-      appDomain: "http://localhost",
-      appUrl: "/tennisrankings",
       login: {
         url: "/auth/facebook/login",
         cbUrl: "/auth/facebook/cb/login",

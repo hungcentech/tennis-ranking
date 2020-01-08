@@ -1,11 +1,14 @@
 // -----------------------------------------------------------------------------
 
 import PropTypes from "prop-types";
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { withStyles } from "@material-ui/core/styles";
 import { Grid, Paper, Card, CardActionArea, CardMedia, CardContent, Typography, CardActions, Button } from "@material-ui/core";
+
+import conf from "../conf";
+import LoginDialog from "./Login.jsx";
 
 // -----------------------------------------------------------------------------
 
@@ -36,11 +39,40 @@ const styles = theme => {
 // -----------------------------------------------------------------------------
 
 const Home = withStyles(styles)(({ classes, router }) => {
-  const appUrl = useSelector(state => state.config.appUrl);
-  const items = useSelector(state => state.homeItems);
+  const appUrl = conf.appUrl;
+  const items = conf.homeItems;
 
-  // DEBUG
-  // console.log("items:", items);
+  const [loginDialogOpen, setLoginDialogOpen] = useState(false);
+
+  const user = useSelector(state => state.user);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    // DEBUG
+    console.log("query:", router.location.query);
+
+    if (
+      !user &&
+      router.location.query &&
+      router.location.query.id &&
+      router.location.query.name &&
+      router.location.query.token
+    ) {
+      dispatch({
+        type: "user_update",
+        payload: {
+          id: router.location.query.id,
+          token: router.location.query.token,
+          avatar: decodeURIComponent(router.location.query.avatar),
+          facebook: router.location.query.facebook,
+          name: router.location.query.name
+        }
+      });
+
+      // DEBUG
+      // console.log("user_update triggered.");
+    }
+  }, []);
 
   return (
     <div className={classes.root}>
@@ -50,20 +82,12 @@ const Home = withStyles(styles)(({ classes, router }) => {
             <Card
               className={classes.card}
               onClick={() => {
-                router.push(`${appUrl + item.url}`);
+                user ? router.push(`${appUrl + item.url}`) : setLoginDialogOpen(true);
               }}
+              disabled={true}
             >
               <CardActionArea>
                 <CardMedia className={classes.media} image={appUrl + item.imgUrl} title={item.title} />
-                {/* <CardContent>
-                    <Typography gutterBottom variant="h5" component="h2">
-                      Lizard
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary" component="p">
-                      Lizards are a widespread group of squamate reptiles, with over 6,000 species,
-                      ranging across all continents except Antarctica
-                    </Typography>
-                  </CardContent> */}
               </CardActionArea>
               <CardActions>
                 <Button size="small" color="primary">
@@ -74,6 +98,8 @@ const Home = withStyles(styles)(({ classes, router }) => {
           </Grid>
         ))}
       </Grid>
+
+      <LoginDialog open={loginDialogOpen} setOpen={setLoginDialogOpen} />
     </div>
   );
 });
@@ -81,7 +107,7 @@ const Home = withStyles(styles)(({ classes, router }) => {
 // -------------------------------------
 
 Home.propTypes = {
-  // router: PropTypes.object.isRequired
+  router: PropTypes.object.isRequired
 };
 
 // ------------------------------------

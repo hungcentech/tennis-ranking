@@ -3,27 +3,30 @@
 import { Strategy as FacebookStrategy } from "passport-facebook";
 
 import logger from "../../logger";
-import config from "../../config";
+import conf from "../../conf";
 
 // -----------------------------------------------------------------------------
 
 export default async (db, app, passport) => {
   // -------------------------------------
-
+  // Implement 2 passport callbacks
+  // -------------------------------------
   passport.serializeUser(function(user, cb) {
     cb(null, user);
   });
-
   passport.deserializeUser(function(user, cb) {
     cb(null, user);
   });
 
+  // -------------------------------------
+  // Install passport middleware
+  // -------------------------------------
   await passport.use(
     new FacebookStrategy(
       {
-        clientID: config.auth.facebook.clientId,
-        clientSecret: config.auth.facebook.clientSecret,
-        callbackURL: config.auth.facebook.appUrl + config.auth.facebook.login.cbUrl,
+        clientID: conf.auth.facebook.clientId,
+        clientSecret: conf.auth.facebook.clientSecret,
+        callbackURL: conf.appUrl + conf.auth.facebook.login.cbUrl,
         profileFields: [
           "id",
           "displayName",
@@ -41,12 +44,19 @@ export default async (db, app, passport) => {
       },
       (accessToken, refreshToken, profile, cb) => {
         try {
+          // DEBUG
           logger.debug("FacebookStrategy(): profile = " + JSON.stringify(profile));
+
           let user = {
             ...profile._json,
-            accessToken: accessToken,
-            expireDate: new Date(new Date().getTime() + 30 * 60 * 1000)
+            facebook: profile.displayName,
+            accessToken: accessToken
+            // expireDate: new Date(new Date().getTime() + 30 * 60 * 1000)
           };
+
+          // Search existing user/add new user
+          // => update id
+          // ...
 
           return cb(null, user);
         } catch (err) {
@@ -58,9 +68,12 @@ export default async (db, app, passport) => {
   );
 
   // -------------------------------------
-
+  // Install express GET handler:
+  //   receive user login request from app
+  //   => redirect user to FB login dialog
+  // -------------------------------------
   app.get(
-    config.auth.facebook.login.url,
+    conf.auth.facebook.login.url,
     passport.authenticate("facebook", {
       scope: [
         // "user_friends"
@@ -69,48 +82,61 @@ export default async (db, app, passport) => {
   );
 
   // -------------------------------------
-
+  // Install express GET handler:
+  //   handle FB callback (result of user interaction)
+  //   => pass the req to passport middleware
+  // -------------------------------------
   app.get(
-    config.auth.facebook.login.cbUrl,
+    conf.auth.facebook.login.cbUrl,
     passport.authenticate("facebook", {
-      successRedirect:
-        config.auth.facebook.appDomain +
-        config.auth.facebook.appUrl +
-        config.auth.facebook.login.cbUrlSuccess,
-      failureRedirect:
-        config.auth.facebook.appDomain +
-        config.auth.facebook.appUrl +
-        config.auth.facebook.login.cbUrlFailure
+      successRedirect: conf.appDomain + conf.appUrl + conf.auth.facebook.login.cbUrlSuccess,
+      failureRedirect: conf.appDomain + conf.appUrl + conf.auth.facebook.login.cbUrlFailure
     })
   );
 
   // -------------------------------------
+  // Install express GET handler:
+  //   hadle passport callback after login success
+  // -------------------------------------
+  app.get(conf.auth.facebook.login.cbUrlSuccess, (req, res) => {
+    // DEBUG
+    logger.debug(conf.auth.facebook.login.cbUrlSuccess + ": login success. User = " + JSON.stringify(req.user));
 
-  app.get(config.auth.facebook.login.cbUrlSuccess, (req, res) => {
-    logger.debug(
-      config.auth.facebook.login.cbUrlSuccess +
-        ": login success. User = " +
-        JSON.stringify(req.user)
+    let uri2App = encodeURI(
+      conf.appDomain +
+        conf.appUrl +
+        (req.user
+          ? "?id=" +
+            (req.user.id ? req.user.id : "") +
+            "&token=" +
+            (req.user.accessToken ? req.user.accessToken : "") +
+            "&avatar=" +
+            encodeURIComponent(
+              req.user.picture && req.user.picture.data && req.user.picture.data.url ? req.user.picture.data.url : ""
+            ) +
+            "&facebook=" +
+            (req.user.facebook ? req.user.facebook : "") +
+            "&name=" +
+            (req.user.name ? req.user.name : "")
+          : "")
     );
 
-    // res.json(req.user);
-    res.redirect(
-      config.auth.facebook.appUrl + "/home?uid=" + req.user.id + "&token=" + req.user.accessToken
-    );
+    logger.debug(conf.auth.facebook.login.cbUrlSuccess + ": uri2App = " + uri2App);
+
+    res.redirect(uri2App);
   });
 
   // -------------------------------------
+  // Install express GET handler:
+  //   hadle passport callback after login failed
+  // -------------------------------------
+  app.get(conf.auth.facebook.login.cbUrlFailure, (req, res) => {
+    logger.debug(conf.auth.facebook.login.cbUrlFailure + ": login failed, req.params = " + JSON.stringify(req.params));
+    logger.debug(conf.auth.facebook.login.cbUrlFailure + ": req.err = " + JSON.stringify(req.err));
+    // logger.debug(conf.auth.facebook.login.cbUrlFailure + ": conf = " + JSON.stringify(conf));
 
-  app.get(config.auth.facebook.login.cbUrlFailure, (req, res) => {
-    logger.debug(
-      config.auth.facebook.login.cbUrlFailure +
-        ": login failed. params = " +
-        JSON.stringify(req.params)
-    );
-    logger.debug(
-      config.auth.facebook.login.cbUrlFailure + ": login failure. err = " + JSON.stringify(req.err)
-    );
-    res.redirect(config.auth.facebook.appUrl);
+    let uri2App = encodeURI(conf.appDomain + conf.appUrl);
+    res.redirect(uri2App);
   });
 
   // -------------------------------------

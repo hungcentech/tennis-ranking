@@ -15,6 +15,7 @@ import { Paper, Grid } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 
 import { useDispatch, useSelector } from "react-redux";
+import conf from "../conf";
 
 // -----------------------------------------------------------------------------
 
@@ -57,7 +58,7 @@ const styles = theme => {
 // -----------------------------------------------------------------------------
 
 const PlayerCard = withStyles(styles)(({ classes, router, info }) => {
-  const appUrl = useSelector(state => state.config.appUrl);
+  const appUrl = conf.appUrl;
 
   const CardRow = ({ label, text }) => {
     return (
@@ -89,7 +90,7 @@ const PlayerCard = withStyles(styles)(({ classes, router, info }) => {
             <CardMedia
               component="img"
               alt={info.name}
-              image={info.img ? info.img : appUrl + "/img/nadal.jpeg"}
+              image={info.img ? info.img : appUrl + "/img/guests1.jpeg"}
               title={`${info.name} (${info.facebook})`}
               className={classes.cardMedia}
             />
@@ -106,13 +107,9 @@ const PlayerCard = withStyles(styles)(({ classes, router, info }) => {
               <CardRow label="Backhand" text={`${info.backhand}`} />
               <CardRow
                 label="Win/Lost/Total"
-                text={`${info.club_rating.win} / ${info.club_rating.total -
-                  info.club_rating.win} / ${info.club_rating.total}`}
+                text={`${info.club_rating.win} / ${info.club_rating.total - info.club_rating.win} / ${info.club_rating.total}`}
               />
-              <CardRow
-                label="Win-rate"
-                text={`${Math.round((info.club_rating.win / info.club_rating.total) * 1000) / 10}%`}
-              />
+              <CardRow label="Win-rate" text={`${Math.round((info.club_rating.win / info.club_rating.total) * 1000) / 10}%`} />
               <CardRow label="Ranking" text={info.club_rating.rank} />
             </CardContent>
           </Grid>
@@ -132,7 +129,7 @@ PlayerCard.propTypes = {
 // -----------------------------------------------------------------------------
 
 const PlayerList = withStyles(styles)(({ classes, router }) => {
-  const appUrl = useSelector(state => state.config.appUrl);
+  const appUrl = conf.appUrl;
 
   const [data, setData] = useState({ players: [] });
 

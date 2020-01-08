@@ -1,9 +1,10 @@
 // -----------------------------------------------------------------------------
 
 import PropTypes from "prop-types";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
+import { initStore } from "./state";
 import { useDispatch, useSelector } from "react-redux";
 import { Router, Route, Redirect, browserHistory, withRouter } from "react-router";
 
@@ -11,11 +12,11 @@ import { createMuiTheme, ThemeProvider, withStyles } from "@material-ui/core/sty
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { purple, yellow } from "@material-ui/core/colors";
 
-import RoutedAppBar from "./components/RoutedAppBar.jsx";
+import AppBar from "./components/AppBar.jsx";
 import Home from "./components/Home.jsx";
 import PlayerList from "./components/PlayerList.jsx";
 
-import { initStore } from "./redux";
+import conf from "./conf";
 
 // -----------------------------------------------------------------------------
 
@@ -48,7 +49,9 @@ const styles = theme => {
 // -----------------------------------------------------------------------------
 
 const RoutedApp = withStyles(styles)(({ classes, router, children }) => {
-  const appUrl = useSelector(state => state.config.appUrl);
+  const appUrl = conf.appUrl;
+  const loginUrl = conf.loginUrl;
+  const appDomain = conf.appDomain;
   // const dispatch = useDispatch();
 
   let location = appUrl ? router.location.pathname.substr(appUrl.length) : router.location.pathname;
@@ -59,7 +62,7 @@ const RoutedApp = withStyles(styles)(({ classes, router, children }) => {
 
   return (
     <div className={classes.root}>
-      <RoutedAppBar router={router} />
+      <AppBar router={router} />
       {children}
     </div>
   );
@@ -86,8 +89,8 @@ const App = () => {
             {/* <Route path="players/:id" component={withRouter(PlayerEdit)} /> */}
             {/* <Route path="matches" component={MatchList} /> */}
             {/* <Route path="matches/:id" component={withRouter(MatchEdit)} /> */}
-            {/* <Route path="*" component={withRouter(Home)} /> */}
-            <Redirect from="*" to="/tennisrankings/home" />
+            <Route path="*" component={withRouter(Home)} />
+            {/* <Redirect from="*" to="/tennisrankings/home" /> */}
           </Route>
         </Router>
       </ThemeProvider>

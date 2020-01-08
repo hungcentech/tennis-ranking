@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------------
 
-import config from "../config";
+import conf from "../conf";
 
 // -----------------------------------------------------------------------------
 
@@ -25,14 +25,14 @@ export default createLogger({
   transports: [
     new transports.DailyRotateFile({
       name: "debug-file",
-      level: config.logger.file.level,
-      filename: config.logger.file.path,
+      level: conf.logger.file.level,
+      filename: conf.logger.file.path,
       datePattern: "YYYY-MM-DD",
       zippedArchive: true
     }),
     new transports.Console({
       name: "console",
-      level: config.logger.console.level
+      level: conf.logger.console.level
     })
   ],
   exitOnError: false
