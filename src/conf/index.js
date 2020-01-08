@@ -1,7 +1,8 @@
 // -----------------------------------------------------------------------------
 
 const APP_CONSTS = {
-  appDomain: "https://bme.hust.edu.vn",
+  // appDomain: "https://bme.hust.edu.vn",
+  appDomain: "http://localhost",
   appUrl: "/tennisrankings",
   loginUrl: "/auth/facebook/login",
   logoutUrl: "/auth/facebook/logout",

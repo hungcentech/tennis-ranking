@@ -49,7 +49,8 @@ const Home = withStyles(styles)(({ classes, router }) => {
 
   useEffect(() => {
     // DEBUG
-    console.log("query:", router.location.query);
+    // console.log("query:", router.location.query);
+    // console.log("user:", user);
 
     if (
       !user &&

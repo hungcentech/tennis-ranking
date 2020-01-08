@@ -16,8 +16,10 @@ import {
   Slide,
   Avatar,
   Grid,
-  Typography
+  Typography,
+  Fab
 } from "@material-ui/core";
+import { Cancel as CloseIcon, Facebook as LoginIcon } from "@material-ui/icons";
 
 import conf from "../conf";
 
@@ -33,7 +35,8 @@ const styles = theme => ({
   avatar_xs: {
     margin: theme.spacing(4, 2, 2),
     width: theme.spacing(12),
-    height: theme.spacing(12)
+    height: theme.spacing(12),
+    background: `radial-gradient(center, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`
   },
   name_xs: {
     margin: theme.spacing(0, 2),
@@ -59,6 +62,9 @@ const styles = theme => ({
   },
   actions: {
     margin: theme.spacing(2, 2)
+  },
+  button: {
+    marginRight: theme.spacing(1)
   }
 });
 
@@ -117,12 +123,20 @@ const LoginDialog = withStyles(styles)(({ classes, open, setOpen }) => {
           </Grid>
           <Grid item xs={12}>
             <DialogActions className={classes.actions}>
-              <Button color="primary" href={conf.appUrl + conf.loginUrl}>
+              <Fab variant="extended" size="medium" href={conf.appUrl + conf.loginUrl} color="primary">
+                <LoginIcon className={classes.button} />
+                Login
+              </Fab>
+              <Fab variant="extended" size="medium" onClick={handleClose} color="default">
+                <CloseIcon className={classes.button} />
+                Cancel
+              </Fab>
+              {/* <Button variant="outlined" color="primary" href={conf.appUrl + conf.loginUrl}>
                 Login
               </Button>
-              <Button onClick={handleClose} color="default">
+              <Button variant="outlined" onClick={handleClose} color="default">
                 Cancel
-              </Button>
+              </Button> */}
             </DialogActions>
           </Grid>
         </Grid>

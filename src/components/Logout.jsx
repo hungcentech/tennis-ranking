@@ -16,8 +16,10 @@ import {
   Slide,
   Avatar,
   Grid,
-  Typography
+  Typography,
+  Fab
 } from "@material-ui/core";
+import { Close, OpenInNew } from "@material-ui/icons";
 
 // -----------------------------------------------------------------------------
 
@@ -29,7 +31,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const styles = theme => ({
   avatar_xs: {
-    margin: theme.spacing(4, 2, 2),
+    margin: theme.spacing(4, 2, 1),
     width: theme.spacing(12),
     height: theme.spacing(12)
   },
@@ -49,14 +51,17 @@ const styles = theme => ({
     textAlign: "center"
   },
   title: {
-    margin: theme.spacing(2, 2),
-    color: theme.palette.secondary.main
+    margin: theme.spacing(2, 2)
+    // color: theme.palette.error.main
   },
   content: {
     margin: theme.spacing(2, 2)
   },
   actions: {
     margin: theme.spacing(2, 2)
+  },
+  button: {
+    marginRight: theme.spacing(1)
   }
 });
 
@@ -115,12 +120,20 @@ const LogoutDialog = withStyles(styles)(({ classes, open, setOpen }) => {
           </Grid>
           <Grid item xs={12}>
             <DialogActions className={classes.actions}>
-              <Button onClick={handleLogout} color="secondary">
+              <Fab variant="extended" size="medium" onClick={handleClose} color="default">
+                <Close className={classes.button} />
+                Cancel
+              </Fab>
+              <Fab variant="extended" size="medium" onClick={handleLogout} color="secondary">
+                <OpenInNew className={classes.button} />
+                Logout
+              </Fab>
+              {/* <Button variant="outlined" onClick={handleLogout} color="secondary">
                 Logout
               </Button>
-              <Button onClick={handleClose} color="default">
+              <Button variant="outlined" onClick={handleClose} color="default">
                 Cancel
-              </Button>
+              </Button> */}
             </DialogActions>
           </Grid>
         </Grid>

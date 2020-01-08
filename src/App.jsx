@@ -11,6 +11,7 @@ import { Router, Route, Redirect, browserHistory, withRouter } from "react-route
 import { createMuiTheme, ThemeProvider, withStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { purple, yellow } from "@material-ui/core/colors";
+import { pink, blue } from "@material-ui/core/colors";
 
 import AppBar from "./components/AppBar.jsx";
 import Home from "./components/Home.jsx";
@@ -26,11 +27,14 @@ const store = initStore();
 
 let muiTheme = createMuiTheme({
   palette: {
-    // primary: {
-    //   main: blue[500]
-    // },
-    primary: yellow,
-    secondary: purple,
+    primary: {
+      // main: blue.A200
+      main: yellow.A200
+    },
+    secondary: {
+      // main: pink.A200
+      main: purple.A200
+    },
     error: {
       main: "#cf6679"
     },

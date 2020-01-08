@@ -6,11 +6,11 @@ import ReactDOM from "react-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import { withStyles } from "@material-ui/core/styles";
-import { AppBar as MuiAppBar, Toolbar, IconButton, Typography } from "@material-ui/core";
-import { SwipeableDrawer, Grid, Card, CardMedia, CardContent } from "@material-ui/core";
+import { AppBar as MuiAppBar, Toolbar, IconButton, Typography, Avatar } from "@material-ui/core";
 import { Home, ArrowBack, Facebook, TimeToLeave, SportsTennis, AccountBox } from "@material-ui/icons";
 
 import conf from "../conf";
+import LoginDialog from "./Login.jsx";
 import LogoutDialog from "./Logout.jsx";
 
 // -----------------------------------------------------------------------------
@@ -23,12 +23,16 @@ const styles = theme => ({
     flex: 1
   },
   leftBtn: {
-    marginLeft: -8,
-    marginRight: 8
+    margin: theme.spacing(0, 1, 0, -1)
   },
   rightBtn: {
-    marginLeft: 8,
-    marginRight: -8
+    margin: theme.spacing(0, -1, 0, 1)
+  },
+  avatar: {
+    margin: theme.spacing(0, 0, 0, 1),
+    width: theme.spacing(3),
+    height: theme.spacing(3),
+    background: `radial-gradient(center, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`
   },
   toolbarMargin: theme.mixins.toolbar
 });
@@ -43,7 +47,8 @@ const AppBar = withStyles(styles)(({ classes, router }) => {
   let location = router.location.pathname;
   location = appUrl ? location.substr(appUrl.length) : location;
 
-  const [accountDialogOpen, setAccountDialogOpen] = useState(false);
+  const [loginDialogOpen, setLoginDialogOpen] = useState(false);
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
   const user = useSelector(state => state.user);
 
   // DEBUG
@@ -90,20 +95,34 @@ const AppBar = withStyles(styles)(({ classes, router }) => {
             <Typography variant="h6" color="inherit" className={classes.flex}>
               {appBar.title}
             </Typography>
-            <IconButton
+            <Avatar
+              alt={user && user.name ? user.name : ""}
+              src={user && user.avatar ? user.avatar : ""}
+              className={classes.avatar}
+              onClick={
+                user
+                  ? () => {
+                      setLogoutDialogOpen(true);
+                    }
+                  : () => {
+                      setLoginDialogOpen(true);
+                    }
+              }
+            />
+            {/* <IconButton
               className={classes.rightBtn}
               color="inherit"
               onClick={
                 user
                   ? () => {
-                      setAccountDialogOpen(true);
+                      setLogoutDialogOpen(true);
                     }
                   : () => {}
               }
               href={user ? "" : `${appUrl + loginUrl}`}
             >
               {user ? iconComponentFromName("AccountBox") : iconComponentFromName("Facebook")}
-            </IconButton>
+            </IconButton> */}
           </Toolbar>
         ) : (
           ""
@@ -112,7 +131,8 @@ const AppBar = withStyles(styles)(({ classes, router }) => {
 
       <div className={classes.toolbarMargin} />
 
-      <LogoutDialog open={accountDialogOpen} setOpen={setAccountDialogOpen} />
+      <LoginDialog open={loginDialogOpen} setOpen={setLoginDialogOpen} />
+      <LogoutDialog open={logoutDialogOpen} setOpen={setLogoutDialogOpen} />
     </div>
   );
 
