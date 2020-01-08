@@ -48,6 +48,7 @@
   },
   "scripts": {
     "compile": "webpack --mode production",
+    "serve": "webpack-dev-server --mode production",
     "watch": "webpack-dev-server --mode development --hot --inline",
     "compile-server": "babel server --out-dir dist --source-maps",
     "watch-server": "babel server --out-dir dist --source-maps --watch",
