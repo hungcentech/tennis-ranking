@@ -26,7 +26,7 @@ export default async (db, app, passport) => {
       {
         clientID: conf.auth.facebook.clientId,
         clientSecret: conf.auth.facebook.clientSecret,
-        callbackURL: conf.appUrl + conf.auth.facebook.login.cbUrl,
+        callbackURL: conf.appDomain + conf.appUrl + conf.auth.facebook.login.cbUrl,
         profileFields: [
           "id",
           "displayName",

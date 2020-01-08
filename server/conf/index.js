@@ -33,8 +33,8 @@ export default {
   port: 3000,
 
   // App general
-  // appDomain: "https://bme.hust.edu.vn",
-  appDomain: "http://localhost",
+  appDomain: "https://bme.hust.edu.vn",
+  // appDomain: "http://localhost",
   appUrl: "/tennisrankings",
 
   // API configs
