@@ -22,6 +22,7 @@ import {
 import { Cancel as CloseIcon, Facebook as LoginIcon } from "@material-ui/icons";
 
 import conf from "../conf";
+import { blue } from "@material-ui/core/colors";
 
 // -----------------------------------------------------------------------------
 
@@ -36,7 +37,7 @@ const styles = theme => ({
     margin: theme.spacing(4, 2, 2),
     width: theme.spacing(12),
     height: theme.spacing(12),
-    background: `radial-gradient(center, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`
+    background: `radial-gradient(center, ${theme.palette.grey[100]}, ${theme.palette.grey[900]})`
   },
   name_xs: {
     margin: theme.spacing(0, 2),

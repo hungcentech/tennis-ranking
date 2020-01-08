@@ -32,7 +32,8 @@ const styles = theme => ({
     margin: theme.spacing(0, 0, 0, 1),
     width: theme.spacing(3),
     height: theme.spacing(3),
-    background: `radial-gradient(center, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`
+    background: `radial-gradient(center, ${theme.palette.grey[100]}, ${theme.palette.grey[900]})`
+    // background: `radial-gradient(center, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`
   },
   toolbarMargin: theme.mixins.toolbar
 });
