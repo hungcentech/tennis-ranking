@@ -3,16 +3,10 @@
 import PropTypes from "prop-types";
 import React, { useState, useEffect } from "react";
 
-import Card from "@material-ui/core/Card";
-import CardActionArea from "@material-ui/core/CardActionArea";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
-import { TextField } from "@material-ui/core";
-import { Paper, Grid } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
+import { fade, withStyles } from "@material-ui/core/styles";
+import { Card, CardActionArea, CardMedia, CardContent, Typography, Button, Grid, Paper } from "@material-ui/core";
+import { AppBar as MuiAppBar, Toolbar, SearchIcon, InputBase, IconButton } from "@material-ui/core";
+import { ArrowBackIos, SportsTennis } from "@material-ui/icons";
 
 import { useDispatch, useSelector } from "react-redux";
 import conf from "../conf";
@@ -22,16 +16,61 @@ import conf from "../conf";
 const styles = theme => {
   return {
     root: {
-      flex: 1
+      flex: 1,
+      paddingTop: theme.mixins.toolbar.minHeight
     },
+    appBar: {
+      top: "auto",
+      bottom: 0
+    },
+    grow: {
+      flexGrow: 1
+    },
+
+    search: {
+      position: "relative",
+      borderRadius: theme.shape.borderRadius,
+      backgroundColor: fade(theme.palette.common.white, 0.15),
+      "&:hover": {
+        backgroundColor: fade(theme.palette.common.white, 0.25)
+      },
+      marginRight: theme.spacing(2),
+      marginLeft: 0,
+      width: "100%",
+      [theme.breakpoints.up("sm")]: {
+        marginLeft: theme.spacing(3),
+        width: "auto"
+      }
+    },
+    searchIcon: {
+      width: theme.spacing(7),
+      height: "100%",
+      position: "absolute",
+      pointerEvents: "none",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center"
+    },
+    inputRoot: {
+      color: "inherit"
+    },
+    inputInput: {
+      padding: theme.spacing(1, 1, 1, 7),
+      transition: theme.transitions.create("width"),
+      width: "100%",
+      [theme.breakpoints.up("md")]: {
+        width: 200
+      }
+    },
+
     content: {
-      maxWidth: "96vw",
+      width: "100vw",
       margin: theme.spacing(0),
-      padding: theme.spacing(0)
+      padding: theme.spacing(2)
     },
     card: {
-      width: "96vw",
-      margin: theme.spacing(0)
+      margin: theme.spacing(0),
+      padding: theme.spacing(0)
     },
     cardMedia: {
       margin: theme.spacing(2),
@@ -57,7 +96,29 @@ const styles = theme => {
 
 // -----------------------------------------------------------------------------
 
-const PlayerCard = withStyles(styles)(({ classes, router, info }) => {
+const TopNav = withStyles(styles)(({ classes, router, info }) => {
+  return (
+    <MuiAppBar color="inherit" position="fixed" className={classes.topBar}>
+      <Toolbar>
+        <IconButton edge="start" color="inherit" onClick={() => {}}>
+          <ArrowBackIos />
+        </IconButton>
+        <Typography variant="h6" color="inherit" className={classes.flex}>
+          {"TopNav"}
+        </Typography>
+        <div className={classes.grow} />
+
+        <IconButton edge="end" color="inherit" onClick={() => {}}>
+          <SportsTennis />
+        </IconButton>
+      </Toolbar>
+    </MuiAppBar>
+  );
+});
+
+// -----------------------------------------------------------------------------
+
+const ClubCard = withStyles(styles)(({ classes, router, info }) => {
   const appUrl = conf.appUrl;
 
   const CardRow = ({ label, text }) => {
@@ -81,7 +142,7 @@ const PlayerCard = withStyles(styles)(({ classes, router, info }) => {
     <Card
       className={classes.card}
       onClick={() => {
-        router.push(`/players/${info._id}`);
+        router.push(`/clubs/${info._id}`);
       }}
     >
       <CardActionArea>
@@ -90,7 +151,7 @@ const PlayerCard = withStyles(styles)(({ classes, router, info }) => {
             <CardMedia
               component="img"
               alt={info.name}
-              image={info.img ? info.img : appUrl + "/img/tennis.jpeg"}
+              image={info.img ? info.img : appUrl + "/img/tennis.jpg"}
               title={`${info.name} (${info.facebook})`}
               className={classes.cardMedia}
             />
@@ -121,31 +182,29 @@ const PlayerCard = withStyles(styles)(({ classes, router, info }) => {
 
 // -------------------------------------
 
-PlayerCard.propTypes = {
+ClubCard.propTypes = {
   router: PropTypes.object.isRequired,
   info: PropTypes.object.isRequired
 };
 
 // -----------------------------------------------------------------------------
 
-const PlayerList = withStyles(styles)(({ classes, router }) => {
-  const appUrl = conf.appUrl;
-
-  const [data, setData] = useState({ players: [] });
+const ClubList = withStyles(styles)(({ classes, router }) => {
+  const [data, setData] = useState({ clubs: [] });
 
   useEffect(() => {
-    let uri = appUrl + "/api/players";
+    let uri = conf.appUrl + "/api/players";
     fetch(uri)
       .then(response => {
         if (response.ok) {
           response
             .json()
             .then(data => {
-              data.records.forEach(player => {
-                player.created = new Date(player.created);
-                if (player.completionDate) player.completionDate = new Date(player.completionDate);
+              data.records.forEach(club => {
+                club.created = new Date(club.created);
+                if (club.completionDate) club.completionDate = new Date(club.completionDate);
               });
-              setData({ players: data.records });
+              setData({ clubs: data.records });
             })
             .catch(err => {
               console.log("Server connection error: " + err.message);
@@ -154,7 +213,7 @@ const PlayerList = withStyles(styles)(({ classes, router }) => {
           response
             .json()
             .then(err => {
-              console.log("Failed to fetch players: " + err.message);
+              console.log("Failed to fetch clubs: " + err.message);
             })
             .catch(err => {
               console.log("Server connection error: " + err.message);
@@ -168,12 +227,14 @@ const PlayerList = withStyles(styles)(({ classes, router }) => {
 
   return (
     <div className={classes.root}>
+      <TopNav />
+
       <Grid container spacing={2} className={classes.content}>
-        {data.players
-          ? data.players.map(item => (
+        {data.clubs
+          ? data.clubs.map(item => (
               <Grid item key={item._id}>
                 <Paper>
-                  <PlayerCard router={router} info={item}></PlayerCard>
+                  <ClubCard router={router} info={item}></ClubCard>
                 </Paper>
               </Grid>
             ))
@@ -185,12 +246,12 @@ const PlayerList = withStyles(styles)(({ classes, router }) => {
 
 // -------------------------------------
 
-PlayerList.propTypes = {
+ClubList.propTypes = {
   router: PropTypes.object.isRequired
 };
 
 // ------------------------------------
 
-export default PlayerList;
+export default ClubList;
 
 // -----------------------------------------------------------------------------

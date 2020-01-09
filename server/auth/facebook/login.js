@@ -47,9 +47,55 @@ export default async (db, app, passport) => {
           // DEBUG
           logger.debug("FacebookStrategy(): profile = " + JSON.stringify(profile));
 
+          //   "id": "10157640491092752",
+          //   "displayName": "Le Manh Hung",
+          //   "name": {
+          //     "familyName": "Hung",
+          //     "givenName": "Le",
+          //     "middleName": "Manh"
+          //   },
+          //   "gender": "male",
+          //   "emails": [
+          //     {
+          //       "value": "lemanhhung@yahoo.com"
+          //     }
+          //   ],
+          //   "photos": [
+          //     {
+          //       "value": "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=10157640491092752&height=200&width=200&ext=1581134625&hash=AeS5TuiD_COx1Ctu"
+          //     }
+          //   ],
+          //   "provider": "facebook",
+          //   "_raw": "{\"id\":\"10157640491092752\",\"name\":\"Le Manh Hung\",\"first_name\":\"Le\",\"last_name\":\"Hung\",\"middle_name\":\"Manh\",\"name_format\":\"{first} {last}\",\"short_name\":\"Le\",\"picture\":{\"data\":{\"height\":200,\"is_silhouette\":false,\"url\":\"https:\\/\\/platform-lookaside.fbsbx.com\\/platform\\/profilepic\\/?asid=10157640491092752&height=200&width=200&ext=1581134625&hash=AeS5TuiD_COx1Ctu\",\"width\":200}},\"birthday\":\"06\\/15\\/1976\",\"gender\":\"male\",\"email\":\"lemanhhung\\u0040yahoo.com\"}",
+          //   "_json": {
+          //     "id": "10157640491092752",
+          //     "name": "Le Manh Hung",
+          //     "first_name": "Le",
+          //     "last_name": "Hung",
+          //     "middle_name": "Manh",
+          //     "name_format": "{first} {last}",
+          //     "short_name": "Le",
+          //     "picture": {
+          //       "data": {
+          //         "height": 200,
+          //         "is_silhouette": false,
+          //         "url": "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=10157640491092752&height=200&width=200&ext=1581134625&hash=AeS5TuiD_COx1Ctu",
+          //         "width": 200
+          //       }
+          //     },
+          //     "birthday": "06/15/1976",
+          //     "gender": "male",
+          //     "email": "lemanhhung@yahoo.com"
+          //   }
+
           let user = {
-            ...profile._json,
-            facebook: profile.displayName,
+            id: profile.id, // from DB or create new
+            name: profile.displayName, // from DB or FB name
+            facebook: {
+              id: profile.id,
+              name: profile.displayName
+            },
+            avatar: profile.photos && profile.photos.length > 0 ? profile.photos[0].value : undefined,
             accessToken: accessToken
             // expireDate: new Date(new Date().getTime() + 30 * 60 * 1000)
           };
@@ -107,17 +153,15 @@ export default async (db, app, passport) => {
         conf.appUrl +
         (req.user
           ? "?id=" +
-            (req.user.id ? req.user.id : "") +
-            "&token=" +
-            (req.user.accessToken ? req.user.accessToken : "") +
-            "&avatar=" +
-            encodeURIComponent(
-              req.user.picture && req.user.picture.data && req.user.picture.data.url ? req.user.picture.data.url : ""
-            ) +
-            "&facebook=" +
-            (req.user.facebook ? req.user.facebook : "") +
+            encodeURIComponent(req.user.id ? req.user.id : "") +
             "&name=" +
-            (req.user.name ? req.user.name : "")
+            encodeURIComponent(req.user.name ? req.user.name : "") +
+            "&facebook=" +
+            encodeURIComponent(req.user.facebook.name ? req.user.facebook.name : "") +
+            "&avatar=" +
+            encodeURIComponent(req.user.avatar ? req.user.avatar : "") +
+            "&token=" +
+            encodeURIComponent(req.user.accessToken ? req.user.accessToken : "")
           : "")
     );
 

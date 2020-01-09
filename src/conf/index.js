@@ -8,19 +8,51 @@ const APP_CONSTS = {
   logoutUrl: "/auth/facebook/logout",
 
   locations: {
-    "/home": { appBar: { title: "Tennis Rankings", leftBtn: { icon: "Home", url: "/home" } } },
-    "/my_club": { appBar: { title: "My Club", leftBtn: { icon: "Home", url: "/home" } } },
-    "/rankings": { appBar: { title: "Rankings", leftBtn: { icon: "Home", url: "/home" } } },
-    "/new_match": { appBar: { title: "New Match", leftBtn: { icon: "Home", url: "/home" } } },
-    "/history": { appBar: { title: "Recent Matches", leftBtn: { icon: "Home", url: "/home" } } }
+    "/home": {
+      img: "/img/home.jpg",
+      title: "Home",
+      url: "/home",
+      appBar: { title: { main: "Tennis Rankings" }, leftBtn: { icon: undefined, url: "/home" } }
+    },
+    "/players": {
+      img: "/img/players.jpg",
+      title: "My Club",
+      url: "/players",
+      appBar: { title: { main: "My Club" }, leftBtn: { icon: undefined, url: "/home" } }
+    },
+    "/stats": {
+      img: "/img/stats.jpg",
+      title: "Rankings",
+      url: "/stats",
+      appBar: { title: { main: "Rankings" }, leftBtn: { icon: undefined, url: "/home" } }
+    },
+    "/play": {
+      img: "/img/play.jpg",
+      title: "New Match",
+      url: "/play",
+      appBar: { title: { main: "New Match" }, leftBtn: { icon: undefined, url: "/home" } }
+    },
+    "/matches": {
+      img: "/img/matches.jpg",
+      title: "History",
+      url: "/matches",
+      appBar: { title: { main: "Recent Matches" }, leftBtn: { icon: undefined, url: "/home" } }
+    },
+    "/clubs": {
+      img: "/img/clubs.jpg",
+      title: "Clubs",
+      url: "/clubs",
+      appBar: { title: { main: "Other Clubs", noClub: "Join Club" }, leftBtn: { icon: undefined, url: "/home" } }
+    },
+    "/news": {
+      img: "/img/news.jpg",
+      title: "News",
+      url: "/news",
+      appBar: { title: { main: "Tennis News" }, leftBtn: { icon: undefined, url: "/home" } }
+    }
   },
 
-  homeItems: [
-    { imgUrl: "/img/home_my_club.jpg", title: "My Club", url: "/my_club" },
-    { imgUrl: "/img/home_rankings.jpg", title: "Rankings", url: "/rankings" },
-    { imgUrl: "/img/home_new_match.jpg", title: "New Match", url: "/new_match" },
-    { imgUrl: "/img/home_history.jpg", title: "History", url: "/history" }
-  ]
+  clubsUrl: "/clubs"
 };
 
 // -----------------------------------------------------------------------------

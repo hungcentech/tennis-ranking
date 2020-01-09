@@ -14,7 +14,8 @@ const INITIAL_STATE = {
 const reducer = (state, action) => {
   let newState = state;
 
-  console.log("reducer: old state = ", state, ", action = ", action);
+  // DEBUG
+  // console.log("reducer: old state = ", state, ", action = ", action);
 
   switch (action.type) {
     case "user_update": {
@@ -27,7 +28,7 @@ const reducer = (state, action) => {
   }
 
   // DEBUG
-  console.log("reducer: new state: ", newState);
+  // console.log("reducer: new state: ", newState);
 
   return newState;
 };

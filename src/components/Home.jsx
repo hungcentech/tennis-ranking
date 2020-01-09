@@ -39,9 +39,6 @@ const styles = theme => {
 // -----------------------------------------------------------------------------
 
 const Home = withStyles(styles)(({ classes, router }) => {
-  const appUrl = conf.appUrl;
-  const items = conf.homeItems;
-
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
 
   const user = useSelector(state => state.user);
@@ -62,11 +59,11 @@ const Home = withStyles(styles)(({ classes, router }) => {
       dispatch({
         type: "user_update",
         payload: {
-          id: router.location.query.id,
-          token: router.location.query.token,
+          id: decodeURIComponent(router.location.query.id),
+          name: decodeURIComponent(router.location.query.name),
+          facebook: decodeURIComponent(router.location.query.facebook),
           avatar: decodeURIComponent(router.location.query.avatar),
-          facebook: router.location.query.facebook,
-          name: router.location.query.name
+          token: decodeURIComponent(router.location.query.token)
         }
       });
 
@@ -75,29 +72,40 @@ const Home = withStyles(styles)(({ classes, router }) => {
     }
   }, []);
 
+  // DEBUG
+  console.log("DEBUG:", conf.locations);
+
   return (
     <div className={classes.root}>
       <Grid container spacing={4} className={classes.content}>
-        {items.map(item => (
-          <Grid item xs={6} key={item.url}>
-            <Card
-              className={classes.card}
-              onClick={() => {
-                user ? router.push(`${appUrl + item.url}`) : setLoginDialogOpen(true);
-              }}
-              disabled={true}
-            >
-              <CardActionArea>
-                <CardMedia className={classes.media} image={appUrl + item.imgUrl} title={item.title} />
-              </CardActionArea>
-              <CardActions>
-                <Button size="small" color="primary">
-                  {item.title}
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-        ))}
+        {/* {conf.homeItems.map(item => ( */}
+        {Object.values(conf.locations)
+          .slice(1)
+          .map(item => (
+            <Grid item xs={6} key={item.url}>
+              <Card
+                className={classes.card}
+                onClick={() => {
+                  user
+                    ? user.clubId
+                      ? router.push(`${conf.appUrl + item.url}`)
+                      : // console.log("Redirect user to join/create a club")
+                        router.push(`${conf.appUrl + conf.clubsUrl}`)
+                    : setLoginDialogOpen(true);
+                }}
+                disabled={true}
+              >
+                <CardActionArea>
+                  <CardMedia className={classes.media} image={conf.appUrl + item.img} title={item.title} />
+                </CardActionArea>
+                <CardActions>
+                  <Button size="small" color="primary">
+                    {item.title}
+                  </Button>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
       </Grid>
 
       <LoginDialog open={loginDialogOpen} setOpen={setLoginDialogOpen} />
