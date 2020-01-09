@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { withStyles } from "@material-ui/core/styles";
 import { Grid, Card, CardContent, CardMedia, Typography, Fab } from "@material-ui/core";
 import { AppBar as MuiAppBar, Toolbar, IconButton } from "@material-ui/core";
-import { ArrowBackIos, Search, Add, Check as JoinIcon } from "@material-ui/icons";
+import { ArrowBackIos, Search, Add, SportsTennis as JoinIcon } from "@material-ui/icons";
 
 import conf from "../conf";
 
