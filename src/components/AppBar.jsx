@@ -110,7 +110,7 @@ const AppBar = withStyles(styles)(({ classes, router }) => {
       </MuiAppBar>
 
       <LoginDialog open={loginDialogOpen} setOpen={setLoginDialogOpen} />
-      <LogoutDialog open={logoutDialogOpen} setOpen={setLogoutDialogOpen} />
+      <LogoutDialog router={router} open={logoutDialogOpen} setOpen={setLogoutDialogOpen} />
     </div>
   );
 

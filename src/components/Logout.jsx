@@ -1,5 +1,6 @@
 // -----------------------------------------------------------------------------
 
+import PropTypes from "prop-types";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -20,6 +21,8 @@ import {
   Fab
 } from "@material-ui/core";
 import { Close, OpenInNew } from "@material-ui/icons";
+
+import conf from "../conf";
 
 // -----------------------------------------------------------------------------
 
@@ -67,7 +70,7 @@ const styles = theme => ({
 
 // -----------------------------------------------------------------------------
 
-const LogoutDialog = withStyles(styles)(({ classes, open, setOpen }) => {
+const LogoutDialog = withStyles(styles)(({ classes, router, open, setOpen }) => {
   const user = useSelector(state => state.user);
   const dispatch = useDispatch();
 
@@ -82,6 +85,8 @@ const LogoutDialog = withStyles(styles)(({ classes, open, setOpen }) => {
     });
 
     setOpen(false);
+
+    router.push(conf.appUrl);
   };
 
   const down400 = useMediaQuery("(max-width:400px)");
@@ -141,6 +146,12 @@ const LogoutDialog = withStyles(styles)(({ classes, open, setOpen }) => {
     </div>
   );
 });
+
+// -------------------------------------
+
+LogoutDialog.propTypes = {
+  router: PropTypes.object.isRequired
+};
 
 // -----------------------------------------------------------------------------
 

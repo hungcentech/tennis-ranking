@@ -42,7 +42,7 @@ const APP_CONSTS = {
       img: "/img/clubs.jpg",
       title: "Clubs",
       url: "/clubs",
-      appBar: { title: { main: "Other Clubs", noClub: "Join Club" }, leftBtn: { icon: undefined, url: "/home" } }
+      appBar: { title: { main: "Clubs" }, leftBtn: { icon: undefined, url: "/home" } }
     },
     "/news": {
       img: "/img/news.jpg",

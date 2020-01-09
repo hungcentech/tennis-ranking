@@ -63,7 +63,9 @@ const Home = withStyles(styles)(({ classes, router }) => {
           name: decodeURIComponent(router.location.query.name),
           facebook: decodeURIComponent(router.location.query.facebook),
           avatar: decodeURIComponent(router.location.query.avatar),
-          token: decodeURIComponent(router.location.query.token)
+          token: decodeURIComponent(router.location.query.token),
+          clubId: "Gio Mua",
+          clubName: "Gio Mua"
         }
       });
 
@@ -78,7 +80,6 @@ const Home = withStyles(styles)(({ classes, router }) => {
   return (
     <div className={classes.root}>
       <Grid container spacing={4} className={classes.content}>
-        {/* {conf.homeItems.map(item => ( */}
         {Object.values(conf.locations)
           .slice(1)
           .map(item => (
@@ -89,8 +90,7 @@ const Home = withStyles(styles)(({ classes, router }) => {
                   user
                     ? user.clubId
                       ? router.push(`${conf.appUrl + item.url}`)
-                      : // console.log("Redirect user to join/create a club")
-                        router.push(`${conf.appUrl + conf.clubsUrl}`)
+                      : router.push(`${conf.appUrl + conf.clubsUrl}`)
                     : setLoginDialogOpen(true);
                 }}
                 disabled={true}

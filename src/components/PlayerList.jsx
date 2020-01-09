@@ -90,7 +90,7 @@ const PlayerCard = withStyles(styles)(({ classes, router, info }) => {
             <CardMedia
               component="img"
               alt={info.name}
-              image={info.img ? info.img : appUrl + "/img/tennis.jpeg"}
+              image={info.img ? info.img : appUrl + "/img/tennis.jpg"}
               title={`${info.name} (${info.facebook})`}
               className={classes.cardMedia}
             />

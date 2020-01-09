@@ -2,13 +2,13 @@
 
 import PropTypes from "prop-types";
 import React, { useState, useEffect } from "react";
-
-import { fade, withStyles } from "@material-ui/core/styles";
-import { Card, CardActionArea, CardMedia, CardContent, Typography, Button, Grid, Paper } from "@material-ui/core";
-import { AppBar as MuiAppBar, Toolbar, SearchIcon, InputBase, IconButton } from "@material-ui/core";
-import { ArrowBackIos, SportsTennis } from "@material-ui/icons";
-
 import { useDispatch, useSelector } from "react-redux";
+
+import { withStyles } from "@material-ui/core/styles";
+import { Grid, Card, CardContent, CardMedia, Typography, Fab } from "@material-ui/core";
+import { AppBar as MuiAppBar, Toolbar, IconButton } from "@material-ui/core";
+import { ArrowBackIos, Search, Add, Check as JoinIcon } from "@material-ui/icons";
+
 import conf from "../conf";
 
 // -----------------------------------------------------------------------------
@@ -19,163 +19,70 @@ const styles = theme => {
       flex: 1,
       paddingTop: theme.mixins.toolbar.minHeight
     },
-    appBar: {
-      top: "auto",
-      bottom: 0
-    },
     grow: {
-      flexGrow: 1
+      flex: 1
     },
-
-    search: {
-      position: "relative",
-      borderRadius: theme.shape.borderRadius,
-      backgroundColor: fade(theme.palette.common.white, 0.15),
-      "&:hover": {
-        backgroundColor: fade(theme.palette.common.white, 0.25)
-      },
-      marginRight: theme.spacing(2),
-      marginLeft: 0,
-      width: "100%",
-      [theme.breakpoints.up("sm")]: {
-        marginLeft: theme.spacing(3),
-        width: "auto"
-      }
-    },
-    searchIcon: {
-      width: theme.spacing(7),
-      height: "100%",
-      position: "absolute",
-      pointerEvents: "none",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center"
-    },
-    inputRoot: {
-      color: "inherit"
-    },
-    inputInput: {
-      padding: theme.spacing(1, 1, 1, 7),
-      transition: theme.transitions.create("width"),
-      width: "100%",
-      [theme.breakpoints.up("md")]: {
-        width: 200
-      }
-    },
-
     content: {
-      width: "100vw",
+      maxWidth: "100vw",
       margin: theme.spacing(0),
-      padding: theme.spacing(2)
+      padding: theme.spacing(1)
     },
+
     card: {
-      margin: theme.spacing(0),
-      padding: theme.spacing(0)
+      display: "flex"
     },
-    cardMedia: {
-      margin: theme.spacing(2),
-      padding: theme.spacing(1),
-      width: "28vw",
-      height: "28vw",
-      borderRadius: "50%",
-      background: `radial-gradient(center, ${theme.palette.primary[300]}, ${theme.palette.primary[300]})`
+    cardDetails: {
+      display: "flex",
+      flexDirection: "column"
     },
-    cardTitle: {
-      textAlign: "center",
-      margin: theme.spacing(-1, 2, 2, 2),
-      width: "28vw"
+    cardContent: {
+      flex: "1 0 auto"
     },
-    cardText: {
-      minHeight: 200
+    avatar: {
+      margin: theme.spacing(2, 2, 2, 4),
+      width: theme.spacing(16),
+      height: theme.spacing(16),
+      borderRadius: "50%"
     },
-    cardActions: {
-      justifyContent: "flex-end"
+    button: {
+      marginRight: theme.spacing(1)
+    },
+    controls: {
+      paddingLeft: theme.spacing(1),
+      paddingBottom: theme.spacing(3)
     }
   };
 };
 
 // -----------------------------------------------------------------------------
 
-const TopNav = withStyles(styles)(({ classes, router, info }) => {
+const ClubCard = withStyles(styles)(({ classes, router, user, club }) => {
   return (
-    <MuiAppBar color="inherit" position="fixed" className={classes.topBar}>
-      <Toolbar>
-        <IconButton edge="start" color="inherit" onClick={() => {}}>
-          <ArrowBackIos />
-        </IconButton>
-        <Typography variant="h6" color="inherit" className={classes.flex}>
-          {"TopNav"}
-        </Typography>
-        <div className={classes.grow} />
-
-        <IconButton edge="end" color="inherit" onClick={() => {}}>
-          <SportsTennis />
-        </IconButton>
-      </Toolbar>
-    </MuiAppBar>
-  );
-});
-
-// -----------------------------------------------------------------------------
-
-const ClubCard = withStyles(styles)(({ classes, router, info }) => {
-  const appUrl = conf.appUrl;
-
-  const CardRow = ({ label, text }) => {
-    return (
-      <Grid container spacing={1}>
-        <Grid item xs={4}>
-          <Typography variant="caption" align="right" display="block" color="textSecondary" noWrap>
-            {label}
+    <Card className={classes.card}>
+      <CardMedia className={classes.avatar} image={club.img ? club.img : conf.appUrl + "/img/tennis.jpg"} title="" />
+      <div className={classes.cardDetails}>
+        <CardContent className={classes.cardContent}>
+          <Typography component="h5" variant="h5">
+            {`${club.name}`}
           </Typography>
-        </Grid>
-        <Grid item xs={8}>
-          <Typography variant="caption" align="left" display="block" color="textPrimary" noWrap>
-            {text}
+          <Typography variant="subtitle1" color="textSecondary">
+            {club.president ? club.president : "everyone"}
           </Typography>
-        </Grid>
-      </Grid>
-    );
-  };
-
-  return (
-    <Card
-      className={classes.card}
-      onClick={() => {
-        router.push(`/clubs/${info._id}`);
-      }}
-    >
-      <CardActionArea>
-        <Grid container spacing={0}>
-          <Grid item xs={4}>
-            <CardMedia
-              component="img"
-              alt={info.name}
-              image={info.img ? info.img : appUrl + "/img/tennis.jpg"}
-              title={`${info.name} (${info.facebook})`}
-              className={classes.cardMedia}
-            />
-            <Typography variant="h6" component="h2" className={classes.cardTitle}>
-              {`${info.name}`}
-            </Typography>
-          </Grid>
-          <Grid item xs={8}>
-            <CardContent>
-              <CardRow label="Facebook" text={info.facebook} />
-              <hr />
-              <CardRow label="Plays" text={info.play_style} />
-              <CardRow label="Forehand" text={`${info.forehand}`} />
-              <CardRow label="Backhand" text={`${info.backhand}`} />
-              <CardRow
-                label="Win/Lost/Total"
-                text={`${info.club_rating.win} / ${info.club_rating.total - info.club_rating.win} / ${info.club_rating.total}`}
-              />
-              <CardRow label="Win-rate" text={`${Math.round((info.club_rating.win / info.club_rating.total) * 1000) / 10}%`} />
-              <CardRow label="Ranking" text={info.club_rating.rank} />
-            </CardContent>
-          </Grid>
-        </Grid>
-      </CardActionArea>
+        </CardContent>
+        <div className={classes.controls}>
+          <Fab
+            variant="extended"
+            size="small"
+            onClick={() => {}}
+            color="secondary"
+            className={classes.fab}
+            disabled={user && user.clubName ? true : false}
+          >
+            <JoinIcon className={classes.button} />
+            {"Join club"}
+          </Fab>
+        </div>
+      </div>
     </Card>
   );
 });
@@ -184,12 +91,52 @@ const ClubCard = withStyles(styles)(({ classes, router, info }) => {
 
 ClubCard.propTypes = {
   router: PropTypes.object.isRequired,
-  info: PropTypes.object.isRequired
+  user: PropTypes.object.isRequired,
+  club: PropTypes.object.isRequired
+};
+
+// -----------------------------------------------------------------------------
+
+const TopNav = withStyles(styles)(({ classes, router, user }) => {
+  return (
+    <MuiAppBar color="inherit" position="fixed">
+      <Toolbar>
+        <IconButton
+          edge="start"
+          color="inherit"
+          onClick={() => {
+            router.goBack();
+          }}
+        >
+          <ArrowBackIos />
+        </IconButton>
+        <Typography variant="button" color="textSecondary">
+          {user && user.clubName ? user.clubName : "Find your club..."}
+        </Typography>
+        <div className={classes.grow} />
+        <IconButton edge="end" color="inherit" onClick={() => {}}>
+          <Search />
+        </IconButton>
+        <IconButton edge="end" color="inherit" onClick={() => {}}>
+          <Add />
+        </IconButton>
+      </Toolbar>
+    </MuiAppBar>
+  );
+});
+
+// -------------------------------------
+
+TopNav.propTypes = {
+  router: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired
 };
 
 // -----------------------------------------------------------------------------
 
 const ClubList = withStyles(styles)(({ classes, router }) => {
+  const user = useSelector(state => state.user);
+  const dispatch = useDispatch();
   const [data, setData] = useState({ clubs: [] });
 
   useEffect(() => {
@@ -227,15 +174,13 @@ const ClubList = withStyles(styles)(({ classes, router }) => {
 
   return (
     <div className={classes.root}>
-      <TopNav />
+      <TopNav router={router} user={user} />
 
       <Grid container spacing={2} className={classes.content}>
         {data.clubs
           ? data.clubs.map(item => (
-              <Grid item key={item._id}>
-                <Paper>
-                  <ClubCard router={router} info={item}></ClubCard>
-                </Paper>
+              <Grid xs={12} item key={item._id}>
+                <ClubCard router={router} user={user} club={item}></ClubCard>
               </Grid>
             ))
           : ""}
