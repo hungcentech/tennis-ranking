@@ -59,17 +59,6 @@ const styles = theme => {
 // -----------------------------------------------------------------------------
 
 const RoutedApp = withStyles(styles)(({ classes, router, children }) => {
-  const appUrl = conf.appUrl;
-  const loginUrl = conf.loginUrl;
-  const appDomain = conf.appDomain;
-  // const dispatch = useDispatch();
-
-  let location = appUrl ? router.location.pathname.substr(appUrl.length) : router.location.pathname;
-
-  // useEffect(() => {
-  //   dispatch({ type: "change location", payload: location });
-  // }, []);
-
   return (
     <div className={classes.root}>
       <div className={classes.childenWrapper}>{children}</div>

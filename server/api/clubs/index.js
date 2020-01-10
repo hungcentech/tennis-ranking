@@ -13,7 +13,7 @@ import api_delete from "./delete";
 
 export default async (db, app) => {
   try {
-    logger.info("api/player(): -------- player api... ----------");
+    logger.info("api/club(): --------- club api... -----------");
 
     await api_create(db, app);
     await api_read(db, app);
@@ -21,17 +21,17 @@ export default async (db, app) => {
     await api_delete(db, app);
 
     // await db
-    //   .collection("players")
+    //   .collection("clubs")
     //   .find()
     //   .toArray()
     //   .then(recs => {
-    //     logger.info("api.player(): DB test:");
-    //     logger.info("api.player(): " + JSON.stringify(recs));
+    //     logger.info("api.club(): DB test:");
+    //     logger.info("api.club(): " + JSON.stringify(recs));
     //   });
 
-    logger.info("api/player(): -------- player api loaded ------");
+    logger.info("api/club(): --------- club api loaded -------");
   } catch (err) {
-    logger.warn("api/player(): Error: " + JSON.stringify(err));
+    logger.warn("api/club(): Error: " + JSON.stringify(err));
     throw err;
   }
 };

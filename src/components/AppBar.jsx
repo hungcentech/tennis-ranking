@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { withStyles } from "@material-ui/core/styles";
 import { AppBar as MuiAppBar, Toolbar, IconButton, Typography, Avatar } from "@material-ui/core";
-import { Menu, Home, ArrowBack, SportsTennis } from "@material-ui/icons";
+import { Language as LangIcon, Home as HomeIcon } from "@material-ui/icons";
 
 import conf from "../conf";
 import LoginDialog from "./Login.jsx";
@@ -27,6 +27,7 @@ const styles = theme => ({
     flexGrow: 1
   },
   avatar: {
+    marginRight: theme.spacing(-1),
     width: theme.spacing(3),
     height: theme.spacing(3),
     background: `radial-gradient(center, ${theme.palette.grey[100]}, ${theme.palette.grey[900]})`
@@ -37,15 +38,15 @@ const styles = theme => ({
 
 const AppBar = withStyles(styles)(({ classes, router }) => {
   //
-  const appUrl = conf.appUrl;
-  const loginUrl = conf.loginUrl;
-
   let location = router.location.pathname;
-  location = appUrl ? location.substr(appUrl.length) : location;
+  location = conf.urls.app ? location.substr(conf.urls.app.length) : location;
 
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+
+  const lang = useSelector(state => state.lang);
   const user = useSelector(state => state.user);
+  const dispatch = useDispatch();
 
   // DEBUG
   // console.log("pathname: ", router.location.pathname);
@@ -71,23 +72,28 @@ const AppBar = withStyles(styles)(({ classes, router }) => {
       <MuiAppBar color="inherit" position="fixed" className={classes.appBar}>
         {appBar ? (
           <Toolbar>
-            {appBar.leftBtn ? (
-              <IconButton
-                edge="start"
-                color="inherit"
-                onClick={() => {
-                  appBar.leftBtn.url ? router.push(`${appUrl + appBar.leftBtn.url}`) : "";
-                }}
-              >
-                {appBar.leftBtn.icon ? iconComponentFromName(appBar.leftBtn.icon) : ""}
-              </IconButton>
-            ) : (
-              ""
-            )}
+            <IconButton
+              edge="start"
+              color="inherit"
+              onClick={() => {
+                if (router.location.pathname == conf.urls.app + conf.urls.home) {
+                  dispatch({
+                    type: "lang_update",
+                    payload: {
+                      newLang: lang == "en" ? "vi" : "en"
+                    }
+                  });
+                } else {
+                  router.push(conf.urls.app);
+                }
+              }}
+            >
+              {router.location.pathname == conf.urls.app + conf.urls.home ? <LangIcon /> : <HomeIcon />}
+            </IconButton>
             <Typography variant="h6" color="inherit" className={classes.flex}>
-              {user && !user.clubId && appBar.title.noClub ? appBar.title.noClub : appBar.title.main}
+              {appBar.title[lang]}
             </Typography>
-            <div className={classes.grow} />
+            <div className={classes.grow} />{" "}
             <Avatar
               edge="end"
               alt={user && user.name ? user.name : ""}

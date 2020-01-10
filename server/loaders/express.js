@@ -19,7 +19,7 @@ export default async (db, app) => {
     await app.use(bodyParser.json());
     await app.set("json spaces", 2);
     await app.use(cookieParser());
-    await app.use(expressSession({ secret: ";) tennis :D" }));
+    await app.use(expressSession({ resave: true, saveUninitialized: true, secret: ";) tennis :D" }));
 
     await apiLoader(db, app);
     await authLoader(db, app);

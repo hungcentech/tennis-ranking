@@ -39,7 +39,7 @@ export default {
 
   // API configs
   api: {
-    prefix: "/api"
+    clubs: { url: "/api/clubs" }
   },
 
   // Auth

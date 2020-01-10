@@ -41,10 +41,30 @@ const styles = theme => {
 const Home = withStyles(styles)(({ classes, router }) => {
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
 
+  const lang = useSelector(state => state.lang);
   const user = useSelector(state => state.user);
   const dispatch = useDispatch();
 
   useEffect(() => {
+    // if (
+    //   !user &&
+    //   router.location.query &&
+    //   router.location.query.id &&
+    //   router.location.query.name &&
+    //   router.location.query.token
+    // ) {
+    //   dispatch({
+    //     type: "user_update",
+    //     payload: {
+    //       id: decodeURIComponent(router.location.query.id),
+    //       name: decodeURIComponent(router.location.query.name),
+    //       facebook: decodeURIComponent(router.location.query.facebook),
+    //       avatar: decodeURIComponent(router.location.query.avatar),
+    //       token: decodeURIComponent(router.location.query.token)
+    //     }
+    //   });
+    // }
+
     // DEBUG
     // console.log("query:", router.location.query);
     // console.log("user:", user);
@@ -63,9 +83,7 @@ const Home = withStyles(styles)(({ classes, router }) => {
           name: decodeURIComponent(router.location.query.name),
           facebook: decodeURIComponent(router.location.query.facebook),
           avatar: decodeURIComponent(router.location.query.avatar),
-          token: decodeURIComponent(router.location.query.token),
-          clubId: "Gio Mua",
-          clubName: "Gio Mua"
+          token: decodeURIComponent(router.location.query.token)
         }
       });
 
@@ -75,7 +93,7 @@ const Home = withStyles(styles)(({ classes, router }) => {
   }, []);
 
   // DEBUG
-  console.log("DEBUG:", conf.locations);
+  // console.log("DEBUG:", conf.locations);
 
   return (
     <div className={classes.root}>
@@ -89,18 +107,18 @@ const Home = withStyles(styles)(({ classes, router }) => {
                 onClick={() => {
                   user
                     ? user.clubId
-                      ? router.push(`${conf.appUrl + item.url}`)
-                      : router.push(`${conf.appUrl + conf.clubsUrl}`)
+                      ? router.push(`${conf.urls.app + item.url}`)
+                      : router.push(`${conf.urls.app + conf.urls.clubs}`)
                     : setLoginDialogOpen(true);
                 }}
                 disabled={true}
               >
                 <CardActionArea>
-                  <CardMedia className={classes.media} image={conf.appUrl + item.img} title={item.title} />
+                  <CardMedia className={classes.media} image={conf.urls.app + item.img} title={item.title[lang]} />
                 </CardActionArea>
                 <CardActions>
-                  <Button size="small" color="primary">
-                    {item.title}
+                  <Button size="small" color={item.emphasized ? "primary" : "inherit"}>
+                    {item.title[lang]}
                   </Button>
                 </CardActions>
               </Card>

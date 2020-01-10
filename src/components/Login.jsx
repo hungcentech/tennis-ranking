@@ -72,6 +72,7 @@ const styles = theme => ({
 // -----------------------------------------------------------------------------
 
 const LoginDialog = withStyles(styles)(({ classes, open, setOpen }) => {
+  const lang = useSelector(state => state.lang);
   const user = useSelector(state => state.user);
   const dispatch = useDispatch();
 
@@ -88,43 +89,31 @@ const LoginDialog = withStyles(styles)(({ classes, open, setOpen }) => {
     setOpen(false);
   };
 
-  const down400 = useMediaQuery("(max-width:400px)");
+  const w400dn = useMediaQuery("(max-width:400px)");
 
   return (
     <div>
-      <Dialog
-        maxWidth={"xs"}
-        fullWidth={false}
-        open={open}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-slide-title"
-        aria-describedby="alert-dialog-slide-description"
-      >
+      <Dialog maxWidth={"xs"} fullWidth={false} open={open} TransitionComponent={Transition} keepMounted onClose={handleClose}>
         <Grid container spacing={0}>
           <Grid item xs={4}>
             <Avatar
               alt={user && user.name ? user.name : ""}
               src={user && user.avatar ? user.avatar : ""}
-              className={down400 ? classes.avatar_xs : classes.avatar_sm}
+              className={w400dn ? classes.avatar_xs : classes.avatar_sm}
             />
-            <Typography className={down400 ? classes.name_xs : classes.name_sm}>
+            <Typography className={w400dn ? classes.name_xs : classes.name_sm}>
               {user && user.name ? `${user.name}` : ""}
             </Typography>
           </Grid>
           <Grid item xs={8}>
-            {/* <DialogTitle id="alert-dialog-slide-title">{user && user.name ? `${user.name}` : ""}</DialogTitle> */}
-            <DialogTitle className={classes.title} id="alert-dialog-slide-title">
-              {"Login"}
-            </DialogTitle>
+            <DialogTitle className={classes.title}>{"Login"}</DialogTitle>
             <DialogContent className={classes.content}>
-              <DialogContentText id="alert-dialog-slide-description">Please login to continue...</DialogContentText>
+              <DialogContentText>Please login to continue...</DialogContentText>
             </DialogContent>
           </Grid>
           <Grid item xs={12}>
             <DialogActions className={classes.actions}>
-              <Fab variant="extended" size="medium" href={conf.appUrl + conf.loginUrl} color="primary">
+              <Fab variant="extended" size="medium" href={conf.urls.app + conf.urls.login} color="primary">
                 <LoginIcon className={classes.button} />
                 Login
               </Fab>
@@ -132,12 +121,6 @@ const LoginDialog = withStyles(styles)(({ classes, open, setOpen }) => {
                 <CloseIcon className={classes.button} />
                 Cancel
               </Fab>
-              {/* <Button variant="outlined" color="primary" href={conf.appUrl + conf.loginUrl}>
-                Login
-              </Button>
-              <Button variant="outlined" onClick={handleClose} color="default">
-                Cancel
-              </Button> */}
             </DialogActions>
           </Grid>
         </Grid>

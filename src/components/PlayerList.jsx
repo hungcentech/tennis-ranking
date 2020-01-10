@@ -58,8 +58,6 @@ const styles = theme => {
 // -----------------------------------------------------------------------------
 
 const PlayerCard = withStyles(styles)(({ classes, router, info }) => {
-  const appUrl = conf.appUrl;
-
   const CardRow = ({ label, text }) => {
     return (
       <Grid container spacing={1}>
@@ -90,7 +88,7 @@ const PlayerCard = withStyles(styles)(({ classes, router, info }) => {
             <CardMedia
               component="img"
               alt={info.name}
-              image={info.img ? info.img : appUrl + "/img/tennis.jpg"}
+              image={info.img ? info.img : conf.urls.app + "/img/tennis.jpg"}
               title={`${info.name} (${info.facebook})`}
               className={classes.cardMedia}
             />
@@ -129,12 +127,10 @@ PlayerCard.propTypes = {
 // -----------------------------------------------------------------------------
 
 const PlayerList = withStyles(styles)(({ classes, router }) => {
-  const appUrl = conf.appUrl;
-
   const [data, setData] = useState({ players: [] });
 
   useEffect(() => {
-    let uri = appUrl + "/api/players";
+    let uri = conf.urls.app + "/api/players";
     fetch(uri)
       .then(response => {
         if (response.ok) {

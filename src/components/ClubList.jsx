@@ -5,9 +5,10 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { withStyles } from "@material-ui/core/styles";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { Grid, Card, CardContent, CardMedia, Typography, Fab } from "@material-ui/core";
-import { AppBar as MuiAppBar, Toolbar, IconButton } from "@material-ui/core";
-import { ArrowBackIos, Search, Add, SportsTennis as JoinIcon } from "@material-ui/icons";
+import { AppBar as MuiAppBar, Toolbar, IconButton, TextField, InputAdornment } from "@material-ui/core";
+import { ArrowBackIos, Search, Flag, Add, SportsTennis as JoinIcon } from "@material-ui/icons";
 
 import conf from "../conf";
 
@@ -56,10 +57,63 @@ const styles = theme => {
 
 // -----------------------------------------------------------------------------
 
-const ClubCard = withStyles(styles)(({ classes, router, user, club }) => {
+const TopNav = withStyles(styles)(({ classes, router, lang, user }) => {
+  const dispatch = useDispatch();
+
+  return (
+    <MuiAppBar color="inherit" position="fixed">
+      <Toolbar>
+        <IconButton
+          edge="start"
+          color="inherit"
+          onClick={() => {
+            router.goBack();
+          }}
+        >
+          <ArrowBackIos />
+        </IconButton>
+        {/* <Typography variant="button" color="textSecondary">
+          {user && user.clubName ? user.clubName : conf.labels.findClub[lang]}
+        </Typography> */}
+        <TextField
+          className={classes.margin}
+          placeholder={user && user.clubName ? user.clubName : conf.labels.findClub[lang]}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Flag />
+              </InputAdornment>
+            )
+          }}
+        />
+
+        <div className={classes.grow} />
+        <IconButton edge="end" color="inherit" onClick={() => {}}>
+          <Search />
+        </IconButton>
+        <IconButton edge="end" color="inherit" onClick={() => {}}>
+          <Add />
+        </IconButton>
+      </Toolbar>
+    </MuiAppBar>
+  );
+});
+
+// -------------------------------------
+
+TopNav.propTypes = {
+  router: PropTypes.object.isRequired,
+  lang: PropTypes.string.isRequired
+  // user: PropTypes.object.isRequired
+};
+
+// -----------------------------------------------------------------------------
+
+const ClubCard = withStyles(styles)(({ classes, router, lang, user, club }) => {
+  const w400dn = useMediaQuery("(min-width:350px)");
   return (
     <Card className={classes.card}>
-      <CardMedia className={classes.avatar} image={club.img ? club.img : conf.appUrl + "/img/tennis.jpg"} title="" />
+      <CardMedia className={classes.avatar} image={club.img ? club.img : conf.urls.app + "/img/tennis.jpg"} title="" />
       <div className={classes.cardDetails}>
         <CardContent className={classes.cardContent}>
           <Typography component="h5" variant="h5">
@@ -78,8 +132,8 @@ const ClubCard = withStyles(styles)(({ classes, router, user, club }) => {
             className={classes.fab}
             disabled={user && user.clubName ? true : false}
           >
-            <JoinIcon className={classes.button} />
-            {"Join club"}
+            {w400dn ? <JoinIcon className={classes.button} /> : ""}
+            {conf.labels.joinClub[lang]}
           </Fab>
         </div>
       </div>
@@ -91,56 +145,22 @@ const ClubCard = withStyles(styles)(({ classes, router, user, club }) => {
 
 ClubCard.propTypes = {
   router: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired,
+  lang: PropTypes.string.isRequired,
+  // user: PropTypes.object.isRequired,
   club: PropTypes.object.isRequired
 };
 
 // -----------------------------------------------------------------------------
 
-const TopNav = withStyles(styles)(({ classes, router, user }) => {
-  return (
-    <MuiAppBar color="inherit" position="fixed">
-      <Toolbar>
-        <IconButton
-          edge="start"
-          color="inherit"
-          onClick={() => {
-            router.goBack();
-          }}
-        >
-          <ArrowBackIos />
-        </IconButton>
-        <Typography variant="button" color="textSecondary">
-          {user && user.clubName ? user.clubName : "Find your club..."}
-        </Typography>
-        <div className={classes.grow} />
-        <IconButton edge="end" color="inherit" onClick={() => {}}>
-          <Search />
-        </IconButton>
-        <IconButton edge="end" color="inherit" onClick={() => {}}>
-          <Add />
-        </IconButton>
-      </Toolbar>
-    </MuiAppBar>
-  );
-});
-
-// -------------------------------------
-
-TopNav.propTypes = {
-  router: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired
-};
-
-// -----------------------------------------------------------------------------
-
 const ClubList = withStyles(styles)(({ classes, router }) => {
-  const user = useSelector(state => state.user);
-  const dispatch = useDispatch();
   const [data, setData] = useState({ clubs: [] });
 
+  const lang = useSelector(state => state.lang);
+  const user = useSelector(state => state.user);
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    let uri = conf.appUrl + "/api/players";
+    let uri = conf.urls.app + "/api/clubs";
     fetch(uri)
       .then(response => {
         if (response.ok) {
@@ -174,13 +194,13 @@ const ClubList = withStyles(styles)(({ classes, router }) => {
 
   return (
     <div className={classes.root}>
-      <TopNav router={router} user={user} />
+      <TopNav router={router} lang={lang} user={user} />
 
       <Grid container spacing={2} className={classes.content}>
         {data.clubs
           ? data.clubs.map(item => (
               <Grid xs={12} item key={item._id}>
-                <ClubCard router={router} user={user} club={item}></ClubCard>
+                <ClubCard router={router} lang={lang} user={user} club={item}></ClubCard>
               </Grid>
             ))
           : ""}

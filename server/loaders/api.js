@@ -1,8 +1,9 @@
 // -----------------------------------------------------------------------------
 
 import logger from "../logger";
-import playerApiLoader from "../api/player";
-import matchApiLoader from "../api/match";
+import clubsApiLoader from "../api/clubs";
+import playersApiLoader from "../api/players";
+import matchesApiLoader from "../api/matches";
 
 // -----------------------------------------------------------------------------
 
@@ -10,8 +11,9 @@ export default async (db, app) => {
   try {
     logger.info("api(): ------------ Loading APIs... ---------");
 
-    await playerApiLoader(db, app);
-    await matchApiLoader(db, app);
+    await clubsApiLoader(db, app);
+    // await playersApiLoader(db, app);
+    // await matchesApiLoader(db, app);
 
     logger.info("api(): ------------ APIs loaded ! -----------");
   } catch (err) {
