@@ -72,9 +72,7 @@ const TopNav = withStyles(styles)(({ classes, router, lang, user }) => {
         >
           <ArrowBackIos />
         </IconButton>
-        {/* <Typography variant="button" color="textSecondary">
-          {user && user.clubName ? user.clubName : conf.labels.findClub[lang]}
-        </Typography> */}
+
         <TextField
           className={classes.margin}
           placeholder={user && user.clubName ? user.clubName : conf.labels.findClub[lang]}
@@ -103,8 +101,8 @@ const TopNav = withStyles(styles)(({ classes, router, lang, user }) => {
 
 TopNav.propTypes = {
   router: PropTypes.object.isRequired,
-  lang: PropTypes.string.isRequired
-  // user: PropTypes.object.isRequired
+  lang: PropTypes.string.isRequired,
+  user: PropTypes.object.isRequired
 };
 
 // -----------------------------------------------------------------------------
@@ -116,9 +114,7 @@ const ClubCard = withStyles(styles)(({ classes, router, lang, user, club }) => {
       <CardMedia className={classes.avatar} image={club.img ? club.img : conf.urls.app + "/img/tennis.jpg"} title="" />
       <div className={classes.cardDetails}>
         <CardContent className={classes.cardContent}>
-          <Typography component="h5" variant="h5">
-            {`${club.name}`}
-          </Typography>
+          <Typography variant="h6">{`${club.name}`}</Typography>
           <Typography variant="subtitle1" color="textSecondary">
             {club.president ? club.president : "everyone"}
           </Typography>
@@ -146,50 +142,53 @@ const ClubCard = withStyles(styles)(({ classes, router, lang, user, club }) => {
 ClubCard.propTypes = {
   router: PropTypes.object.isRequired,
   lang: PropTypes.string.isRequired,
-  // user: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
   club: PropTypes.object.isRequired
 };
 
 // -----------------------------------------------------------------------------
 
 const ClubList = withStyles(styles)(({ classes, router }) => {
-  const [data, setData] = useState({ clubs: [] });
+  const [data, setData] = useState({ records: [] });
 
   const lang = useSelector(state => state.lang);
   const user = useSelector(state => state.user);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    let uri = conf.urls.app + "/api/clubs";
-    fetch(uri)
-      .then(response => {
-        if (response.ok) {
-          response
-            .json()
-            .then(data => {
-              data.records.forEach(club => {
-                club.created = new Date(club.created);
-                if (club.completionDate) club.completionDate = new Date(club.completionDate);
-              });
-              setData({ clubs: data.records });
-            })
-            .catch(err => {
-              console.log("Server connection error: " + err.message);
-            });
-        } else {
-          response
-            .json()
-            .then(err => {
-              console.log("Failed to fetch clubs: " + err.message);
-            })
-            .catch(err => {
-              console.log("Server connection error: " + err.message);
-            });
-        }
+    if (!user) {
+      router.push(conf.urls.app);
+    } else {
+      let uri = `${conf.urls.app}/api/clubs?uid=${user.uid}`;
+      fetch(uri, {
+        method: "GET",
+        headers: new Headers({ authorization: `Bearer ${user.token}` })
       })
-      .catch(err => {
-        console.log("Error in fetching data from server:", err.message);
-      });
+        .then(response => {
+          if (response.ok) {
+            response
+              .json()
+              .then(apiRes => {
+                setData(apiRes);
+              })
+              .catch(err => {
+                console.log("Server connection error: " + err.message);
+              });
+          } else {
+            response
+              .json()
+              .then(err => {
+                console.log("Failed to fetch data: " + err.message);
+              })
+              .catch(err => {
+                console.log("Server connection error: " + err.message);
+              });
+          }
+        })
+        .catch(err => {
+          console.log("Error in fetching data from server:", err.message);
+        });
+    }
   }, []);
 
   return (
@@ -197,10 +196,10 @@ const ClubList = withStyles(styles)(({ classes, router }) => {
       <TopNav router={router} lang={lang} user={user} />
 
       <Grid container spacing={2} className={classes.content}>
-        {data.clubs
-          ? data.clubs.map(item => (
-              <Grid xs={12} item key={item._id}>
-                <ClubCard router={router} lang={lang} user={user} club={item}></ClubCard>
+        {data.records
+          ? data.records.map(club => (
+              <Grid xs={12} item key={club._id}>
+                <ClubCard xs={12} router={router} lang={lang} user={user} club={club}></ClubCard>
               </Grid>
             ))
           : ""}

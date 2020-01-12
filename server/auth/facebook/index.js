@@ -11,16 +11,16 @@ import passport from "passport";
 
 export default async (db, app) => {
   try {
-    logger.info("auth/facebook(): ---- facebook auth... ------");
+    logger.info("auth.facebook(): ---- facebook auth... ------");
 
     await app.use(passport.initialize());
     await app.use(passport.session());
 
     await facebook_auth_login(db, app, passport);
 
-    logger.info("auth/facebook(): ---- facebook auth loaded --");
+    logger.info("auth.facebook(): ---- facebook auth loaded --");
   } catch (err) {
-    logger.warn("auth/facebook(): Error: " + JSON.stringify(err));
+    logger.warn("auth.facebook(): Error: " + JSON.stringify(err));
     throw err;
   }
 };

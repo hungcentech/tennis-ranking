@@ -7,10 +7,10 @@ import logger from "../../logger";
 const fieldList = {
   status: "required", // active/inactive
   name: "required",
-  description: "optional",
+  facebook: "optional",
   avatar: "optional",
-  address: "required",
   contacts: "optional",
+  clubs: "required",
   updates: "optional"
 };
 
@@ -26,10 +26,13 @@ export async function validate(apiReq) {
   return new Promise((resolve, reject) => {
     try {
       // DEBUG:
-      // logger.debug(`api.clubs.Club.validate(): apiReq = ${JSON.stringify(apiReq)}`);
+      // logger.debug(`api.clubs.Player.validate(): apiReq = ${JSON.stringify(apiReq)}`);
       let errors = [];
 
-      // Init array of updates
+      // Init arrays
+      if (!apiReq.data.clubs) {
+        apiReq.data.clubs = [];
+      }
       if (!apiReq.data.updates) {
         apiReq.data.updates = [];
       }

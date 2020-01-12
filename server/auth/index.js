@@ -1,37 +1,33 @@
 // -----------------------------------------------------------------------------
 
 import logger from "../logger";
+import { ObjectId } from "mongodb";
 
 // -----------------------------------------------------------------------------
 
-export async function authorizationCheck(db, reqData) {
+export async function authCheck(db, apiReq) {
   return new Promise((resolve, reject) => {
-    // await db.collection("clubs")
-    //       .insertOne(validated.record)
-    //       .then(result =>
-    //         db
-    //           .collection("clubs")
-    //           .find({ _id: result.insertedId })
-    //           .limit(1)
-    //           .next()
-    //       )
-    //       .then(record => {
-    //         logger.debug(`api.clubs.create(): Inserted record =`, record);
-    //         res.json({ inserted: record });
-    //       })
-    //       .catch(err => {
-    //         logger.warn(`api.clubs.create(): error =`, err);
-    //         res.status(500).json({ error: `Internal Server Error: ${err}` });
-    //       });
-    //   });
-
-    let passed = false;
-
-    if (passed) {
-      resolve(reqData);
-    } else {
-      reject("Authorization failed");
-    }
+    let filter = {
+      _id: new ObjectId(apiReq.uid)
+      // token: apiReq.token
+    };
+    db.collection("players")
+      .find(filter)
+      .limit(1)
+      .next()
+      .then(player => {
+        if (player) {
+          logger.debug(`auth.check(): A player/user found with ${JSON.stringify(filter)}: ${JSON.stringify(player)}`);
+          resolve(apiReq);
+        } else {
+          logger.debug(`auth.check(): No player/user found with ${JSON.stringify(filter)}`);
+          reject("Authorization failed");
+        }
+      })
+      .catch(err => {
+        logger.debug(`auth.check(): Server error: ${err}`);
+        reject(err);
+      });
   });
 }
 

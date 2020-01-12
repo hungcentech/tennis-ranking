@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { withStyles } from "@material-ui/core/styles";
-import { Grid, Paper, Card, CardActionArea, CardMedia, CardContent, Typography, CardActions, Button } from "@material-ui/core";
+import { Grid, Card, CardActionArea, CardMedia, CardActions, Button } from "@material-ui/core";
 
 import conf from "../conf";
 import LoginDialog from "./Login.jsx";
@@ -31,7 +31,6 @@ const styles = theme => {
       margin: theme.spacing(0),
       padding: theme.spacing(0),
       height: "25vh"
-      // background: `radial-gradient(center, ${theme.palette.primary[300]}, ${theme.palette.primary[300]})`
     }
   };
 };
@@ -46,54 +45,31 @@ const Home = withStyles(styles)(({ classes, router }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // if (
-    //   !user &&
-    //   router.location.query &&
-    //   router.location.query.id &&
-    //   router.location.query.name &&
-    //   router.location.query.token
-    // ) {
-    //   dispatch({
-    //     type: "user_update",
-    //     payload: {
-    //       id: decodeURIComponent(router.location.query.id),
-    //       name: decodeURIComponent(router.location.query.name),
-    //       facebook: decodeURIComponent(router.location.query.facebook),
-    //       avatar: decodeURIComponent(router.location.query.avatar),
-    //       token: decodeURIComponent(router.location.query.token)
-    //     }
-    //   });
-    // }
-
     // DEBUG
     // console.log("query:", router.location.query);
     // console.log("user:", user);
 
-    if (
-      !user &&
-      router.location.query &&
-      router.location.query.id &&
-      router.location.query.name &&
-      router.location.query.token
-    ) {
-      dispatch({
-        type: "user_update",
-        payload: {
-          id: decodeURIComponent(router.location.query.id),
-          name: decodeURIComponent(router.location.query.name),
-          facebook: decodeURIComponent(router.location.query.facebook),
-          avatar: decodeURIComponent(router.location.query.avatar),
-          token: decodeURIComponent(router.location.query.token)
-        }
-      });
+    let data = router.location.query;
+    Object.keys(data).map(key => {
+      data[key] = decodeURIComponent(data[key]);
+    });
+    // DEBUG:
+    // console.log("query => data:", data);
 
-      // DEBUG
-      // console.log("user_update triggered.");
+    if (!user) {
+      if (data && data.uid && data.name && data.token) {
+        dispatch({
+          type: "user_update",
+          payload: data
+        });
+        // DEBUG
+        console.log("user_update triggered.");
+      } else {
+        // DEBUG
+        console.log("user_update not ready: invalid user data:", data);
+      }
     }
   }, []);
-
-  // DEBUG
-  // console.log("DEBUG:", conf.locations);
 
   return (
     <div className={classes.root}>

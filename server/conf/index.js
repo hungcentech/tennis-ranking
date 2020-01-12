@@ -39,7 +39,8 @@ export default {
 
   // API configs
   api: {
-    clubs: { url: "/api/clubs" }
+    clubs: { url: "/api/clubs" },
+    players: { url: "/api/players" }
   },
 
   // Auth

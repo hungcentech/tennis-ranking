@@ -11,12 +11,12 @@ export default (db, app) => {
     try {
       playerId = new ObjectId(req.params.id);
     } catch (error) {
-      res.status(422).json({ message: `Invalid player ID format: ${error}` });
+      res.status(422).json({ message: `Invalid player id format: ${error}` });
       return;
     }
 
     const player = req.body;
-    logger.debug("put('api/players/:id'): player =", player);
+    logger.debug("api.players.update(): player =", player);
     delete player._id;
 
     const err = Player.validatePlayer(player);
@@ -38,7 +38,7 @@ export default (db, app) => {
         res.json(savedPlayer);
       })
       .catch(error => {
-        logger.warn("api/player(): ", error);
+        logger.warn("api.player.update(): ", error);
         res.status(500).json({ message: `Internal Server Error: ${error}` });
       });
   });

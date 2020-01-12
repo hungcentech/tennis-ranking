@@ -7,30 +7,30 @@ import config from "../../config";
 
 export default (db, app) => {
   app.put("/api/clubs/:id", (req, res) => {
-    let playerId;
+    let clubId;
     try {
-      playerId = new ObjectId(req.params.id);
+      clubId = new ObjectId(req.params.id);
     } catch (error) {
-      res.status(422).json({ message: `Invalid player ID format: ${error}` });
+      res.status(422).json({ message: `Invalid club id format: ${error}` });
       return;
     }
 
-    const player = req.body;
-    logger.debug("put('api/clubs/:id'): player =", player);
-    delete player._id;
+    const club = req.body;
+    logger.debug("api.clubs.update(): club =", club);
+    delete club._id;
 
-    const err = Player.validatePlayer(player);
+    const err = Player.validatePlayer(club);
     if (err) {
       res.status(422).json({ message: `Invalid request: ${err}` });
       return;
     }
 
     db.collection("clubs")
-      .update({ _id: playerId }, Player.convertPlayer(player))
+      .update({ _id: clubId }, Player.convertPlayer(club))
       .then(() =>
         db
           .collection("clubs")
-          .find({ _id: playerId })
+          .find({ _id: clubId })
           .limit(1)
           .next()
       )
@@ -38,7 +38,7 @@ export default (db, app) => {
         res.json(savedPlayer);
       })
       .catch(error => {
-        logger.warn("api/player(): ", error);
+        logger.warn("api.club.update(): ", error);
         res.status(500).json({ message: `Internal Server Error: ${error}` });
       });
   });

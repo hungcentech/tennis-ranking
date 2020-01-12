@@ -1,42 +1,64 @@
 // -----------------------------------------------------------------------------
 
 import logger from "../../logger";
-import config from "../../config";
+import conf from "../../conf";
+import { authCheck } from "../../auth";
+import { validate } from "./Player.js";
 
 // -----------------------------------------------------------------------------
 
 export default (db, app) => {
-  app.post("/api/players", (req, res) => {
-    const newPlayer = req.body;
-    logger.debug("post('/api/players'): newPlayer =", newPlayer);
+  app.post(conf.api.players.url, (req, res) => {
+    // DEBUG:
+    logger.debug(`api.players.create(): req auth = ${JSON.stringify(req.headers["authorization"])}`);
+    logger.debug(`api.players.create(): req body = ${JSON.stringify(req.body)}`);
 
-    newPlayer.created = new Date();
-    if (!newPlayer.status) newPlayer.status = "New";
-
-    const err = Player.validatePlayer(newPlayer);
-    if (err) {
-      logger.debug("post('/api/players'): err =", err);
-      res.status(422).json({ message: `Invalid requrest: ${err}` });
+    let apiReq = req.body;
+    if (!apiReq || !apiReq.uid || !apiReq.data || !req.headers["authorization"]) {
+      let err = "Invalid request data.";
+      res.status(422).json({ error: `${err}` });
       return;
-    }
+    } else {
+      apiReq.token = req.headers["authorization"].substr("Bearer ".length);
 
-    db.collection("players")
-      .insertOne(Player.cleanupPlayer(newPlayer))
-      .then(result =>
-        db
-          .collection("players")
-          .find({ _id: result.insertedId })
-          .limit(1)
-          .next()
-      )
-      .then(newPlayer => {
-        logger.debug("post('/api/players'): newPlayer =", newPlayer);
-        res.json(newPlayer);
-      })
-      .catch(err => {
-        logger.warn("post('/api/players'): err =", err);
-        res.status(500).json({ message: `Internal Server Error: ${err}` });
-      });
+      authCheck(db, apiReq)
+        .then(apiReq => {
+          validate(apiReq)
+            .then(validated =>
+              db
+                .collection("players")
+                .insertOne(validated.data)
+                .then(result =>
+                  db
+                    .collection("players")
+                    .find({ _id: result.insertedId })
+                    .limit(1)
+                    .next()
+                )
+                .then(record => {
+                  if (record) {
+                    logger.debug(`api.players.create(): Inserted record = ${JSON.stringify(record)}`);
+                    res.json({ inserted: record });
+                  } else {
+                    logger.warn(`api.players.create() : err = ${err}`);
+                    res.status(422).json({ error: `${err}` });
+                  }
+                })
+                .catch(err => {
+                  logger.warn(`api.players.create(): err = ${err}`);
+                  res.status(500).json({ error: `${err}` });
+                })
+            )
+            .catch(err => {
+              logger.warn(`api.players.create(): err = ${err}`);
+              res.status(500).json({ error: `${err}` });
+            });
+        })
+        .catch(err => {
+          logger.warn(`api.players.create(): err = ${err}`);
+          res.status(500).json({ error: `${err}` });
+        });
+    }
   });
 };
 

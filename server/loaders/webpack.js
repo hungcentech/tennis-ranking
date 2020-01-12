@@ -8,7 +8,7 @@ import config from "../config";
 export default async app => {
   try {
     if (config.webpack.env == "development") {
-      logger.info("loaders/wpk(): -- Loading Webpack... --------");
+      logger.info("loaders.wpk(): -- Loading Webpack... --------");
 
       const webpack = require("webpack");
       const webpackDevMiddleware = require("webpack-dev-middleware");
@@ -23,10 +23,10 @@ export default async app => {
       app.use(webpackDevMiddleware(bundler, { noInfo: true }));
       app.use(webpackHotMiddleware(bundler, { log: console.log }));
 
-      logger.info("loaders/wpk(): -- Webpack loaded ! ----------");
+      logger.info("loaders.wpk(): -- Webpack loaded ! ----------");
     }
   } catch (err) {
-    logger.warn("loaders/wp(): Error: " + JSON.stringify(err));
+    logger.warn("loaders.wp(): Error: " + JSON.stringify(err));
     throw err;
   }
 };

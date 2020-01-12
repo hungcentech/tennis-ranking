@@ -1,6 +1,7 @@
 // -----------------------------------------------------------------------------
 
 import logger from "../../logger";
+import { authCheck } from "../../auth";
 import conf from "../../conf";
 
 // -----------------------------------------------------------------------------
@@ -14,28 +15,52 @@ export default (db, app) => {
     logger.debug(`api.clubs.read(): req auth  = ${JSON.stringify(req.headers["authorization"])}`);
     logger.debug(`api.clubs.read(): req query = ${JSON.stringify(req.query)}`);
 
-    // Authorization check
-    const user = { id: req.query.user, token: req.headers["authorization"].substr("Bearer ".length) };
-
-    const filter = {
-      ...req.query,
-      user: undefined
+    // Authorization check => find()
+    let apiReq = {
+      uid: req.query.uid,
+      data: {
+        ...req.query,
+        uid: undefined
+      }
     };
 
-    db.collection("clubs")
-      .find(filter)
-      .limit(3)
-      .toArray()
-      .then(clubs => {
-        const meta = { total: clubs.length };
-        const resObj = { meta: meta, records: clubs };
-        logger.debug(`api.clubs.read() : result = ${JSON.stringify(resObj)}`);
-        res.json(resObj);
-      })
-      .catch(err => {
-        logger.warn(`api.clubs.read() : err = ${err}`);
-        res.status(500).json({ message: `Internal Server Error. ${err}` });
-      });
+    if (!apiReq || !apiReq.uid || !apiReq.data || !req.headers["authorization"]) {
+      let err = "Invalid request params.";
+      logger.debug(`api.clubs.read(): error = ${JSON.stringify(err)}`);
+      res.status(422).json({ error: `${err}` });
+      return;
+    } else {
+      apiReq.token = req.headers["authorization"].substr("Bearer ".length);
+
+      authCheck(db, apiReq)
+        .then(apiReq => {
+          let filter = apiReq.data;
+          if (filter.search) {
+            filter = {
+              $or: [
+                { name: { $regex: `.*${filter.search}.*`, $options: "i" } },
+                { address: { $regex: `.*${filter.search}.*`, $options: "i" } }
+              ]
+            };
+          }
+          logger.debug(`api.clubs.read(): authorization success. filter = ${JSON.stringify(filter)}`);
+
+          db.collection("clubs")
+            .find(filter) // .collation({ locale: "vi", strength: 3 })
+            .limit(0)
+            .toArray()
+            .then(clubs => {
+              const meta = { total: clubs.length };
+              const resObj = { meta: meta, records: clubs };
+              logger.debug(`api.clubs.read(): result = ${JSON.stringify(resObj)}`);
+              res.json(resObj);
+            });
+        })
+        .catch(err => {
+          logger.warn(`api.clubs.read(): err = ${JSON.stringify(err)}`);
+          res.status(500).json({ error: `${err}` });
+        });
+    }
   });
 
   // ------------- read one -------------
@@ -57,8 +82,8 @@ export default (db, app) => {
       .next()
       .then(player => {
         if (!player) {
-          logger.debug(`api.clubs.readOne(): No such player.`);
-          res.status(404).json({ message: `No such player: ${playerId}` });
+          logger.debug(`api.clubs.readOne(): no player found.`);
+          res.status(404).json({ message: `No player found with id: ${playerId}` });
         } else {
           logger.debug(`api.clubs.readOne(): result = ${JSON.stringify(player)}`);
           res.json(player);
@@ -66,7 +91,7 @@ export default (db, app) => {
       })
       .catch(err => {
         logger.warn(`api.clubs.readOne(): err = ${err}`);
-        res.status(500).json({ message: `Internal Server Error. ${err}` });
+        res.status(500).json({ error: `${err}` });
       });
   });
 

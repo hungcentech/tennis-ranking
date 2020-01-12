@@ -1,44 +1,79 @@
 // -----------------------------------------------------------------------------
 
 import logger from "../../logger";
-import config from "../../config";
+import { authCheck } from "../../auth";
+import conf from "../../conf";
 
 // -----------------------------------------------------------------------------
 
 export default (db, app) => {
-  // --- get all ---
-  app.get("/api/players", (req, res) => {
-    logger.debug(`GET /api/players : req headers = ${JSON.stringify(req.headers)}`);
-    logger.debug(`GET /api/players : req query = ${JSON.stringify(req.query)}`);
-    const filter = req.query;
-    // if (req.query.effort_lte || req.query.effort_gte) filter.effort = {};
-    // if (req.query.effort_gte) filter.effort.$gte = parseInt(req.query.effort_gte, 10);
-    // if (req.query.effort_lte) filter.effort.$lte = parseInt(req.query.effort_lte, 10);
+  //
+  // ------------- read all -------------
 
-    db.collection("players")
-      .find(filter)
-      .toArray()
-      .then(players => {
-        const metaData = { total_count: players.length };
-        const resObj = { meta: metaData, records: players };
-        logger.debug(`GET /api/players : result = ${JSON.stringify(resObj)}`);
-        res.json(resObj);
-      })
-      .catch(err => {
-        logger.warn(`GET /api/players : err = ${err}`);
-        res.status(500).json({ message: `Internal Server Error. ${err}` });
-      });
+  app.get(conf.api.players.url, (req, res) => {
+    // DEBUG:
+    logger.debug(`api.players.read(): req auth  = ${JSON.stringify(req.headers["authorization"])}`);
+    logger.debug(`api.players.read(): req query = ${JSON.stringify(req.query)}`);
+
+    // Authorization check => find()
+    let apiReq = {
+      uid: req.query.uid,
+      data: {
+        ...req.query,
+        uid: undefined
+      }
+    };
+
+    if (!apiReq || !apiReq.uid || !apiReq.data || !req.headers["authorization"]) {
+      let err = "Invalid request params.";
+      logger.debug(`api.players.read(): error = ${JSON.stringify(err)}`);
+      res.status(422).json({ error: `${err}` });
+      return;
+    } else {
+      apiReq.token = req.headers["authorization"].substr("Bearer ".length);
+
+      authCheck(db, apiReq)
+        .then(apiReq => {
+          let filter = apiReq.data;
+          if (filter.search) {
+            filter = {
+              $or: [
+                { name: { $regex: `.*${filter.search}.*`, $options: "i" } },
+                { facebook: { $regex: `.*${filter.search}.*`, $options: "i" } },
+                { email: { $regex: `.*${filter.search}.*`, $options: "i" } }
+              ]
+            };
+          }
+          logger.debug(`api.players.read(): authorization success. filter = ${JSON.stringify(filter)}`);
+
+          db.collection("players")
+            .find(filter) // .collation({ locale: "vi", strength: 3 })
+            .limit(0)
+            .toArray()
+            .then(players => {
+              const meta = { total: players.length };
+              const resObj = { meta: meta, records: players };
+              logger.debug(`api.players.read(): result = ${JSON.stringify(resObj)}`);
+              res.json(resObj);
+            });
+        })
+        .catch(err => {
+          logger.warn(`api.players.read(): err = ${JSON.stringify(err)}`);
+          res.status(500).json({ error: `${err}` });
+        });
+    }
   });
 
-  // --- get one ---
+  // ------------- read one -------------
+
   app.get("/api/players/:id", (req, res) => {
-    logger.debug(`GET /api/players/:id : id = ${req.params.id}`);
+    logger.debug(`api.players.readOne(): id = ${req.params.id}`);
 
     let playerId;
     try {
       playerId = new ObjectId(req.params.id);
     } catch (err) {
-      logger.debug(`GET /api/players/:id : Invalid player ID format. ${err}`);
+      logger.debug(`api.players.readOne(): Invalid player ID format. ${err}`);
       res.status(422).json({ message: `Invalid player ID format. ${err}` });
       return;
     }
@@ -48,18 +83,20 @@ export default (db, app) => {
       .next()
       .then(player => {
         if (!player) {
-          logger.debug("GET /api/players/:id : No such player.");
-          res.status(404).json({ message: `No such player: ${playerId}` });
+          logger.debug(`api.players.readOne(): no player found.`);
+          res.status(404).json({ message: `No player found with id: ${playerId}` });
         } else {
-          logger.debug(`GET /api/players/:id : result = ${JSON.stringify(player)}`);
+          logger.debug(`api.players.readOne(): result = ${JSON.stringify(player)}`);
           res.json(player);
         }
       })
       .catch(err => {
-        logger.warn(`GET /api/players : err = ${err}`);
-        res.status(500).json({ message: `Internal Server Error. ${err}` });
+        logger.warn(`api.players.readOne(): err = ${err}`);
+        res.status(500).json({ error: `${err}` });
       });
   });
+
+  // ------------------------------------
 };
 
 // -----------------------------------------------------------------------------
