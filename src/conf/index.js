@@ -22,7 +22,7 @@ const APP_CONSTS = {
       img: "/img/play.jpg",
       title: { en: "New Match", vi: "Trận mới" },
       url: "/play",
-      emphasized: "primary",
+      // emphasized: "primary",
       appBar: { title: { en: "New Match", vi: "Thêm trận mới" } }
     },
     "/players": {
@@ -35,7 +35,7 @@ const APP_CONSTS = {
       img: "/img/stats.jpg",
       title: { en: "Rankings", vi: "Xếp hạng" },
       url: "/stats",
-      emphasized: "secondary",
+      // emphasized: "secondary",
       appBar: { title: { en: "Rankings", vi: "Xếp hạng" } }
     },
     "/matches": {

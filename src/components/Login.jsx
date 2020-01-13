@@ -113,14 +113,20 @@ const LoginDialog = withStyles(styles)(({ classes, open, setOpen }) => {
           </Grid>
           <Grid item xs={12}>
             <DialogActions className={classes.actions}>
-              <Fab variant="extended" size="medium" href={conf.urls.app + conf.urls.login} color="primary">
-                <LoginIcon className={classes.button} />
-                Login
-              </Fab>
-              <Fab variant="extended" size="medium" onClick={handleClose} color="default">
-                <CloseIcon className={classes.button} />
-                Cancel
-              </Fab>
+              <Grid container>
+                <Grid item xs={6}>
+                  <Fab variant="extended" size="medium" href={conf.urls.app + conf.urls.login} color="primary">
+                    <LoginIcon className={classes.button} />
+                    Login
+                  </Fab>
+                </Grid>
+                <Grid item xs={6}>
+                  <Fab variant="extended" size="medium" onClick={handleClose} color="default">
+                    <CloseIcon className={classes.button} />
+                    Cancel
+                  </Fab>
+                </Grid>
+              </Grid>
             </DialogActions>
           </Grid>
         </Grid>

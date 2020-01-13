@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { withStyles } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { AppBar as MuiAppBar, Toolbar, TextField, InputAdornment } from "@material-ui/core";
-import { Grid, Card, CardContent, CardMedia, Typography, Fab, IconButton } from "@material-ui/core";
+import { Grid, Card, CardContent, CardMedia, Typography, Fab, IconButton, Button } from "@material-ui/core";
 import { ArrowBackIos, Search, Add, Edit as EditIcon, SportsTennis as JoinIcon } from "@material-ui/icons";
 
 import conf from "../../conf";
@@ -35,22 +35,32 @@ const styles = theme => {
     card: {},
 
     cardDetails: {},
-    cardDetailsMedia: {
-      margin: theme.spacing(2, 2, 2, 4),
+    avatar450dn: {
+      margin: theme.spacing(1),
       width: theme.spacing(12),
       height: theme.spacing(12),
       borderRadius: "50%"
     },
-    cardDetailsContent: {},
+    avatar450up: {
+      margin: theme.spacing(1, 4),
+      width: theme.spacing(16),
+      height: theme.spacing(16),
+      borderRadius: "50%"
+    },
 
     cardControls: {
-      paddingLeft: theme.spacing(1),
+      padding: theme.spacing(1),
       paddingBottom: theme.spacing(3)
     },
-    // cardControlsButton: { flex: "1 0 auto" },
-
-    fabButton: {
+    fabIcon: {
       marginRight: theme.spacing(1)
+    },
+
+    fab450dn: {
+      marginLeft: theme.spacing(3.5)
+    },
+    fab450up: {
+      marginLeft: theme.spacing(7.5)
     }
   };
 };
@@ -154,26 +164,27 @@ const TopNav = withStyles(styles)(({ classes, router, lang, user }) => {
 
 TopNav.propTypes = {
   router: PropTypes.object.isRequired,
-  lang: PropTypes.string.isRequired,
-  user: PropTypes.object.isRequired
+  lang: PropTypes.string.isRequired
 };
 
 // -----------------------------------------------------------------------------
 
 const ClubCard = withStyles(styles)(({ classes, lang, user, club }) => {
   const w350up = useMediaQuery("(min-width:350px)");
+  const w450up = useMediaQuery("(min-width:450px)");
   return (
     <Card className={classes.card}>
       <Grid container spacing={0}>
+        {/* <Grid item xs={1}></Grid> */}
         <Grid item xs={4}>
           <CardMedia
-            className={classes.cardDetailsMedia}
+            className={w450up ? classes.avatar450up : classes.avatar450dn}
             image={club.img ? club.img : conf.urls.app + "/img/tennis.jpg"}
             title=""
           />
         </Grid>
         <Grid item xs={8}>
-          <CardContent className={classes.cardDetailsContent}>
+          <CardContent>
             <Typography variant="h6" color="inherit">
               {club.name}
             </Typography>
@@ -183,28 +194,33 @@ const ClubCard = withStyles(styles)(({ classes, lang, user, club }) => {
           </CardContent>
         </Grid>
         <Grid item xs={12} className={classes.cardControls}>
-          <Fab
-            variant="extended"
-            size="medium"
-            onClick={() => {}}
-            color="secondary"
-            className={classes.button}
-            disabled={user && user.clubs && club.id in user.clubs}
-          >
-            {w350up ? <JoinIcon className={classes.fabButton} /> : ""}
-            {conf.labels.joinClub[lang]}
-          </Fab>
-          <div className={classes.grow} />
-          <IconButton
-            variant="round"
-            size="small"
-            onClick={() => {}}
-            color="default"
-            className={classes.button}
-            disabled={false}
-          >
-            <EditIcon />
-          </IconButton>
+          <Grid container>
+            <Grid item xs={4}>
+              <Fab
+                variant="extended"
+                size={w450up ? "medium" : "small"}
+                className={w450up ? classes.fab450up : classes.fab450dn}
+                color="secondary"
+                onClick={() => {}}
+                disabled={true}
+              >
+                <EditIcon />
+              </Fab>
+            </Grid>
+            <Grid item xs={1}></Grid>
+            <Grid item xs={7}>
+              <Fab
+                variant="extended"
+                size={w450up ? "medium" : "small"}
+                onClick={() => {}}
+                color="secondary"
+                disabled={user && user.clubs && club.id in user.clubs}
+              >
+                {w350up ? <JoinIcon className={classes.fabIcon} /> : ""}
+                {conf.labels.joinClub[lang]}
+              </Fab>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </Card>

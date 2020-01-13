@@ -113,7 +113,7 @@ const LogoutDialog = withStyles(styles)(({ classes, router, open, setOpen }) => 
               variant="caption"
               display="block"
               align="center"
-              noWrap="true"
+              noWrap={true}
               className={w400dn ? classes.name_xs : classes.name_sm}
             >
               ({user && user.clubName ? user.clubName : conf.labels.noClub[lang]})
@@ -127,14 +127,20 @@ const LogoutDialog = withStyles(styles)(({ classes, router, open, setOpen }) => 
           </Grid>
           <Grid item xs={12}>
             <DialogActions className={classes.actions}>
-              <Fab variant="extended" size="medium" onClick={handleClose} color="default">
-                <Close className={classes.button} />
-                Cancel
-              </Fab>
-              <Fab variant="extended" size="medium" onClick={handleLogout} color="secondary">
-                <OpenInNew className={classes.button} />
-                Logout
-              </Fab>
+              <Grid container>
+                <Grid item xs={6}>
+                  <Fab variant="extended" size="medium" onClick={handleClose} color="default">
+                    <Close className={classes.button} />
+                    Cancel
+                  </Fab>
+                </Grid>
+                <Grid item xs={6}>
+                  <Fab variant="extended" size="medium" onClick={handleLogout} color="secondary">
+                    <OpenInNew className={classes.button} />
+                    Logout
+                  </Fab>
+                </Grid>
+              </Grid>
             </DialogActions>
           </Grid>
         </Grid>
