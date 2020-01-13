@@ -63,7 +63,7 @@ const Home = withStyles(styles)(({ classes, router }) => {
           payload: data
         });
         // DEBUG
-        console.log("user_update triggered.");
+        // console.log("user_update triggered.");
       } else {
         // DEBUG
         console.log("user_update not ready: invalid user data:", data);
@@ -93,7 +93,7 @@ const Home = withStyles(styles)(({ classes, router }) => {
                   <CardMedia className={classes.media} image={conf.urls.app + item.img} title={item.title[lang]} />
                 </CardActionArea>
                 <CardActions>
-                  <Button size="small" color={item.emphasized ? "primary" : "inherit"}>
+                  <Button size="small" color={item.emphasized ? item.emphasized : "inherit"}>
                     {item.title[lang]}
                   </Button>
                 </CardActions>

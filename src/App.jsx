@@ -17,7 +17,7 @@ import { pink, blue } from "@material-ui/core/colors";
 
 import AppBar from "./components/AppBar.jsx";
 import Home from "./components/Home.jsx";
-import ClubList from "./components/ClubList.jsx";
+import ClubList from "./components/Clubs/ClubList.jsx";
 import PlayerList from "./components/PlayerList.jsx";
 
 import conf from "./conf";

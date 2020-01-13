@@ -39,7 +39,7 @@ export default (db, app) => {
       matchId = new ObjectId(req.params.id);
     } catch (err) {
       logger.debug(`GET /api/matches/:id : Invalid match ID format. ${err}`);
-      res.status(422).json({ message: `Invalid match ID format. ${err}` });
+      res.status(400).json({ message: `Invalid match ID format. ${err}` });
       return;
     }
     db.collection("matches")

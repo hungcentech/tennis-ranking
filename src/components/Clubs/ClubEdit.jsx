@@ -40,7 +40,8 @@ const styles = theme => ({
   },
   name_xs: {
     margin: theme.spacing(0, 2),
-    width: theme.spacing(12)
+    width: theme.spacing(12),
+    textAlign: "center"
   },
   avatar_sm: {
     margin: theme.spacing(4, 4, 2),
@@ -49,7 +50,8 @@ const styles = theme => ({
   },
   name_sm: {
     margin: theme.spacing(0, 4),
-    width: theme.spacing(12)
+    width: theme.spacing(12),
+    textAlign: "center"
   },
   title: {
     margin: theme.spacing(2, 2)
@@ -100,23 +102,8 @@ const LogoutDialog = withStyles(styles)(({ classes, router, open, setOpen }) => 
               src={user && user.avatar ? user.avatar : ""}
               className={w400dn ? classes.avatar_xs : classes.avatar_sm}
             />
-            <Typography
-              variant="subtitle2"
-              display="block"
-              align="center"
-              // noWrap="true"
-              className={w400dn ? classes.name_xs : classes.name_sm}
-            >
-              {user && user.name ? user.name : ""}
-            </Typography>
-            <Typography
-              variant="caption"
-              display="block"
-              align="center"
-              noWrap="true"
-              className={w400dn ? classes.name_xs : classes.name_sm}
-            >
-              ({user && user.clubName ? user.clubName : conf.labels.noClub[lang]})
+            <Typography className={w400dn ? classes.name_xs : classes.name_sm}>
+              {user && user.name ? `${user.name}` : ""}
             </Typography>
           </Grid>
           <Grid item xs={8}>

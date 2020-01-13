@@ -27,7 +27,7 @@ const styles = theme => ({
     flexGrow: 1
   },
   avatar: {
-    marginRight: theme.spacing(-1),
+    marginRight: theme.spacing(0),
     width: theme.spacing(3),
     height: theme.spacing(3),
     background: `radial-gradient(center, ${theme.palette.grey[100]}, ${theme.palette.grey[900]})`
@@ -93,7 +93,7 @@ const AppBar = withStyles(styles)(({ classes, router }) => {
             <Typography variant="h6" color="inherit" className={classes.flex}>
               {appBar.title[lang]}
             </Typography>
-            <div className={classes.grow} />{" "}
+            <div className={classes.grow} />
             <Avatar
               edge="end"
               alt={user && user.name ? user.name : ""}

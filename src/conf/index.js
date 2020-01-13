@@ -22,7 +22,7 @@ const APP_CONSTS = {
       img: "/img/play.jpg",
       title: { en: "New Match", vi: "Trận mới" },
       url: "/play",
-      emphasized: true,
+      emphasized: "primary",
       appBar: { title: { en: "New Match", vi: "Thêm trận mới" } }
     },
     "/players": {
@@ -33,9 +33,10 @@ const APP_CONSTS = {
     },
     "/stats": {
       img: "/img/stats.jpg",
-      title: { en: "Rankings", vi: "Thứ hạng" },
+      title: { en: "Rankings", vi: "Xếp hạng" },
       url: "/stats",
-      appBar: { title: { en: "Rankings", vi: "Thứ hạng" } }
+      emphasized: "secondary",
+      appBar: { title: { en: "Rankings", vi: "Xếp hạng" } }
     },
     "/matches": {
       img: "/img/matches.jpg",
@@ -58,8 +59,10 @@ const APP_CONSTS = {
   },
 
   labels: {
+    edit: { en: "Edit", vi: "Sửa" },
     joinClub: { en: "Join club", vi: "Tham gia" },
-    findClub: { en: "Find club...", vi: "Tìm CLB..." }
+    findClub: { en: "Find club...", vi: "Tìm CLB..." },
+    noClub: { en: "club: none", vi: "clb: chưa có" }
   }
 };
 

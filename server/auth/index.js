@@ -21,7 +21,7 @@ export async function authCheck(db, apiReq) {
           resolve(apiReq);
         } else {
           logger.debug(`auth.check(): No player/user found with ${JSON.stringify(filter)}`);
-          reject("Authorization failed");
+          reject(Error("Authorization failed"));
         }
       })
       .catch(err => {

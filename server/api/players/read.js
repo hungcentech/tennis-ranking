@@ -27,7 +27,7 @@ export default (db, app) => {
     if (!apiReq || !apiReq.uid || !apiReq.data || !req.headers["authorization"]) {
       let err = "Invalid request params.";
       logger.debug(`api.players.read(): error = ${JSON.stringify(err)}`);
-      res.status(422).json({ error: `${err}` });
+      res.status(400).json({ error: `${err}` });
       return;
     } else {
       apiReq.token = req.headers["authorization"].substr("Bearer ".length);
@@ -59,7 +59,7 @@ export default (db, app) => {
         })
         .catch(err => {
           logger.warn(`api.players.read(): err = ${JSON.stringify(err)}`);
-          res.status(500).json({ error: `${err}` });
+          res.status(400).json({ error: `${err}` });
         });
     }
   });
@@ -74,7 +74,7 @@ export default (db, app) => {
       playerId = new ObjectId(req.params.id);
     } catch (err) {
       logger.debug(`api.players.readOne(): Invalid player ID format. ${err}`);
-      res.status(422).json({ message: `Invalid player ID format. ${err}` });
+      res.status(400).json({ message: `Invalid player ID format. ${err}` });
       return;
     }
     db.collection("players")
@@ -92,7 +92,7 @@ export default (db, app) => {
       })
       .catch(err => {
         logger.warn(`api.players.readOne(): err = ${err}`);
-        res.status(500).json({ error: `${err}` });
+        res.status(400).json({ error: `${err}` });
       });
   });
 

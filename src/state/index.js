@@ -7,6 +7,7 @@ import { createStore } from "redux";
 const INITIAL_STATE = {
   lang: "vi",
   user: undefined, // { id: undefined, token: undefined, name: undefined, avatar: undefined, facebook: undefined },
+  search: { clubs: undefined },
   time: 0 // timestamp
 };
 
@@ -21,7 +22,6 @@ const reducer = (state, action) => {
   switch (action.type) {
     case "lang_update":
       {
-        console.log("reducer: old state = ", state, ", action = ", action);
         newState = {
           ...state,
           lang: action.payload.newLang,
@@ -38,10 +38,22 @@ const reducer = (state, action) => {
         };
       }
       break;
+    case "search_clubs":
+      {
+        newState = {
+          ...state,
+          search: {
+            ...state.search,
+            clubs: action.payload
+          },
+          time: Date.now()
+        };
+      }
+      break;
   }
 
   // DEBUG
-  console.log("reducer: new state: ", newState);
+  // console.log("reducer: new state: ", newState);
 
   return newState;
 };
