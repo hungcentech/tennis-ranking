@@ -12,8 +12,9 @@ export default (db, app) => {
 
   app.get(conf.api.clubs.url, (req, res) => {
     // DEBUG:
-    logger.debug(`api.clubs.read(): req auth  = ${JSON.stringify(req.headers["authorization"])}`);
-    logger.debug(`api.clubs.read(): req query = ${JSON.stringify(req.query)}`);
+    logger.debug(`api.clubs.read(): req headers = ${JSON.stringify(req.headers)}`);
+    logger.debug(`api.clubs.read(): req params  = ${JSON.stringify(req.params)}`);
+    logger.debug(`api.clubs.read(): req body    = ${JSON.stringify(req.body)}`);
 
     // Authorization check => find()
     let apiReq = {
@@ -25,9 +26,9 @@ export default (db, app) => {
     };
 
     if (!apiReq || !apiReq.uid || !apiReq.data || !req.headers["authorization"]) {
-      let err = Error("Invalid request params.");
-      logger.debug(`api.clubs.read(): error = ${err.message}`);
-      res.status(400).json(err);
+      let error = Error("Invalid request params.");
+      logger.debug(`api.clubs.read(): error = ${error.message}`);
+      res.status(400).json(error);
       return;
     } else {
       apiReq.token = req.headers["authorization"].substr("Bearer ".length);
@@ -43,7 +44,7 @@ export default (db, app) => {
               ]
             };
           }
-          logger.debug(`api.clubs.read(): authorization success. filter = ${JSON.stringify(filter)}`);
+          logger.debug(`api.clubs.read(): Authorization success. filter = ${JSON.stringify(filter)}`);
 
           db.collection("clubs")
             .find(filter) // .collation({ locale: "vi", strength: 3 })
@@ -57,42 +58,10 @@ export default (db, app) => {
             });
         })
         .catch(err => {
-          logger.warn(`api.clubs.read(): err = ${err.message}`);
+          logger.warn(`api.clubs.read(): ${err.message}`);
           res.status(400).json(err);
         });
     }
-  });
-
-  // ------------- read one -------------
-
-  app.get("/api/clubs/:id", (req, res) => {
-    logger.debug(`api.clubs.readOne(): id = ${req.params.id}`);
-
-    let playerId;
-    try {
-      playerId = new ObjectId(req.params.id);
-    } catch (err) {
-      logger.debug(`api.clubs.readOne(): Invalid player ID format. ${err}`);
-      res.status(400).json({ message: `Invalid player ID format. ${err}` });
-      return;
-    }
-    db.collection("clubs")
-      .find({ _id: playerId })
-      .limit(1)
-      .next()
-      .then(player => {
-        if (!player) {
-          logger.debug(`api.clubs.readOne(): no player found.`);
-          res.status(404).json({ message: `No player found with id: ${playerId}` });
-        } else {
-          logger.debug(`api.clubs.readOne(): result = ${JSON.stringify(player)}`);
-          res.json(player);
-        }
-      })
-      .catch(err => {
-        logger.warn(`api.clubs.readOne(): err = ${err}`);
-        res.status(400).json({ error: `${err}` });
-      });
   });
 
   // ------------------------------------

@@ -66,35 +66,35 @@ export default (db, app) => {
 
   // ------------- read one -------------
 
-  app.get("/api/players/:id", (req, res) => {
-    logger.debug(`api.players.readOne(): id = ${req.params.id}`);
+  // app.get("/api/players/:id", (req, res) => {
+  //   logger.debug(`api.players.readOne(): id = ${req.params.id}`);
 
-    let playerId;
-    try {
-      playerId = new ObjectId(req.params.id);
-    } catch (err) {
-      logger.debug(`api.players.readOne(): Invalid player ID format. ${err}`);
-      res.status(400).json({ message: `Invalid player ID format. ${err}` });
-      return;
-    }
-    db.collection("players")
-      .find({ _id: playerId })
-      .limit(1)
-      .next()
-      .then(player => {
-        if (!player) {
-          logger.debug(`api.players.readOne(): no player found.`);
-          res.status(404).json({ message: `No player found with id: ${playerId}` });
-        } else {
-          logger.debug(`api.players.readOne(): result = ${JSON.stringify(player)}`);
-          res.json(player);
-        }
-      })
-      .catch(err => {
-        logger.warn(`api.players.readOne(): err = ${err}`);
-        res.status(400).json({ error: `${err}` });
-      });
-  });
+  //   let playerId;
+  //   try {
+  //     playerId = new ObjectId(req.params.id);
+  //   } catch (err) {
+  //     logger.debug(`api.players.readOne(): Invalid player ID format. ${err}`);
+  //     res.status(400).json({ message: `Invalid player ID format. ${err}` });
+  //     return;
+  //   }
+  //   db.collection("players")
+  //     .find({ _id: playerId })
+  //     .limit(1)
+  //     .next()
+  //     .then(player => {
+  //       if (!player) {
+  //         logger.debug(`api.players.readOne(): no player found.`);
+  //         res.status(404).json({ message: `No player found with id: ${playerId}` });
+  //       } else {
+  //         logger.debug(`api.players.readOne(): result = ${JSON.stringify(player)}`);
+  //         res.json(player);
+  //       }
+  //     })
+  //     .catch(err => {
+  //       logger.warn(`api.players.readOne(): err = ${err}`);
+  //       res.status(400).json({ error: `${err}` });
+  //     });
+  // });
 
   // ------------------------------------
 };

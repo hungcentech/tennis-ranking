@@ -124,25 +124,25 @@ export default async (db, app, passport) => {
                       })
                       .catch(err => {
                         // DEBUG:
-                        logger.warn(`passport.FacebookStrategy() : insert() failed.`);
+                        logger.warn(`passport.FacebookStrategy() : insert() failed: ${err}`);
 
                         return cb(null, false);
                       });
                   }
                 })
                 .catch(err => {
-                  ogger.debug(`passport.FacebookStrategy(): find() failed, err = ${JSON.stringify(err)}`);
+                  logger.warn(`passport.FacebookStrategy(): find() failed: ${err}`);
                   return cb(null, false, err);
                 });
             })
             .catch(err => {
-              logger.debug(`passport.FacebookStrategy(): update() failed, err = ${JSON.stringify(err)}`);
+              logger.warn(`passport.FacebookStrategy(): update() failed: ${err}`);
               return cb(null, false, err);
             });
 
           // ----------------
         } catch (err) {
-          logger.debug(`passport.FacebookStrategy(): err = ${JSON.stringify(err)}`);
+          logger.warn(`passport.FacebookStrategy(): ${err}`);
           return cb(err);
         }
       }

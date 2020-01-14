@@ -4,7 +4,7 @@ import SourceMapSupport from "source-map-support";
 SourceMapSupport.install();
 
 import logger from "./logger";
-import config from "./config";
+import config from "./conf";
 
 import http from "http";
 import express from "express";

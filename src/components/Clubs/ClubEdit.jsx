@@ -1,6 +1,6 @@
 // -----------------------------------------------------------------------------
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { withStyles } from "@material-ui/core/styles";
@@ -20,10 +20,9 @@ import {
   Fab,
   TextField
 } from "@material-ui/core";
-import { Cancel as CloseIcon, Save as SaveIcon } from "@material-ui/icons";
+import { Edit, Cancel, Save } from "@material-ui/icons";
 
 import conf from "../../conf";
-import { blue } from "@material-ui/core/colors";
 
 // -----------------------------------------------------------------------------
 
@@ -34,95 +33,128 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 // -----------------------------------------------------------------------------
 
 const styles = theme => ({
+  root: {
+    flex: 1
+  },
+
   avatar480dn: {
-    margin: theme.spacing(2, 1, 1, 1),
+    margin: theme.spacing(0, 0, 0, 2),
     width: theme.spacing(10),
     height: theme.spacing(10),
     borderRadius: "50%"
   },
   avatar480up: {
-    margin: theme.spacing(2, 1, 1, 4),
+    margin: theme.spacing(0, 0, 0, 4),
     width: theme.spacing(16),
     height: theme.spacing(16),
     borderRadius: "50%"
   },
 
   content: {
-    margin: theme.spacing(2, 2)
+    flex: 1,
+    margin: theme.spacing(-4, 1, 1, 1)
   },
+  input: {
+    marginTop: theme.spacing(1)
+  },
+
   actions: {
     margin: theme.spacing(2, 2)
   },
-  button: {
+  icon: {
     marginRight: theme.spacing(1)
   }
 });
 
 // -----------------------------------------------------------------------------
-const EditorRow = ({ label, text, setText }) => {
-  const lang = useSelector(state => state.lang);
+
+const EditorField = withStyles(styles)(({ classes, label, value, onChange, disabled }) => {
   return (
-    <Grid container spacing={1}>
-      <Grid item xs={4}>
-        <Typography variant="caption" align="right" display="block" color="textSecondary" noWrap>
-          {label}
-        </Typography>
-      </Grid>
-      <Grid item xs={8}>
-        {/* <Typography variant="caption" align="left" display="block" color="textPrimary" noWrap>
-          {text}Chien binh Nguyen Trai
-        </Typography> */}
-        <TextField
-          // className={classes.navSearch}
-          placeholder={`${conf.labels.name[lang]}...`}
-          value={text}
-          onChange={setText}
-        />
-      </Grid>
-    </Grid>
+    <TextField
+      className={classes.input}
+      label={label}
+      // placeholder={`${label}...`}
+      value={value}
+      onChange={onChange}
+      variant="outlined"
+      size="small"
+      fullWidth
+      disabled={disabled}
+    />
   );
-};
+});
 
 // -----------------------------------------------------------------------------
 
-const ClubEditorDialog = withStyles(styles)(({ classes, editor, setEditor }) => {
+const ClubEditor = withStyles(styles)(({ classes, _club, open, setOpen }) => {
+  const w480up = useMediaQuery("(min-width:480px)");
+
   const lang = useSelector(state => state.lang);
-  const club = editor.club;
+  const [club, setClub] = useState(Object.assign(_club));
 
   const handleClose = () => {
-    setEditor({ open: false, club: undefined });
+    setOpen(false);
   };
 
   const handleSave = () => {
+    if (club != _club) {
+      console.log("Saving...");
+      setTimeout(() => {
+        console.log("........ done!");
+      }, 1000);
+    }
     // ... fetch...
 
-    setEditor({ open: false, club: undefined });
+    setOpen(false);
   };
 
-  const w480up = useMediaQuery("(min-width:480px)");
+  const handleChange = (key, newValue) => {
+    var newClub = { ...club };
+    newClub[key] = newValue;
+    console.log("handleChange(): club changed:", club, "=>", newClub);
+    setClub(newClub);
+  };
 
   return (
-    <div>
-      <Dialog
-        maxWidth={"sm"}
-        fullWidth={true}
-        open={editor.open}
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={handleClose}
-      >
+    <Dialog
+      className={classes.root}
+      maxWidth={"sm"}
+      fullWidth={true}
+      open={open}
+      TransitionComponent={Transition}
+      keepMounted
+      onClose={handleClose}
+    >
+      <form>
         <Grid container spacing={0}>
+          <Grid item xs={12}>
+            <DialogTitle>{club._id ? conf.labels.updateClub[lang] : conf.labels.addClub[lang]}</DialogTitle>
+          </Grid>
+
           <Grid item xs={3}>
-            <Avatar
-              src={club && club.avatar ? club.avatar : ""}
-              className={w480up ? classes.avatar480up : classes.avatar480dn}
-            />
+            <Avatar src={club.avatar ? club.avatar : ""} className={w480up ? classes.avatar480up : classes.avatar480dn} />
           </Grid>
 
           <Grid item xs={9}>
-            <DialogTitle>{club ? conf.labels.updateClub[lang] : conf.labels.addClub[lang]}</DialogTitle>
             <DialogContent className={classes.content}>
-              <EditorRow label="Name" text={club ? club.name : ""} />
+              {["_id", "name", "description", "avatar", "address", "contacts", "status"].map(k => {
+                let v = club[k];
+                return (
+                  <TextField
+                    key={k}
+                    className={classes.input}
+                    label={k}
+                    value={v}
+                    onChange={ev => {
+                      handleChange(k, ev.target.value);
+                    }}
+                    variant="outlined"
+                    size="small"
+                    fullWidth
+                    disabled={k == "_id" || k == "status"}
+                  />
+                );
+              })}
             </DialogContent>
           </Grid>
 
@@ -131,13 +163,13 @@ const ClubEditorDialog = withStyles(styles)(({ classes, editor, setEditor }) => 
               <Grid container>
                 <Grid item xs={6}>
                   <Fab variant="extended" size="medium" onClick={handleSave} color="primary">
-                    <SaveIcon className={classes.button} />
+                    <Save className={classes.icon} />
                     Save
                   </Fab>
                 </Grid>
                 <Grid item xs={6}>
                   <Fab variant="extended" size="medium" onClick={handleClose} color="default">
-                    <CloseIcon className={classes.button} />
+                    <Cancel className={classes.icon} />
                     Cancel
                   </Fab>
                 </Grid>
@@ -145,13 +177,13 @@ const ClubEditorDialog = withStyles(styles)(({ classes, editor, setEditor }) => 
             </DialogActions>
           </Grid>
         </Grid>
-      </Dialog>
-    </div>
+      </form>
+    </Dialog>
   );
 });
 
 // -----------------------------------------------------------------------------
 
-export default ClubEditorDialog;
+export default ClubEditor;
 
 // -----------------------------------------------------------------------------

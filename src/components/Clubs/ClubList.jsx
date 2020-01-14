@@ -167,16 +167,19 @@ TopNav.propTypes = {
 
 // -----------------------------------------------------------------------------
 
-const ClubCard = withStyles(styles)(({ classes, lang, user, club, setClubEditor }) => {
+const ClubCard = withStyles(styles)(({ classes, lang, user, club }) => {
   const w350up = useMediaQuery("(min-width:350px)");
   const w480up = useMediaQuery("(min-width:480px)");
+
+  const [editorOpen, setEditorOpen] = useState(false);
+
   return (
     <Card>
       <Grid container spacing={0}>
         <Grid item xs={4}>
           <CardMedia
             className={w480up ? classes.avatar480up : classes.avatar480dn}
-            image={club.img ? club.img : conf.urls.app + "/img/tennis.jpg"}
+            image={club.avatar ? club.avatar : conf.urls.app + "/img/tennis.jpg"}
             title=""
           />
         </Grid>
@@ -186,8 +189,14 @@ const ClubCard = withStyles(styles)(({ classes, lang, user, club, setClubEditor 
             <Typography variant="h6" color="inherit">
               {club.name}
             </Typography>
-            <Typography variant="subtitle1" color="textSecondary">
-              {club.address}
+            <Typography variant="body2" color="textSecondary">
+              About: {club.description}
+            </Typography>
+            <Typography variant="body2" color="textSecondary">
+              Address: {club.address}
+            </Typography>
+            <Typography variant="body2" color="textSecondary">
+              Contact: {club.contacts}
             </Typography>
           </CardContent>
         </Grid>
@@ -201,7 +210,7 @@ const ClubCard = withStyles(styles)(({ classes, lang, user, club, setClubEditor 
                 className={w480up ? classes.fab480up : classes.fab480dn}
                 color="secondary"
                 onClick={() => {
-                  setClubEditor({ open: true, club: club });
+                  setEditorOpen(true);
                 }}
                 disabled={false}
               >
@@ -215,7 +224,7 @@ const ClubCard = withStyles(styles)(({ classes, lang, user, club, setClubEditor 
                 size={w480up ? "medium" : "small"}
                 onClick={() => {}}
                 color="secondary"
-                disabled={user && user.clubs && club.id in user.clubs}
+                disabled={user && user.clubs && club && club.id in user.clubs}
               >
                 {w350up ? <JoinIcon className={classes.fabIcon} /> : ""}
                 {conf.labels.joinClub[lang]}
@@ -224,6 +233,8 @@ const ClubCard = withStyles(styles)(({ classes, lang, user, club, setClubEditor 
           </Grid>
         </Grid>
       </Grid>
+
+      <ClubEdit _club={club} open={editorOpen} setOpen={setEditorOpen} />
     </Card>
   );
 });
@@ -240,7 +251,6 @@ ClubCard.propTypes = {
 
 const ClubList = withStyles(styles)(({ classes, router }) => {
   const [listData, setListData] = useState({ records: [] });
-  const [clubEditor, setClubEditor] = useState({ open: true, club: undefined });
 
   const lang = useSelector(state => state.lang);
   const user = useSelector(state => state.user);
@@ -261,19 +271,17 @@ const ClubList = withStyles(styles)(({ classes, router }) => {
 
   return (
     <div className={classes.root}>
-      <TopNav router={router} lang={lang} user={user} setClubEditor={setClubEditor} />
+      <TopNav router={router} lang={lang} user={user} />
 
       <Grid container spacing={2} className={classes.content}>
         {listData.records
           ? listData.records.map(club => (
               <Grid xs={12} item key={club._id}>
-                <ClubCard xs={12} router={router} lang={lang} user={user} club={club} setClubEditor={setClubEditor}></ClubCard>
+                <ClubCard xs={12} router={router} lang={lang} user={user} club={club}></ClubCard>
               </Grid>
             ))
           : ""}
       </Grid>
-
-      <ClubEdit editor={clubEditor} setEditor={setClubEditor} />
     </div>
   );
 });

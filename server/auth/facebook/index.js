@@ -20,7 +20,7 @@ export default async (db, app) => {
 
     logger.info("auth.facebook(): ---- facebook auth loaded --");
   } catch (err) {
-    logger.warn("auth.facebook(): Error: " + JSON.stringify(err));
+    logger.warn(`auth.facebook(): ${err}`);
     throw err;
   }
 };

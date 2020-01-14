@@ -10,13 +10,15 @@ import { validate } from "./Club.js";
 export default (db, app) => {
   app.post(conf.api.clubs.url, (req, res) => {
     // DEBUG:
-    logger.debug(`api.clubs.create(): req auth = ${JSON.stringify(req.headers["authorization"])}`);
-    logger.debug(`api.clubs.create(): req body = ${JSON.stringify(req.body)}`);
+    logger.debug(`api.clubs.create(): req headers = ${JSON.stringify(req.headers)}`);
+    logger.debug(`api.clubs.create(): req params  = ${JSON.stringify(req.params)}`);
+    logger.debug(`api.clubs.create(): req body    = ${JSON.stringify(req.body)}`);
 
     let apiReq = req.body;
     if (!apiReq || !apiReq.uid || !apiReq.data || !req.headers["authorization"]) {
-      let err = "Invalid request data.";
-      res.status(422).json({ error: `${err}` });
+      let error = Error("Invalid request data.");
+      logger.debug(`api.clubs.create(): error = ${error.message}`);
+      res.status(422).json(error);
       return;
     } else {
       apiReq.token = req.headers["authorization"].substr("Bearer ".length);
@@ -40,23 +42,27 @@ export default (db, app) => {
                     logger.debug(`api.clubs.create(): Inserted record = ${JSON.stringify(record)}`);
                     res.json({ inserted: record });
                   } else {
-                    logger.warn(`api.clubs.create() : err = ${err}`);
-                    res.status(422).json({ error: `${err}` });
+                    let error = Error("api.clubs.create(): No record inserted");
+                    logger.warn(error.message);
+                    res.status(422).json(error);
                   }
                 })
                 .catch(err => {
-                  logger.warn(`api.clubs.create(): err = ${err}`);
-                  res.status(422).json({ error: `${err}` });
+                  let error = Error(`api.clubs.create(): find() failed: ${err}`);
+                  logger.warn(error.message);
+                  res.status(422).json(error);
                 })
             )
             .catch(err => {
-              logger.warn(`api.clubs.create(): err = ${err}`);
-              res.status(500).json({ error: `${err}` });
+              let error = Error(`api.clubs.create(): Data validation failed: ${err}`);
+              logger.warn(error.message);
+              res.status(500).json(error);
             });
         })
         .catch(err => {
-          logger.warn(`api.clubs.create(): err = ${err}`);
-          res.status(400).json({ error: `${err}` });
+          let error = Error(`api.clubs.create(): Authentication failed: ${err}`);
+          logger.warn(error.message);
+          res.status(422).json(error);
         });
     }
   });
