@@ -20,7 +20,7 @@ import {
   Typography,
   Fab
 } from "@material-ui/core";
-import { Close, OpenInNew } from "@material-ui/icons";
+import { Close as CloseIcon, OpenInNew as LogoutIcon } from "@material-ui/icons";
 
 import conf from "../conf";
 
@@ -33,21 +33,21 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 // -----------------------------------------------------------------------------
 
 const styles = theme => ({
-  avatar_xs: {
+  avatar480dn: {
     margin: theme.spacing(4, 2, 1),
     width: theme.spacing(12),
     height: theme.spacing(12)
   },
-  name_xs: {
+  name480dn: {
     margin: theme.spacing(0, 2),
     width: theme.spacing(12)
   },
-  avatar_sm: {
+  avatar480up: {
     margin: theme.spacing(4, 4, 2),
     width: theme.spacing(12),
     height: theme.spacing(12)
   },
-  name_sm: {
+  name480up: {
     margin: theme.spacing(0, 4),
     width: theme.spacing(12)
   },
@@ -88,7 +88,8 @@ const LogoutDialog = withStyles(styles)(({ classes, router, open, setOpen }) => 
     router.push(conf.urls.app);
   };
 
-  const w400dn = useMediaQuery("(max-width:400px)");
+  const w350up = useMediaQuery("(min-width:350px)");
+  const w480up = useMediaQuery("(min-width:480px)");
 
   return (
     <div>
@@ -98,14 +99,14 @@ const LogoutDialog = withStyles(styles)(({ classes, router, open, setOpen }) => 
             <Avatar
               alt={user && user.name ? user.name : ""}
               src={user && user.avatar ? user.avatar : ""}
-              className={w400dn ? classes.avatar_xs : classes.avatar_sm}
+              className={w480up ? classes.avatar480up : classes.avatar480dn}
             />
             <Typography
               variant="subtitle2"
               display="block"
               align="center"
               // noWrap="true"
-              className={w400dn ? classes.name_xs : classes.name_sm}
+              className={w480up ? classes.name480up : classes.name480dn}
             >
               {user && user.name ? user.name : ""}
             </Typography>
@@ -114,7 +115,7 @@ const LogoutDialog = withStyles(styles)(({ classes, router, open, setOpen }) => 
               display="block"
               align="center"
               noWrap={true}
-              className={w400dn ? classes.name_xs : classes.name_sm}
+              className={w480up ? classes.name480up : classes.name480dn}
             >
               ({user && user.clubName ? user.clubName : conf.labels.noClub[lang]})
             </Typography>
@@ -127,19 +128,21 @@ const LogoutDialog = withStyles(styles)(({ classes, router, open, setOpen }) => 
           </Grid>
           <Grid item xs={12}>
             <DialogActions className={classes.actions}>
-              <Grid container>
-                <Grid item xs={6}>
+              <Grid container justify="center">
+                {w480up ? <Grid item xs={1} /> : ""}
+                <Grid item xs={w480up ? 5 : 6}>
                   <Fab variant="extended" size="medium" onClick={handleClose} color="default">
-                    <Close className={classes.button} />
+                    {w350up ? <CloseIcon className={classes.button} /> : ""}
                     Cancel
                   </Fab>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={w480up ? 5 : 6}>
                   <Fab variant="extended" size="medium" onClick={handleLogout} color="secondary">
-                    <OpenInNew className={classes.button} />
+                    {w350up ? <LogoutIcon className={classes.button} /> : ""}
                     Logout
                   </Fab>
-                </Grid>
+                </Grid>{" "}
+                {w480up ? <Grid item xs={1} /> : ""}
               </Grid>
             </DialogActions>
           </Grid>
