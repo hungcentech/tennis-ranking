@@ -26,7 +26,7 @@ export default async (db, app, passport) => {
       {
         clientID: conf.auth.facebook.clientId,
         clientSecret: conf.auth.facebook.clientSecret,
-        callbackURL: conf.appDomain + conf.appUrl + conf.auth.facebook.login.cbUrl,
+        callbackURL: `${conf.appDomain}${conf.appUrl}${conf.auth.facebook.login.cbUrl}`,
         profileFields: [
           "id",
           "displayName",
@@ -171,8 +171,8 @@ export default async (db, app, passport) => {
   app.get(
     conf.auth.facebook.login.cbUrl,
     passport.authenticate("facebook", {
-      successRedirect: conf.appDomain + conf.appUrl + conf.auth.facebook.login.cbUrlSuccess,
-      failureRedirect: conf.appDomain + conf.appUrl + conf.auth.facebook.login.cbUrlFailure
+      successRedirect: `${conf.appDomain}${conf.appUrl}${conf.auth.facebook.login.cbUrlSuccess}`,
+      failureRedirect: `${conf.appDomain}${conf.appUrl}${conf.auth.facebook.login.cbUrlFailure}`
     })
   );
 

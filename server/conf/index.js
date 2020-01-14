@@ -32,9 +32,13 @@ export default {
   // Express server port
   port: 3000,
 
-  // App general
-  // appDomain: "https://bme.hust.edu.vn",
+  // App domain:
+  //   localhost => for babel debugger
+  //   real domain => for mobile phone use
   appDomain: "http://localhost",
+  // appDomain: "https://bme.hust.edu.vn",
+
+  // App URL
   appUrl: "/tennisrankings",
 
   // API configs

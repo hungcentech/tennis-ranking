@@ -1,6 +1,5 @@
 // -----------------------------------------------------------------------------
 
-import PropTypes from "prop-types";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -18,11 +17,13 @@ import {
   Avatar,
   Grid,
   Typography,
-  Fab
+  Fab,
+  TextField
 } from "@material-ui/core";
-import { Close, OpenInNew } from "@material-ui/icons";
+import { Cancel as CloseIcon, Save as SaveIcon } from "@material-ui/icons";
 
-import conf from "../conf";
+import conf from "../../conf";
+import { blue } from "@material-ui/core/colors";
 
 // -----------------------------------------------------------------------------
 
@@ -33,30 +34,19 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 // -----------------------------------------------------------------------------
 
 const styles = theme => ({
-  avatar_xs: {
-    margin: theme.spacing(4, 2, 1),
-    width: theme.spacing(12),
-    height: theme.spacing(12)
+  avatar480dn: {
+    margin: theme.spacing(2, 1, 1, 1),
+    width: theme.spacing(10),
+    height: theme.spacing(10),
+    borderRadius: "50%"
   },
-  name_xs: {
-    margin: theme.spacing(0, 2),
-    width: theme.spacing(12),
-    textAlign: "center"
+  avatar480up: {
+    margin: theme.spacing(2, 1, 1, 4),
+    width: theme.spacing(16),
+    height: theme.spacing(16),
+    borderRadius: "50%"
   },
-  avatar_sm: {
-    margin: theme.spacing(4, 4, 2),
-    width: theme.spacing(12),
-    height: theme.spacing(12)
-  },
-  name_sm: {
-    margin: theme.spacing(0, 4),
-    width: theme.spacing(12),
-    textAlign: "center"
-  },
-  title: {
-    margin: theme.spacing(2, 2)
-    // color: theme.palette.error.main
-  },
+
   content: {
     margin: theme.spacing(2, 2)
   },
@@ -69,59 +59,89 @@ const styles = theme => ({
 });
 
 // -----------------------------------------------------------------------------
-
-const LogoutDialog = withStyles(styles)(({ classes, router, open, setOpen }) => {
+const EditorRow = ({ label, text, setText }) => {
   const lang = useSelector(state => state.lang);
-  const user = useSelector(state => state.user);
-  const dispatch = useDispatch();
+  return (
+    <Grid container spacing={1}>
+      <Grid item xs={4}>
+        <Typography variant="caption" align="right" display="block" color="textSecondary" noWrap>
+          {label}
+        </Typography>
+      </Grid>
+      <Grid item xs={8}>
+        {/* <Typography variant="caption" align="left" display="block" color="textPrimary" noWrap>
+          {text}Chien binh Nguyen Trai
+        </Typography> */}
+        <TextField
+          // className={classes.navSearch}
+          placeholder={`${conf.labels.name[lang]}...`}
+          value={text}
+          onChange={setText}
+        />
+      </Grid>
+    </Grid>
+  );
+};
+
+// -----------------------------------------------------------------------------
+
+const ClubEditorDialog = withStyles(styles)(({ classes, editor, setEditor }) => {
+  const lang = useSelector(state => state.lang);
+  const club = editor.club;
 
   const handleClose = () => {
-    setOpen(false);
+    setEditor({ open: false, club: undefined });
   };
 
-  const handleLogout = () => {
-    dispatch({
-      type: "user_update",
-      payload: undefined
-    });
+  const handleSave = () => {
+    // ... fetch...
 
-    setOpen(false);
-
-    router.push(conf.urls.app);
+    setEditor({ open: false, club: undefined });
   };
 
-  const w400dn = useMediaQuery("(max-width:400px)");
+  const w480up = useMediaQuery("(min-width:480px)");
 
   return (
     <div>
-      <Dialog maxWidth={"xs"} fullWidth={false} open={open} TransitionComponent={Transition} keepMounted onClose={handleClose}>
+      <Dialog
+        maxWidth={"sm"}
+        fullWidth={true}
+        open={editor.open}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleClose}
+      >
         <Grid container spacing={0}>
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <Avatar
-              alt={user && user.name ? user.name : ""}
-              src={user && user.avatar ? user.avatar : ""}
-              className={w400dn ? classes.avatar_xs : classes.avatar_sm}
+              src={club && club.avatar ? club.avatar : ""}
+              className={w480up ? classes.avatar480up : classes.avatar480dn}
             />
-            <Typography className={w400dn ? classes.name_xs : classes.name_sm}>
-              {user && user.name ? `${user.name}` : ""}
-            </Typography>
           </Grid>
-          <Grid item xs={8}>
-            <DialogTitle className={classes.title}>{"Logout"}</DialogTitle>
+
+          <Grid item xs={9}>
+            <DialogTitle>{club ? conf.labels.updateClub[lang] : conf.labels.addClub[lang]}</DialogTitle>
             <DialogContent className={classes.content}>
-              <DialogContentText>Are you sure you want to logout?</DialogContentText>
+              <EditorRow label="Name" text={club ? club.name : ""} />
             </DialogContent>
           </Grid>
+
           <Grid item xs={12}>
             <DialogActions className={classes.actions}>
-              <Fab variant="extended" size="medium" onClick={handleClose} color="default">
-                <Close className={classes.button} />
-                Cancel
-              </Fab>
-              <Fab variant="extended" size="medium" onClick={handleLogout} color="secondary">
-                <OpenInNew className={classes.button} />
-                Logout
-              </Fab>
+              <Grid container>
+                <Grid item xs={6}>
+                  <Fab variant="extended" size="medium" onClick={handleSave} color="primary">
+                    <SaveIcon className={classes.button} />
+                    Save
+                  </Fab>
+                </Grid>
+                <Grid item xs={6}>
+                  <Fab variant="extended" size="medium" onClick={handleClose} color="default">
+                    <CloseIcon className={classes.button} />
+                    Cancel
+                  </Fab>
+                </Grid>
+              </Grid>
             </DialogActions>
           </Grid>
         </Grid>
@@ -130,14 +150,8 @@ const LogoutDialog = withStyles(styles)(({ classes, router, open, setOpen }) => 
   );
 });
 
-// -------------------------------------
-
-LogoutDialog.propTypes = {
-  router: PropTypes.object.isRequired
-};
-
 // -----------------------------------------------------------------------------
 
-export default LogoutDialog;
+export default ClubEditorDialog;
 
 // -----------------------------------------------------------------------------

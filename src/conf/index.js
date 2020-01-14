@@ -1,8 +1,6 @@
 // -----------------------------------------------------------------------------
 
 const APP_CONSTS = {
-  // appDomain: "https://bme.hust.edu.vn",
-  appDomain: "http://localhost",
   urls: {
     app: "/tennisrankings",
     login: "/auth/facebook/login",
@@ -59,9 +57,11 @@ const APP_CONSTS = {
   },
 
   labels: {
-    edit: { en: "Edit", vi: "Sửa" },
+    name: { en: "Name", vi: "Tên" },
+    addClub: { en: "Add new club", vi: "Thêm clb mới" },
+    updateClub: { en: "Update Club", vi: "Cập nhật clb" },
     joinClub: { en: "Join club", vi: "Tham gia" },
-    findClub: { en: "Find club...", vi: "Tìm CLB..." },
+    findClub: { en: "Find club...", vi: "Tìm clb..." },
     noClub: { en: "club: none", vi: "clb: chưa có" }
   }
 };

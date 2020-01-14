@@ -11,6 +11,7 @@ import { Grid, Card, CardContent, CardMedia, Typography, Fab, IconButton, Button
 import { ArrowBackIos, Search, Add, Edit as EditIcon, SportsTennis as JoinIcon } from "@material-ui/icons";
 
 import conf from "../../conf";
+import ClubEdit from "./ClubEdit.jsx";
 
 // -----------------------------------------------------------------------------
 
@@ -32,17 +33,14 @@ const styles = theme => {
       padding: theme.spacing(1)
     },
 
-    card: {},
-
-    cardDetails: {},
-    avatar450dn: {
-      margin: theme.spacing(1),
+    avatar480dn: {
+      margin: theme.spacing(2, 1, 1, 1),
       width: theme.spacing(12),
       height: theme.spacing(12),
       borderRadius: "50%"
     },
-    avatar450up: {
-      margin: theme.spacing(1, 4),
+    avatar480up: {
+      margin: theme.spacing(2, 1, 1, 4),
       width: theme.spacing(16),
       height: theme.spacing(16),
       borderRadius: "50%"
@@ -56,10 +54,10 @@ const styles = theme => {
       marginRight: theme.spacing(1)
     },
 
-    fab450dn: {
+    fab480dn: {
       marginLeft: theme.spacing(3.5)
     },
-    fab450up: {
+    fab480up: {
       marginLeft: theme.spacing(7.5)
     }
   };
@@ -169,20 +167,20 @@ TopNav.propTypes = {
 
 // -----------------------------------------------------------------------------
 
-const ClubCard = withStyles(styles)(({ classes, lang, user, club }) => {
+const ClubCard = withStyles(styles)(({ classes, lang, user, club, setClubEditor }) => {
   const w350up = useMediaQuery("(min-width:350px)");
-  const w450up = useMediaQuery("(min-width:450px)");
+  const w480up = useMediaQuery("(min-width:480px)");
   return (
-    <Card className={classes.card}>
+    <Card>
       <Grid container spacing={0}>
-        {/* <Grid item xs={1}></Grid> */}
         <Grid item xs={4}>
           <CardMedia
-            className={w450up ? classes.avatar450up : classes.avatar450dn}
+            className={w480up ? classes.avatar480up : classes.avatar480dn}
             image={club.img ? club.img : conf.urls.app + "/img/tennis.jpg"}
             title=""
           />
         </Grid>
+
         <Grid item xs={8}>
           <CardContent>
             <Typography variant="h6" color="inherit">
@@ -193,16 +191,19 @@ const ClubCard = withStyles(styles)(({ classes, lang, user, club }) => {
             </Typography>
           </CardContent>
         </Grid>
+
         <Grid item xs={12} className={classes.cardControls}>
           <Grid container>
             <Grid item xs={4}>
               <Fab
                 variant="extended"
-                size={w450up ? "medium" : "small"}
-                className={w450up ? classes.fab450up : classes.fab450dn}
+                size={w480up ? "medium" : "small"}
+                className={w480up ? classes.fab480up : classes.fab480dn}
                 color="secondary"
-                onClick={() => {}}
-                disabled={true}
+                onClick={() => {
+                  setClubEditor({ open: true, club: club });
+                }}
+                disabled={false}
               >
                 <EditIcon />
               </Fab>
@@ -211,7 +212,7 @@ const ClubCard = withStyles(styles)(({ classes, lang, user, club }) => {
             <Grid item xs={7}>
               <Fab
                 variant="extended"
-                size={w450up ? "medium" : "small"}
+                size={w480up ? "medium" : "small"}
                 onClick={() => {}}
                 color="secondary"
                 disabled={user && user.clubs && club.id in user.clubs}
@@ -238,7 +239,8 @@ ClubCard.propTypes = {
 // -----------------------------------------------------------------------------
 
 const ClubList = withStyles(styles)(({ classes, router }) => {
-  const [data, setData] = useState({ records: [] });
+  const [listData, setListData] = useState({ records: [] });
+  const [clubEditor, setClubEditor] = useState({ open: true, club: undefined });
 
   const lang = useSelector(state => state.lang);
   const user = useSelector(state => state.user);
@@ -250,7 +252,7 @@ const ClubList = withStyles(styles)(({ classes, router }) => {
       // router.push(conf.urls.app);
     } else {
       fetchClubs(user.uid, user.token, search)
-        .then(clubs => setData(clubs))
+        .then(clubs => setListData(clubs))
         .catch(err => {
           console.log("Failed to fetch clubs: " + err.message);
         });
@@ -259,17 +261,19 @@ const ClubList = withStyles(styles)(({ classes, router }) => {
 
   return (
     <div className={classes.root}>
-      <TopNav router={router} lang={lang} user={user} />
+      <TopNav router={router} lang={lang} user={user} setClubEditor={setClubEditor} />
 
       <Grid container spacing={2} className={classes.content}>
-        {data.records
-          ? data.records.map(club => (
+        {listData.records
+          ? listData.records.map(club => (
               <Grid xs={12} item key={club._id}>
-                <ClubCard xs={12} router={router} lang={lang} user={user} club={club}></ClubCard>
+                <ClubCard xs={12} router={router} lang={lang} user={user} club={club} setClubEditor={setClubEditor}></ClubCard>
               </Grid>
             ))
           : ""}
       </Grid>
+
+      <ClubEdit editor={clubEditor} setEditor={setClubEditor} />
     </div>
   );
 });
