@@ -5,13 +5,13 @@ import logger from "../../logger";
 // -----------------------------------------------------------------------------
 
 const fieldList = {
-  status: "required", // active/inactive
+  status: "optional",
   name: "required",
+  address: "required",
+  admins: "optional",
   description: "optional",
   avatar: "optional",
-  address: "required",
-  contacts: "optional",
-  updates: "optional"
+  changes: "optional"
 };
 
 // -------------------------------------
@@ -29,9 +29,14 @@ export async function validate(apiReq) {
       // logger.debug(`api.clubs.Club.validate(): apiReq = ${JSON.stringify(apiReq)}`);
       let errors = [];
 
-      // Init array of updates
-      if (!apiReq.data.updates) {
-        apiReq.data.updates = [];
+      // Init array of admins
+      if (!apiReq.data.admins) {
+        apiReq.data.admins = [];
+      }
+
+      // Init array of changes
+      if (!apiReq.data.changes) {
+        apiReq.data.changes = [];
       }
 
       // Check required fields
@@ -50,9 +55,20 @@ export async function validate(apiReq) {
 
       // Set default values
       if (errors.length == 0) {
-        // Update time, comment & user id
-        if (!apiReq.comment && !apiReq.data.updates.length) apiReq.comment = "Creation";
-        apiReq.data.updates.push({ updated: new Date(), comment: apiReq.comment, updatedBy: apiReq.uid });
+        if (!apiReq.data.status) {
+          apiReq.data.status = "active";
+        }
+
+        // Insert default admin
+        if (!apiReq.data.admins.length) {
+          apiReq.data.admins.push(user);
+        }
+
+        // Date, updater, change
+        if (!apiReq.change && !apiReq.data.changes.length) {
+          apiReq.change = "Creation";
+        }
+        apiReq.data.changes.push({ date: new Date(), user: apiReq.user, change: apiReq.change });
       }
 
       if (errors.length) reject(errors.join("; "));

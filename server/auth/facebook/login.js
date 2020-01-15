@@ -71,7 +71,7 @@ export default async (db, app, passport) => {
                     logger.debug(`passport.FacebookStrategy(): player found => update() success: ${JSON.stringify(player)}`);
 
                     return cb(null, {
-                      uid: player._id,
+                      _id: player._id,
                       name: player.name,
                       facebook: player.facebook,
                       avatar: player.avatar,
@@ -108,7 +108,7 @@ export default async (db, app, passport) => {
                           logger.debug(`passport.FacebookStrategy(): player creation success: ${JSON.stringify(player)}`);
 
                           return cb(null, {
-                            uid: player._id,
+                            _id: player._id,
                             name: player.name,
                             facebook: player.facebook,
                             avatar: player.avatar,

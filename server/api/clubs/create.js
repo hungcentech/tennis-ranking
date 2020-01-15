@@ -6,6 +6,24 @@ import { authCheck } from "../../auth";
 import { validate } from "./Club.js";
 
 // -----------------------------------------------------------------------------
+// POST:
+// {
+// 	"data": {
+// 	    "status": "active",
+// 	    "name": "Tennis Angels 3",
+// 	    "address": "76 An Duong",
+// 	    "admins": [],
+// 	    "description": "",
+// 	    "avatar": "",
+// 	    "changes": []
+//     },
+// 	"user": {
+//      "_id":"12341341234134",
+//      "facebook": "Le Manh Hung"
+//     },
+// 	"change":"test"
+// }
+// -----------------------------------------------------------------------------
 
 export default (db, app) => {
   app.post(conf.api.clubs.url, (req, res) => {
@@ -15,7 +33,7 @@ export default (db, app) => {
     logger.debug(`api.clubs.create(): req body    = ${JSON.stringify(req.body)}`);
 
     let apiReq = req.body;
-    if (!apiReq || !apiReq.uid || !apiReq.data || !req.headers["authorization"]) {
+    if (!apiReq || !apiReq.user || !apiReq.data || !req.headers["authorization"]) {
       let error = Error("Invalid request data.");
       logger.debug(`api.clubs.create(): error = ${error.message}`);
       res.status(422).json(error);

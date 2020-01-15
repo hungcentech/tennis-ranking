@@ -1,8 +1,8 @@
 // -----------------------------------------------------------------------------
 
 import logger from "../../logger";
-import { authCheck } from "../../auth";
 import conf from "../../conf";
+import { authCheck } from "../../auth";
 
 // -----------------------------------------------------------------------------
 
@@ -18,14 +18,14 @@ export default (db, app) => {
 
     // Authorization check => find()
     let apiReq = {
-      uid: req.query.uid,
+      _id: req.query._id,
       data: {
         ...req.query,
-        uid: undefined
+        _id: undefined
       }
     };
 
-    if (!apiReq || !apiReq.uid || !apiReq.data || !req.headers["authorization"]) {
+    if (!apiReq || !apiReq._id || !apiReq.data || !req.headers["authorization"]) {
       let error = Error("Invalid request params.");
       logger.debug(`api.clubs.read(): error = ${error.message}`);
       res.status(400).json(error);

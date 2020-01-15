@@ -65,12 +65,11 @@ const styles = theme => {
 
 // -----------------------------------------------------------------------------
 
-const fetchClubs = (uid, token, search) => {
+const getClubs = (_id, token, search) => {
   return new Promise((resolve, reject) => {
-    let uri = `${conf.urls.app}/api/clubs?uid=${uid}` + (search ? "&search=" + search : "");
-
+    let uri = `${conf.urls.app}/api/clubs?_id=${_id}` + (search ? "&search=" + search : "");
     // DEBUG:
-    console.log("fetchClubs(): uri =", uri);
+    console.log("get clubs from db: uri =", uri);
 
     fetch(uri, {
       method: "GET",
@@ -261,10 +260,10 @@ const ClubList = withStyles(styles)(({ classes, router }) => {
     if (!user) {
       // router.push(conf.urls.app);
     } else {
-      fetchClubs(user.uid, user.token, search)
+      getClubs(user._id, user.token, search)
         .then(clubs => setListData(clubs))
         .catch(err => {
-          console.log("Failed to fetch clubs: " + err.message);
+          console.log("Failed to get clubs: " + err.message);
         });
     }
   }, [search]);

@@ -86,27 +86,56 @@ const EditorField = withStyles(styles)(({ classes, label, value, onChange, disab
 
 // -----------------------------------------------------------------------------
 
-const ClubEditor = withStyles(styles)(({ classes, _club, open, setOpen }) => {
+const ClubEditor = withStyles(styles)(({ classes, originalClub, open, setOpen }) => {
   const w350up = useMediaQuery("(min-width:350px)");
   const w480up = useMediaQuery("(min-width:480px)");
 
   const lang = useSelector(state => state.lang);
-  const [club, setClub] = useState(Object.assign(_club));
+  const user = useSelector(state => state.user);
+  const [club, setClub] = useState(Object.assign(originalClub));
 
   const handleClose = () => {
     setOpen(false);
   };
 
   const handleSave = () => {
-    if (club != _club) {
-      console.log("Saving...");
-      setTimeout(() => {
-        console.log("........ done!");
-      }, 1000);
-    }
-    // ... fetch...
+    if (JSON.stringify(club) != JSON.stringify(originalClub)) {
+      // DEBUG:
+      console.log("club changed => update modified club...");
 
-    setOpen(false);
+      let uri = `${conf.urls.app}/api/clubs`;
+      // DEBUG:
+      console.log("uri =", uri);
+
+      fetch(uri, {
+        method: "PUT",
+        headers: { authorization: `Bearer ${token}`, "content-type": "application/json" },
+        body: {
+          data: JSON.stringify(club),
+          user: { _id: user._id, facebook: user.facebook },
+          change: ""
+        }
+      })
+        .then(response => {
+          if (response.ok) {
+            response
+              .json()
+              .then(apiRes => {
+                resolve(apiRes);
+              })
+              .catch(err => {
+                reject(Error("Invalid data format: " + err.message));
+              });
+
+            setOpen(false);
+          } else {
+            reject(Error("Invalid request params"));
+          }
+        })
+        .catch(err => {
+          reject("Data fetch error:", err.message);
+        });
+    }
   };
 
   const handleChange = (key, newValue) => {

@@ -13,7 +13,7 @@ export default async (db, app) => {
 
     await clubsApiLoader(db, app);
     await playersApiLoader(db, app);
-    await matchesApiLoader(db, app);
+    // await matchesApiLoader(db, app);
 
     logger.info("api(): ------------ APIs loaded ! -----------");
   } catch (err) {
