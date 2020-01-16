@@ -20,7 +20,7 @@ import {
   Fab,
   TextField
 } from "@material-ui/core";
-import { Edit, Cancel, Save } from "@material-ui/icons";
+import { Cancel as CloseIcon, Save as SaveIcon } from "@material-ui/icons";
 
 import conf from "../../conf";
 
@@ -61,7 +61,7 @@ const styles = theme => ({
   actions: {
     margin: theme.spacing(2, 2)
   },
-  icon: {
+  button: {
     marginRight: theme.spacing(1)
   }
 });
@@ -87,6 +87,7 @@ const EditorField = withStyles(styles)(({ classes, label, value, onChange, disab
 // -----------------------------------------------------------------------------
 
 const ClubEditor = withStyles(styles)(({ classes, _club, open, setOpen }) => {
+  const w350up = useMediaQuery("(min-width:350px)");
   const w480up = useMediaQuery("(min-width:480px)");
 
   const lang = useSelector(state => state.lang);
@@ -164,19 +165,22 @@ const ClubEditor = withStyles(styles)(({ classes, _club, open, setOpen }) => {
 
           <Grid item xs={12}>
             <DialogActions className={classes.actions}>
-              <Grid container>
-                <Grid item xs={6}>
+              <Grid container justify="center">
+                <Grid item xs={w480up ? 3 : 1}></Grid>
+                <Grid item xs={w480up ? 3 : 5}>
                   <Fab variant="extended" size="medium" onClick={handleSave} color="primary">
-                    <Save className={classes.icon} />
+                    {w350up ? <SaveIcon className={classes.button} /> : ""}
                     Save
                   </Fab>
                 </Grid>
-                <Grid item xs={6}>
+                {w480up ? <Grid item xs={1}></Grid> : ""}
+                <Grid item xs={w480up ? 3 : 5}>
                   <Fab variant="extended" size="medium" onClick={handleClose} color="default">
-                    <Cancel className={classes.icon} />
+                    {w350up ? <CloseIcon className={classes.button} /> : ""}
                     Cancel
                   </Fab>
                 </Grid>
+                <Grid item xs={w480up ? 2 : 1}></Grid>
               </Grid>
             </DialogActions>
           </Grid>

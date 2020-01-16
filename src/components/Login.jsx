@@ -33,23 +33,23 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 // -----------------------------------------------------------------------------
 
 const styles = theme => ({
-  avatar_xs: {
+  avatar480dn: {
     margin: theme.spacing(4, 2, 2),
     width: theme.spacing(12),
     height: theme.spacing(12),
     background: `radial-gradient(center, ${theme.palette.grey[100]}, ${theme.palette.grey[900]})`
   },
-  name_xs: {
+  name480dn: {
     margin: theme.spacing(0, 2),
     width: theme.spacing(12),
     textAlign: "center"
   },
-  avatar_sm: {
+  avatar480up: {
     margin: theme.spacing(4, 4, 2),
     width: theme.spacing(12),
     height: theme.spacing(12)
   },
-  name_sm: {
+  name480up: {
     margin: theme.spacing(0, 4),
     width: theme.spacing(12),
     textAlign: "center"
@@ -89,7 +89,8 @@ const LoginDialog = withStyles(styles)(({ classes, open, setOpen }) => {
     setOpen(false);
   };
 
-  const w400dn = useMediaQuery("(max-width:400px)");
+  const w350up = useMediaQuery("(min-width:350px)");
+  const w480up = useMediaQuery("(min-width:480px)");
 
   return (
     <div>
@@ -99,9 +100,9 @@ const LoginDialog = withStyles(styles)(({ classes, open, setOpen }) => {
             <Avatar
               alt={user && user.name ? user.name : ""}
               src={user && user.avatar ? user.avatar : ""}
-              className={w400dn ? classes.avatar_xs : classes.avatar_sm}
+              className={w480up ? classes.avatar480up : classes.avatar480dn}
             />
-            <Typography className={w400dn ? classes.name_xs : classes.name_sm}>
+            <Typography className={w480up ? classes.name480up : classes.name480dn}>
               {user && user.name ? `${user.name}` : ""}
             </Typography>
           </Grid>
@@ -113,19 +114,21 @@ const LoginDialog = withStyles(styles)(({ classes, open, setOpen }) => {
           </Grid>
           <Grid item xs={12}>
             <DialogActions className={classes.actions}>
-              <Grid container>
-                <Grid item xs={6}>
+              <Grid container justify="center">
+                <Grid item xs={w480up ? 2 : 1}></Grid>
+                <Grid item xs={w480up ? 4 : 5}>
                   <Fab variant="extended" size="medium" href={conf.urls.app + conf.urls.login} color="primary">
-                    <LoginIcon className={classes.button} />
+                    {w350up ? <LoginIcon className={classes.button} /> : ""}
                     Login
                   </Fab>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={w480up ? 4 : 5}>
                   <Fab variant="extended" size="medium" onClick={handleClose} color="default">
-                    <CloseIcon className={classes.button} />
+                    {w350up ? <CloseIcon className={classes.button} /> : ""}
                     Cancel
                   </Fab>
                 </Grid>
+                <Grid item xs={w480up ? 2 : 1}></Grid>
               </Grid>
             </DialogActions>
           </Grid>
