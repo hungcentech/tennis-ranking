@@ -4,6 +4,7 @@ import { Strategy as FacebookStrategy } from "passport-facebook";
 
 import logger from "../../logger";
 import conf from "../../conf";
+import { ObjectId } from "mongodb";
 
 // -----------------------------------------------------------------------------
 
@@ -162,6 +163,66 @@ export default async (db, app, passport) => {
       ]
     })
   );
+
+  // -------------------------------------
+  // Install express GET handler:
+  //   receive user logout request from app
+  //   => delete user's token in db
+  // -------------------------------------
+  app.get(conf.auth.facebook.logout.url + "/:id", (req, res) => {
+    // DEBUG:
+    logger.debug(`handleLogout(): req headers = ${JSON.stringify(req.headers)}`);
+    logger.debug(`handleLogout(): req params (rest-api)  = ${JSON.stringify(req.params)}`);
+
+    if (!req.params.id || !req.headers["authorization"]) {
+      let err = new Error("Invalid params");
+      logger.warn(`handleLogout(): ${err}. id=${req.params.id}, auth-header=${req.headers["authorization"]}`);
+      res.status(400).json(err);
+    } else {
+      // Authorization check => find()
+      let playerId = new ObjectId(req.params.id);
+      let token = req.headers["authorization"].substr("Bearer ".length);
+      db.collection("players")
+        .find({ _id: playerId, token: token })
+        .limit(1)
+        .next()
+        .then(player => {
+          if (player) {
+            logger.debug(`handleLogout(): Logged in user found: ${JSON.stringify(player)}`);
+
+            db.collection("players")
+              .updateMany({ _id: playerId }, { $set: { token: undefined } })
+              .then(() =>
+                db
+                  .collection("players")
+                  .find({ _id: playerId })
+                  .limit(1)
+                  .next()
+              )
+              .then(savedPlayer => {
+                if (savedPlayer && !savedPlayer.token) {
+                  logger.debug(`handleLogout(): token cleared, logout success`);
+                  res.status(200).json({ message: "Logout success." });
+                } else {
+                  logger.warn(`handleLogout(): token not cleared, logout failed. player = ${JSON.stringify(savedPlayer)}`);
+                  res.status(500).json({ message: `Internal Server Err: ${err}` });
+                }
+              })
+              .catch(err => {
+                logger.warn("handleLogout(): ", err);
+                res.status(500).json({ message: `Internal Server Err: ${err}` });
+              });
+          } else {
+            logger.debug(`handleLogout(): User not found or not logged in. (_id: ${playerId})`);
+            res.status(200).json({ message: "Logout success. Not logged in." });
+          }
+        })
+        .catch(err => {
+          logger.debug(`handleLogout(): Server error: ${err}`);
+          res.status(500).json({ message: `Logout failed. ${err}` });
+        });
+    }
+  });
 
   // -------------------------------------
   // Install express GET handler:

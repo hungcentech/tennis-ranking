@@ -57,6 +57,9 @@ export default {
         cbUrl: "/auth/facebook/cb/login",
         cbUrlSuccess: "/auth/facebook/cb/login/success",
         cbUrlFailure: "/auth/facebook/cb/login/failure"
+      },
+      logout: {
+        url: "/auth/facebook/logout"
       }
     }
   }

@@ -5,13 +5,15 @@ import logger from "../../logger";
 // -----------------------------------------------------------------------------
 
 const fieldList = {
-  status: "optional",
-  name: "required",
-  address: "required",
-  admins: "optional",
-  description: "optional",
-  avatar: "optional",
-  changes: "optional"
+  _id: "optional", // ObjectId
+  status: "optional", // String
+  name: "required", // String
+  address: "required", // String
+  players: "optional", // Array of user {_id, facebook}, includes official players & guests
+  admins: "optional", // Array of user {_id, facebook}
+  description: "optional", // String
+  avatar: "optional", // Url string
+  changes: "optional" // Array of change { date: Date, user: {_id, facebook}, change: String }
 };
 
 // -------------------------------------
@@ -29,16 +31,6 @@ export async function validate(apiReq) {
       // logger.debug(`api.clubs.Club.validate(): apiReq = ${JSON.stringify(apiReq)}`);
       let errors = [];
 
-      // Init array of admins
-      if (!apiReq.data.admins) {
-        apiReq.data.admins = [];
-      }
-
-      // Init array of changes
-      if (!apiReq.data.changes) {
-        apiReq.data.changes = [];
-      }
-
       // Check required fields
       Object.keys(fieldList).forEach(field => {
         if (fieldList[field] === "required" && !apiReq.data[field]) {
@@ -46,7 +38,7 @@ export async function validate(apiReq) {
         }
       });
 
-      // Validate fields' value
+      // Validate input fields' value
       Object.keys(fieldValidation).forEach(field => {
         if (apiReq.data[field] && !fieldValidation[field][apiReq.data[field]]) {
           errors.push(`${apiReq.data[field]} is not a valid ${field}.`);
@@ -59,16 +51,28 @@ export async function validate(apiReq) {
           apiReq.data.status = "active";
         }
 
-        // Insert default admin
+        // Init optional arrays:
+        //
+        //   admins
+        if (!apiReq.data.admins) {
+          apiReq.data.admins = [];
+        }
         if (!apiReq.data.admins.length) {
           apiReq.data.admins.push(user);
         }
-
-        // Date, updater, change
+        //   players
+        if (!apiReq.data.players) {
+          apiReq.data.players = [];
+        }
+        if (!apiReq.data.players.length) {
+          apiReq.data.players.push(user);
+        }
+        //   changes: date, user, change
         if (!apiReq.change && !apiReq.data.changes.length) {
           apiReq.change = "Creation";
         }
         apiReq.data.changes.push({ date: new Date(), user: apiReq.user, change: apiReq.change });
+        //
       }
 
       if (errors.length) reject(errors.join("; "));

@@ -10,8 +10,8 @@ export default (db, app) => {
     let playerId;
     try {
       playerId = new ObjectId(req.params.id);
-    } catch (error) {
-      res.status(422).json({ message: `Invalid player id format: ${error}` });
+    } catch (err) {
+      res.status(422).json({ message: `Invalid player id format: ${err}` });
       return;
     }
 
@@ -37,9 +37,9 @@ export default (db, app) => {
       .then(savedPlayer => {
         res.json(savedPlayer);
       })
-      .catch(error => {
-        logger.warn("api.player.update(): ", error);
-        res.status(500).json({ message: `Internal Server Error: ${error}` });
+      .catch(err => {
+        logger.warn("api.player.update(): ", err);
+        res.status(500).json({ message: `Internal Server Err: ${err}` });
       });
   });
 };

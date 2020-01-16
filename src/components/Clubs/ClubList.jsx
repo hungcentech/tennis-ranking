@@ -65,33 +65,39 @@ const styles = theme => {
 
 // -----------------------------------------------------------------------------
 
-const getClubs = (_id, token, search) => {
+const getClubs = (user, search) => {
   return new Promise((resolve, reject) => {
-    let uri = `${conf.urls.app}/api/clubs?_id=${_id}` + (search ? "&search=" + search : "");
-    // DEBUG:
-    console.log("get clubs from db: uri =", uri);
+    console.log("getClubs(): user =", user);
+    if (!user) {
+      reject(new Error("getClub(): user not set"));
+    } else {
+      let uri = `${conf.urls.app}/api/clubs` + (search ? "?search=" + search : "");
+      // DEBUG:
+      console.log("getClubs(): uri =", uri);
 
-    fetch(uri, {
-      method: "GET",
-      headers: new Headers({ authorization: `Bearer ${token}` })
-    })
-      .then(response => {
-        if (response.ok) {
-          response
-            .json()
-            .then(apiRes => {
-              resolve(apiRes);
-            })
-            .catch(err => {
-              reject(Error("Invalid data format: " + err.message));
-            });
-        } else {
-          reject(Error("Invalid request params"));
-        }
+      fetch(uri, {
+        method: "PUSH",
+        headers: new Headers({ authorization: `Bearer ${user.token}`, "content-type": "application/json" }),
+        body: JSON.stringify({ user: { _id: user._id, facebook: user.facebook } })
       })
-      .catch(err => {
-        reject("Data fetch error:", err.message);
-      });
+        .then(response => {
+          if (response.ok) {
+            response
+              .json()
+              .then(apiRes => {
+                resolve(apiRes);
+              })
+              .catch(err => {
+                reject(Error("Invalid data format: " + err.message));
+              });
+          } else {
+            reject(new Error("Invalid request params"));
+          }
+        })
+        .catch(err => {
+          reject(new Error("Fetch error: " + err.message));
+        });
+    }
   });
 };
 
@@ -149,7 +155,7 @@ const TopNav = withStyles(styles)(({ classes, router, lang, user }) => {
           onChange={handleChange}
         />
 
-        <IconButton className={classes.nav} edge="end" color="inherit" onClick={() => {}} disabled>
+        <IconButton className={classes.nav} edge="end" color="inherit" onClick={() => {}}>
           <Add />
         </IconButton>
       </Toolbar>
@@ -259,8 +265,9 @@ const ClubList = withStyles(styles)(({ classes, router }) => {
   useEffect(() => {
     if (!user) {
       // router.push(conf.urls.app);
+      router.goBack();
     } else {
-      getClubs(user._id, user.token, search)
+      getClubs(user, search)
         .then(clubs => setListData(clubs))
         .catch(err => {
           console.log("Failed to get clubs: " + err.message);

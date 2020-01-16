@@ -78,14 +78,38 @@ const LogoutDialog = withStyles(styles)(({ classes, router, open, setOpen }) => 
   };
 
   const handleLogout = () => {
-    dispatch({
-      type: "user_update",
-      payload: undefined
-    });
+    let uri = `${conf.urls.app}${conf.urls.logout}/${user._id}`;
+    console.log("handleLogout(): Logging out... uri = ", uri);
+    fetch(uri, {
+      method: "GET",
+      headers: new Headers({ authorization: `Bearer ${user.token}` })
+    })
+      .then(response => {
+        if (response.ok) {
+          // 200 OK => unset user
+          dispatch({
+            type: "user_update",
+            payload: undefined
+          });
+          setOpen(false);
+          router.push(conf.urls.app);
 
-    setOpen(false);
-
-    router.push(conf.urls.app);
+          // DEBUG
+          response
+            .json()
+            .then(apiRes => {
+              console.log("handleLogout(): Logout success, response =", apiRes);
+            })
+            .catch(err => {
+              console.log("handleLogout(): Logout success with non-json response =", response, ", Error =", err);
+            });
+        } else {
+          console.log("handleLogout(): Logout failed, response =", response);
+        }
+      })
+      .catch(err => {
+        console.log("handleLogout(): Fetch error =", err);
+      });
   };
 
   const w350up = useMediaQuery("(min-width:350px)");
