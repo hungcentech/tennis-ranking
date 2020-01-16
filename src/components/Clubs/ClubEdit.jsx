@@ -158,7 +158,11 @@ const ClubEditor = withStyles(styles)(({ classes, originalClub, open, setOpen })
       <form>
         <Grid container spacing={0}>
           <Grid item xs={12}>
-            <DialogTitle>{club._id ? conf.labels.updateClub[lang] : conf.labels.addClub[lang]}</DialogTitle>
+            <DialogTitle>
+              {club._id
+                ? `${conf.labels.edit[lang]} ${conf.labels.club[lang]}`
+                : `${conf.labels.add[lang]} ${conf.labels.club[lang]}`}
+            </DialogTitle>
           </Grid>
 
           <Grid item xs={3}>

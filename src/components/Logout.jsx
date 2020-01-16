@@ -117,7 +117,7 @@ const LogoutDialog = withStyles(styles)(({ classes, router, open, setOpen }) => 
               noWrap={true}
               className={w480up ? classes.name480up : classes.name480dn}
             >
-              ({user && user.clubName ? user.clubName : conf.labels.noClub[lang]})
+              ({user && user.clubName ? user.clubName : `${conf.labels.club[lang]}: ${conf.labels.none[lang]}`})
             </Typography>
           </Grid>
           <Grid item xs={8}>

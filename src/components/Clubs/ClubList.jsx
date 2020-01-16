@@ -137,7 +137,7 @@ const TopNav = withStyles(styles)(({ classes, router, lang, user }) => {
 
         <TextField
           className={classes.navSearch}
-          placeholder={user && user.clubName ? user.clubName : conf.labels.findClub[lang]}
+          placeholder={user && user.clubName ? user.clubName : `${conf.labels.find[lang]} ${conf.labels.club[lang]}`}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -226,7 +226,7 @@ const ClubCard = withStyles(styles)(({ classes, lang, user, club }) => {
                 disabled={user && user.clubs && club && club.id in user.clubs}
               >
                 {w350up ? <JoinIcon className={classes.fabIcon} /> : ""}
-                {conf.labels.joinClub[lang]}
+                {`${conf.labels.join[lang]} ${conf.labels.club[lang]}`}
               </Fab>
             </Grid>
           </Grid>
