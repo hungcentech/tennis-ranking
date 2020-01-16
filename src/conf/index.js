@@ -57,12 +57,16 @@ const APP_CONSTS = {
   },
 
   labels: {
+    infomation: { en: "Infomation", vi: "Thông tin" },
     name: { en: "Name", vi: "Tên" },
-    addClub: { en: "Add new club", vi: "Thêm clb mới" },
-    updateClub: { en: "Update Club", vi: "Cập nhật clb" },
-    joinClub: { en: "Join club", vi: "Tham gia" },
-    findClub: { en: "Find club...", vi: "Tìm clb..." },
-    noClub: { en: "club: none", vi: "clb: chưa có" }
+    club: { en: "Club", vi: "CLB" },
+    add: { en: "Add", vi: "Thêm" },
+    edit: { en: "Edit", vi: "Sửa" },
+    change: { en: "Change", vi: "Thay đổi" },
+    update: { en: "Update", vi: "Cập nhật" },
+    join: { en: "Join", vi: "Tham gia" },
+    find: { en: "Find", vi: "Tìm kiếm" },
+    none: { en: "None", vi: "Không" }
   }
 };
 
