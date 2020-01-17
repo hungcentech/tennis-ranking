@@ -79,7 +79,7 @@ const PlayerCard = withStyles(styles)(({ classes, router, info }) => {
     <Card
       className={classes.card}
       onClick={() => {
-        router.push(`/players/${info._id}`);
+        router.push(`/players/${info.id}`);
       }}
     >
       <CardActionArea>
@@ -167,7 +167,7 @@ const PlayerList = withStyles(styles)(({ classes, router }) => {
       <Grid container spacing={2} className={classes.content}>
         {data.players
           ? data.players.map(item => (
-              <Grid item key={item._id}>
+              <Grid item key={item.id}>
                 <Paper>
                   <PlayerCard router={router} info={item}></PlayerCard>
                 </Paper>

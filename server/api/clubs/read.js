@@ -1,8 +1,8 @@
 // -----------------------------------------------------------------------------
 
 import logger from "../../logger";
-import conf from "../../conf";
 import { authCheck } from "../../auth";
+import conf from "../../conf";
 
 // -----------------------------------------------------------------------------
 
@@ -12,26 +12,25 @@ export default (db, app) => {
 
   app.get(conf.api.clubs.url, (req, res) => {
     // DEBUG:
-    logger.debug(`api.clubs.read(): req headers = ${JSON.stringify(req.headers)}`);
-    logger.debug(`api.clubs.read(): req params  = ${JSON.stringify(req.params)}`);
-    logger.debug(`api.clubs.read(): req body    = ${JSON.stringify(req.body)}`);
+    logger.debug(`api.clubs.read(): req auth  = ${JSON.stringify(req.headers["authorization"])}`);
+    logger.debug(`api.clubs.read(): req query = ${JSON.stringify(req.query)}`);
 
     // Authorization check => find()
     let apiReq = {
-      _id: req.query._id,
       data: {
-        ...req.query,
-        _id: undefined
+        ...req.query
       }
     };
 
-    if (!apiReq || !apiReq._id || !apiReq.data || !req.headers["authorization"]) {
+    if (!req.headers["authorization"]) {
       let error = Error("Invalid request params.");
       logger.debug(`api.clubs.read(): error = ${error.message}`);
       res.status(400).json(error);
       return;
     } else {
       apiReq.token = req.headers["authorization"].substr("Bearer ".length);
+      apiReq.function = "read clubs";
+      logger.debug(`api.clubs.read(): token = ${JSON.stringify(apiReq.token)}`);
 
       authCheck(db, apiReq)
         .then(apiReq => {

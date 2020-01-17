@@ -76,9 +76,8 @@ const getClubs = (user, search) => {
       console.log("getClubs(): uri =", uri);
 
       fetch(uri, {
-        method: "PUSH",
-        headers: new Headers({ authorization: `Bearer ${user.token}`, "content-type": "application/json" }),
-        body: JSON.stringify({ user: { _id: user._id, facebook: user.facebook } })
+        method: "GET",
+        headers: new Headers({ authorization: `Bearer ${user.token}`, "content-type": "application/json" })
       })
         .then(response => {
           if (response.ok) {
@@ -282,7 +281,7 @@ const ClubList = withStyles(styles)(({ classes, router }) => {
       <Grid container spacing={2} className={classes.content}>
         {listData.records
           ? listData.records.map(club => (
-              <Grid xs={12} item key={club._id}>
+              <Grid xs={12} item key={club.id}>
                 <ClubCard xs={12} router={router} lang={lang} user={user} club={club}></ClubCard>
               </Grid>
             ))

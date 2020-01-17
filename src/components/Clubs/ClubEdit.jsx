@@ -112,7 +112,7 @@ const ClubEditor = withStyles(styles)(({ classes, originalClub, open, setOpen })
         headers: { authorization: `Bearer ${token}`, "content-type": "application/json" },
         body: {
           data: JSON.stringify(club),
-          user: { _id: user._id, facebook: user.facebook },
+          user: { id: user.id, facebook: user.facebook },
           change: ""
         }
       })
@@ -159,7 +159,7 @@ const ClubEditor = withStyles(styles)(({ classes, originalClub, open, setOpen })
         <Grid container spacing={0}>
           <Grid item xs={12}>
             <DialogTitle>
-              {club._id
+              {club.id
                 ? `${conf.labels.edit[lang]} ${conf.labels.club[lang]}`
                 : `${conf.labels.add[lang]} ${conf.labels.club[lang]}`}
             </DialogTitle>

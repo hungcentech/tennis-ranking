@@ -57,7 +57,7 @@ const Home = withStyles(styles)(({ classes, router }) => {
     // console.log("query => data:", data);
 
     if (!user) {
-      if (data && data._id && data.token) {
+      if (data && data.id && data.token) {
         dispatch({
           type: "user_update",
           payload: data

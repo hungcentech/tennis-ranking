@@ -33,7 +33,7 @@ export default (db, app) => {
     logger.debug(`api.clubs.update(): req body    = ${JSON.stringify(req.body)}`);
 
     let apiReq = req.body;
-    if (!apiReq || !apiReq.user || !apiReq.user._id || !apiReq.data || !req.headers["authorization"]) {
+    if (!apiReq || !apiReq.user || !apiReq.user.id || !apiReq.data || !req.headers["authorization"]) {
       let error = Error("Invalid request data.");
       logger.debug(`api.clubs.update(): error = ${error.message}`);
       res.status(422).json(error);

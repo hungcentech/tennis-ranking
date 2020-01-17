@@ -17,20 +17,20 @@ export default (db, app) => {
 
     // Authorization check => find()
     let apiReq = {
-      uid: req.query.uid,
       data: {
-        ...req.query,
-        uid: undefined
+        ...req.query
       }
     };
 
-    if (!apiReq || !apiReq.uid || !apiReq.data || !req.headers["authorization"]) {
-      let err = "Invalid request params.";
-      logger.debug(`api.players.read(): error = ${JSON.stringify(err)}`);
-      res.status(400).json({ error: `${err}` });
+    if (!req.headers["authorization"]) {
+      let error = Error("Invalid request params.");
+      logger.debug(`api.players.read(): error = ${error.message}`);
+      res.status(400).json(error);
       return;
     } else {
       apiReq.token = req.headers["authorization"].substr("Bearer ".length);
+      apiReq.function = "read clubs";
+      logger.debug(`api.clubs.read(): token = ${JSON.stringify(apiReq.token)}`);
 
       authCheck(db, apiReq)
         .then(apiReq => {
@@ -63,40 +63,6 @@ export default (db, app) => {
         });
     }
   });
-
-  // ------------- read one -------------
-
-  // app.get("/api/players/:id", (req, res) => {
-  //   logger.debug(`api.players.readOne(): id = ${req.params.id}`);
-
-  //   let playerId;
-  //   try {
-  //     playerId = new ObjectId(req.params.id);
-  //   } catch (err) {
-  //     logger.debug(`api.players.readOne(): Invalid player ID format. ${err}`);
-  //     res.status(400).json({ message: `Invalid player ID format. ${err}` });
-  //     return;
-  //   }
-  //   db.collection("players")
-  //     .find({ _id: playerId })
-  //     .limit(1)
-  //     .next()
-  //     .then(player => {
-  //       if (!player) {
-  //         logger.debug(`api.players.readOne(): no player found.`);
-  //         res.status(404).json({ message: `No player found with id: ${playerId}` });
-  //       } else {
-  //         logger.debug(`api.players.readOne(): result = ${JSON.stringify(player)}`);
-  //         res.json(player);
-  //       }
-  //     })
-  //     .catch(err => {
-  //       logger.warn(`api.players.readOne(): err = ${err}`);
-  //       res.status(400).json({ error: `${err}` });
-  //     });
-  // });
-
-  // ------------------------------------
 };
 
 // -----------------------------------------------------------------------------

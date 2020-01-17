@@ -62,6 +62,15 @@ export default async (db, app, passport) => {
               }
             )
             .then(() => {
+              const returnedObject = player => {
+                return {
+                  id: player._id,
+                  name: player.name,
+                  facebook: player.facebook,
+                  avatar: player.avatar,
+                  token: player.token
+                };
+              };
               db.collection("players")
                 .find({ fbId: profile.id })
                 .limit(1)
@@ -71,14 +80,7 @@ export default async (db, app, passport) => {
                     // DEBUG:
                     logger.debug(`passport.FacebookStrategy(): player found => update() success: ${JSON.stringify(player)}`);
 
-                    return cb(null, {
-                      _id: player._id,
-                      name: player.name,
-                      facebook: player.facebook,
-                      avatar: player.avatar,
-                      token: player.token,
-                      tokenDate: player.tokenDate
-                    });
+                    return cb(null, returnedObject(player));
                   } else {
                     // DEBUG:
                     logger.debug(`passport.FacebookStrategy(): player not found => creating new user...`);
@@ -108,14 +110,7 @@ export default async (db, app, passport) => {
                           // DEBUG:
                           logger.debug(`passport.FacebookStrategy(): player creation success: ${JSON.stringify(player)}`);
 
-                          return cb(null, {
-                            _id: player._id,
-                            name: player.name,
-                            facebook: player.facebook,
-                            avatar: player.avatar,
-                            token: player.token,
-                            tokenDate: player.tokenDate
-                          });
+                          return cb(null, returnedObject(player));
                         } else {
                           // DEBUG:
                           logger.warn(`passport.FacebookStrategy() : player creation failed.`);

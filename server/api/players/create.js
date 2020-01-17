@@ -14,7 +14,7 @@ export default (db, app) => {
     logger.debug(`api.players.create(): req body = ${JSON.stringify(req.body)}`);
 
     let apiReq = req.body;
-    if (!apiReq || !apiReq.user || !apiReq.user._id || !apiReq.data || !req.headers["authorization"]) {
+    if (!apiReq || !apiReq.user || !apiReq.user.id || !apiReq.data || !req.headers["authorization"]) {
       let err = "Invalid request data.";
       res.status(422).json({ error: `${err}` });
       return;

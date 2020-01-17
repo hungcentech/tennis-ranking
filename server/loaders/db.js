@@ -65,6 +65,7 @@ export default async () => {
         if (indexes) logger.info(`loaders.db(): current clubs indexes: ${JSON.stringify(indexes)}`);
       });
     db.collection("players").createIndex({ fbId: 1 });
+    db.collection("players").createIndex({ token: 1 });
     db.collection("players").createIndex({ name: 1 }, { collation: { locale: "vi" } });
     db.collection("players").createIndex({ facebook: 1 }, { collation: { locale: "vi" } });
     db.collection("players")
