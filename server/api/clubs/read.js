@@ -30,7 +30,7 @@ export default (db, app) => {
     } else {
       apiReq.token = req.headers["authorization"].substr("Bearer ".length);
       apiReq.function = "read clubs";
-      logger.debug(`api.clubs.read(): token = ${JSON.stringify(apiReq.token)}`);
+      logger.debug(`api.clubs.read(): apiReq = ${JSON.stringify(apiReq)}`);
 
       authCheck(db, apiReq)
         .then(apiReq => {
@@ -47,13 +47,37 @@ export default (db, app) => {
 
           db.collection("clubs")
             .find(filter) // .collation({ locale: "vi", strength: 3 })
-            .limit(0)
+            // .limit(3)
             .toArray()
             .then(clubs => {
-              const meta = { total: clubs.length };
-              const resObj = { meta: meta, records: clubs };
-              logger.debug(`api.clubs.read(): result = ${JSON.stringify(resObj)}`);
-              res.json(resObj);
+              // _id => id
+              clubs.map(club => {
+                club.id = club._id;
+                club._id = undefined;
+                club.changes = undefined;
+              });
+              // DEBUG:
+              logger.debug(`api.clubs.read(): clubs = ${JSON.stringify(clubs)}`);
+
+              db.collection("clubs")
+                .countDocuments(filter)
+                .then(clubsCount => {
+                  logger.debug(`api.clubs.read(): clubs count = ${clubsCount}`);
+
+                  const meta = {
+                    length: clubs.length,
+                    count: clubsCount
+                  };
+                  const resObj = { meta: meta, records: clubs };
+                  logger.debug(`api.clubs.read(): result = ${JSON.stringify(resObj)}`);
+                  res.json(resObj);
+                })
+                .catch(err => {
+                  logger.debug(`api.clubs.read(): countDocuments() err = ${err}`);
+                });
+            })
+            .catch(err => {
+              logger.debug(`api.clubs.read(): find() error = ${err}`);
             });
         })
         .catch(err => {

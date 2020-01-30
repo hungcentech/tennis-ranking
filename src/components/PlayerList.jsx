@@ -131,7 +131,7 @@ const PlayerList = withStyles(styles)(({ classes, router }) => {
 
   useEffect(() => {
     let uri = conf.urls.app + "/api/players";
-    fetch(uri)
+    fetch(uri, { method: "GET" })
       .then(response => {
         if (response.ok) {
           response

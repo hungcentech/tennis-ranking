@@ -6,20 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { withStyles } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Slide,
-  Avatar,
-  Grid,
-  Typography,
-  Fab,
-  TextField
-} from "@material-ui/core";
+import { Dialog, DialogActions, DialogContent, DialogTitle, Slide, Avatar, Grid, Fab, TextField } from "@material-ui/core";
 import { Cancel as CloseIcon, Save as SaveIcon } from "@material-ui/icons";
 
 import conf from "../../conf";
@@ -68,82 +55,95 @@ const styles = theme => ({
 
 // -----------------------------------------------------------------------------
 
-const EditorField = withStyles(styles)(({ classes, label, value, onChange, disabled }) => {
-  return (
-    <TextField
-      className={classes.input}
-      label={label}
-      // placeholder={`${label}...`}
-      value={value}
-      onChange={onChange}
-      variant="outlined"
-      size="small"
-      fullWidth
-      disabled={disabled}
-    />
-  );
-});
-
-// -----------------------------------------------------------------------------
-
-const ClubEditor = withStyles(styles)(({ classes, originalClub, open, setOpen }) => {
+const ClubEditor = withStyles(styles)(({ classes, lang, user, theClub, open, setOpen }) => {
   const w350up = useMediaQuery("(min-width:350px)");
   const w480up = useMediaQuery("(min-width:480px)");
 
-  const lang = useSelector(state => state.lang);
-  const user = useSelector(state => state.user);
-  const [club, setClub] = useState(Object.assign(originalClub));
+  const [club, setClub] = useState({ ...theClub });
+  const [changes, setChanges] = useState({});
+
+  const dispatch = useDispatch();
+
+  // -------------------------------------
 
   const handleClose = () => {
     setOpen(false);
   };
 
+  // -------------------------------------
+
   const handleSave = () => {
-    if (JSON.stringify(club) != JSON.stringify(originalClub)) {
-      // DEBUG:
-      console.log("club changed => update modified club...");
+    if (Object.keys(changes).length > 0) {
+      let apiReq = {
+        id: club.id,
+        data: changes
+      };
+      // DEBUG
+      console.log("handleSave(): apiReq =", apiReq);
 
-      let uri = `${conf.urls.app}/api/clubs`;
-      // DEBUG:
-      console.log("uri =", uri);
-
-      fetch(uri, {
-        method: "PUT",
-        headers: { authorization: `Bearer ${token}`, "content-type": "application/json" },
-        body: {
-          data: JSON.stringify(club),
-          user: { id: user.id, facebook: user.facebook },
-          change: ""
-        }
+      fetch(`${conf.urls.app}/api/clubs`, {
+        method: "PATCH",
+        headers: { authorization: `Bearer ${user.token}`, "content-type": "application/json" },
+        body: JSON.stringify(apiReq)
       })
         .then(response => {
           if (response.ok) {
             response
               .json()
               .then(apiRes => {
-                resolve(apiRes);
+                console.log("handleSave(): Successfully saved.", apiRes);
+
+                // Refresh club list
+                dispatch({
+                  type: "search_clubs",
+                  payload: undefined
+                });
+                setTimeout(() => {
+                  dispatch({
+                    type: "search_clubs",
+                    payload: ""
+                  });
+                }, 100);
+
+                setOpen(false);
               })
               .catch(err => {
-                reject(Error("Invalid data format: " + err.message));
+                let error = new Error("Invalid response format. " + err);
+                console.log("handleSave():", error);
               });
 
             setOpen(false);
           } else {
-            reject(Error("Invalid request params"));
+            let error = new Error("Invalid request");
+            console.log("handleSave():", error, response);
           }
         })
         .catch(err => {
-          reject("Data fetch error:", err.message);
+          let error = new Error("Fetch failed. " + err);
+          console.log("handleSave():", error);
         });
     }
   };
 
-  const handleChange = (key, newValue) => {
-    var newClub = { ...club };
-    newClub[key] = newValue;
-    console.log("handleChange(): club changed:", club, "=>", newClub);
-    setClub(newClub);
+  // -------------------------------------
+
+  const handleChange = (ev, k) => {
+    var _club = { ...club };
+    _club[k] = ev.target.value;
+    setClub(_club);
+
+    let _changes = {};
+    ["id", "status", "name", "address", "players", "admins", "description", "avatar", "changes"].map(k => {
+      if (JSON.stringify(_club[k]) != JSON.stringify(theClub[k])) {
+        _changes[k] = _club[k];
+      }
+    });
+    console.log("_changes: ", _changes);
+
+    setChanges(_changes);
   };
+
+  // -------------------------------------
 
   return (
     <Dialog
@@ -158,11 +158,7 @@ const ClubEditor = withStyles(styles)(({ classes, originalClub, open, setOpen })
       <form>
         <Grid container spacing={0}>
           <Grid item xs={12}>
-            <DialogTitle>
-              {club.id
-                ? `${conf.labels.edit[lang]} ${conf.labels.club[lang]}`
-                : `${conf.labels.add[lang]} ${conf.labels.club[lang]}`}
-            </DialogTitle>
+            <DialogTitle>{`${conf.labels.edit[lang]} ${conf.labels.club[lang]}`}</DialogTitle>
           </Grid>
 
           <Grid item xs={3}>
@@ -171,7 +167,8 @@ const ClubEditor = withStyles(styles)(({ classes, originalClub, open, setOpen })
 
           <Grid item xs={9}>
             <DialogContent className={classes.content}>
-              {["_id", "name", "description", "avatar", "address", "contacts", "status"].map(k => {
+              {/* ["id", "status", "name", "address", "players", "admins", "description", "avatar", "changes"] */}
+              {["name", "address", "description", "avatar"].map(k => {
                 let v = club[k];
                 return (
                   <TextField
@@ -180,12 +177,12 @@ const ClubEditor = withStyles(styles)(({ classes, originalClub, open, setOpen })
                     label={k}
                     value={v}
                     onChange={ev => {
-                      handleChange(k, ev.target.value);
+                      handleChange(ev, k);
                     }}
                     variant="outlined"
                     size="small"
                     fullWidth
-                    disabled={k == "_id" || k == "status"}
+                    disabled={k == "id" || k == "status"}
                   />
                 );
               })}
@@ -195,21 +192,27 @@ const ClubEditor = withStyles(styles)(({ classes, originalClub, open, setOpen })
           <Grid item xs={12}>
             <DialogActions className={classes.actions}>
               <Grid container justify="center">
-                <Grid item xs={w480up ? 3 : 1}></Grid>
-                <Grid item xs={w480up ? 3 : 5}>
-                  <Fab variant="extended" size="medium" onClick={handleSave} color="primary">
+                {w480up ? <Grid item xs={3}></Grid> : ""}
+                <Grid item xs={w480up ? 3 : 6}>
+                  <Fab
+                    variant="extended"
+                    size="medium"
+                    onClick={handleSave}
+                    color="primary"
+                    disabled={Object.keys(changes).length == 0}
+                  >
                     {w350up ? <SaveIcon className={classes.button} /> : ""}
-                    Save
+                    {conf.labels["save"][lang]}
                   </Fab>
                 </Grid>
                 {w480up ? <Grid item xs={1}></Grid> : ""}
-                <Grid item xs={w480up ? 3 : 5}>
+                <Grid item xs={w480up ? 3 : 6}>
                   <Fab variant="extended" size="medium" onClick={handleClose} color="default">
                     {w350up ? <CloseIcon className={classes.button} /> : ""}
-                    Cancel
+                    {conf.labels["cancel"][lang]}
                   </Fab>
                 </Grid>
-                <Grid item xs={w480up ? 2 : 1}></Grid>
+                {w480up ? <Grid item xs={2}></Grid> : ""}
               </Grid>
             </DialogActions>
           </Grid>

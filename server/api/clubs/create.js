@@ -33,20 +33,27 @@ export default (db, app) => {
     logger.debug(`api.clubs.create(): req body    = ${JSON.stringify(req.body)}`);
 
     let apiReq = req.body;
-    if (!apiReq || !apiReq.user || !apiReq.data || !req.headers["authorization"]) {
+    if (!apiReq || !apiReq.data || !req.headers["authorization"]) {
       let error = Error("Invalid request data.");
       logger.debug(`api.clubs.create(): error = ${error.message}`);
       res.status(422).json(error);
       return;
     } else {
       apiReq.token = req.headers["authorization"].substr("Bearer ".length);
+      apiReq.function = "create clubs";
 
       authCheck(db, apiReq)
         .then(apiReq => {
           validate(apiReq)
-            .then(validated =>
-              db
-                .collection("clubs")
+            .then(validated => {
+              // update changes: array of {date: Date, user: {id, facebook}, change: {k1: change1, k2: change2...} }
+              let change = {
+                date: new Date(),
+                user: validated.user,
+                change: { create: true }
+              };
+
+              db.collection("clubs")
                 .insertOne(validated.data)
                 .then(result =>
                   db
@@ -69,8 +76,8 @@ export default (db, app) => {
                   let error = Error(`api.clubs.create(): find() failed: ${err}`);
                   logger.warn(error.message);
                   res.status(422).json(error);
-                })
-            )
+                });
+            })
             .catch(err => {
               let error = Error(`api.clubs.create(): Data validation failed: ${err}`);
               logger.warn(error.message);

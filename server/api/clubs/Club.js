@@ -5,15 +5,15 @@ import logger from "../../logger";
 // -----------------------------------------------------------------------------
 
 const fieldList = {
-  _id: "optional", // ObjectId
+  id: "optional", // ObjectId
   status: "optional", // String
   name: "required", // String
   address: "required", // String
-  players: "optional", // Array of user {_id, facebook}, includes official players & guests
-  admins: "optional", // Array of user {_id, facebook}
+  players: "optional", // Array of user {id, facebook}, includes official players & guests
+  admins: "optional", // Array of user {id, facebook}
   description: "optional", // String
   avatar: "optional", // Url string
-  changes: "optional" // Array of change { date: Date, user: {_id, facebook}, change: String }
+  changes: "optional" // Array of change { date: Date, user: {id, facebook}, change: String }
 };
 
 // -------------------------------------
@@ -33,7 +33,7 @@ export async function validate(apiReq) {
 
       // Check required fields
       Object.keys(fieldList).forEach(field => {
-        if (fieldList[field] === "required" && !apiReq.data[field]) {
+        if (fieldList[field] == "required" && !apiReq.data[field]) {
           errors.push(`Missing mandatory field: ${field}`);
         }
       });
@@ -46,7 +46,7 @@ export async function validate(apiReq) {
       });
 
       // Set default values
-      if (errors.length == 0) {
+      if (!errors.length) {
         if (!apiReq.data.status) {
           apiReq.data.status = "active";
         }
@@ -58,21 +58,15 @@ export async function validate(apiReq) {
           apiReq.data.admins = [];
         }
         if (!apiReq.data.admins.length) {
-          apiReq.data.admins.push(user);
+          apiReq.data.admins.push(apiReq.user);
         }
         //   players
         if (!apiReq.data.players) {
           apiReq.data.players = [];
         }
         if (!apiReq.data.players.length) {
-          apiReq.data.players.push(user);
+          apiReq.data.players.push(apiReq.user);
         }
-        //   changes: date, user, change
-        if (!apiReq.change && !apiReq.data.changes.length) {
-          apiReq.change = "Creation";
-        }
-        apiReq.data.changes.push({ date: new Date(), user: apiReq.user, change: apiReq.change });
-        //
       }
 
       if (errors.length) reject(errors.join("; "));

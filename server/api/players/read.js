@@ -29,8 +29,8 @@ export default (db, app) => {
       return;
     } else {
       apiReq.token = req.headers["authorization"].substr("Bearer ".length);
-      apiReq.function = "read clubs";
-      logger.debug(`api.clubs.read(): token = ${JSON.stringify(apiReq.token)}`);
+      apiReq.function = "read players";
+      logger.debug(`api.players.read(): token = ${JSON.stringify(apiReq.token)}`);
 
       authCheck(db, apiReq)
         .then(apiReq => {

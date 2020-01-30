@@ -78,7 +78,7 @@ const LogoutDialog = withStyles(styles)(({ classes, router, open, setOpen }) => 
   };
 
   const handleLogout = () => {
-    let uri = `${conf.urls.app}${conf.urls.logout}/${user.id}`;
+    let uri = `${conf.urls.app}${conf.urls.logout}?id=${user.id}`;
     console.log("handleLogout(): Logging out... uri = ", uri);
     fetch(uri, {
       method: "GET",

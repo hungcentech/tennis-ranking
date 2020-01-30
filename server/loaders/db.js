@@ -56,9 +56,10 @@ export default async () => {
     }
 
     // Create indexes
+    db.collection("clubs").createIndex({ active: 1 });
     db.collection("clubs").createIndex({ name: 1 }, { collation: { locale: "vi" } });
     db.collection("clubs").createIndex({ address: 1 }, { collation: { locale: "vi" } });
-    db.collection("clubs").createIndex({ contact: 1 }, { collation: { locale: "vi" } });
+    db.collection("clubs").createIndex({ description: 1 }, { collation: { locale: "vi" } });
     db.collection("clubs")
       .getIndexes()
       .then(indexes => {

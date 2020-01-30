@@ -11,6 +11,7 @@ import { Grid, Card, CardContent, CardMedia, Typography, Fab, IconButton, Button
 import { ArrowBackIos, Search, Add, Edit as EditIcon, SportsTennis as JoinIcon } from "@material-ui/icons";
 
 import conf from "../../conf";
+import ClubAdd from "./ClubAdd.jsx";
 import ClubEdit from "./ClubEdit.jsx";
 
 // -----------------------------------------------------------------------------
@@ -67,34 +68,43 @@ const styles = theme => {
 
 const getClubs = (user, search) => {
   return new Promise((resolve, reject) => {
-    console.log("getClubs(): user =", user);
+    // DEBUG:
+    // console.log("getClubs(): user =", user);
     if (!user) {
       reject(new Error("getClub(): user not set"));
     } else {
       let uri = `${conf.urls.app}/api/clubs` + (search ? "?search=" + search : "");
       // DEBUG:
-      console.log("getClubs(): uri =", uri);
+      // console.log("getClubs(): uri =", uri);
 
       fetch(uri, {
         method: "GET",
-        headers: new Headers({ authorization: `Bearer ${user.token}`, "content-type": "application/json" })
+        headers: new Headers({ authorization: `Bearer ${user.token}` })
       })
         .then(response => {
           if (response.ok) {
             response
               .json()
               .then(apiRes => {
+                //DEBUG:
+                console.log("getClubs(): apiRes =", apiRes);
                 resolve(apiRes);
               })
               .catch(err => {
-                reject(Error("Invalid data format: " + err.message));
+                let error = new Error("Invalid response format: " + err.message);
+                console.log("getClubs():" + error);
+                reject(error);
               });
           } else {
-            reject(new Error("Invalid request params"));
+            let error = new Error("Response received with error");
+            console.log("getClubs():", error);
+            reject(error);
           }
         })
         .catch(err => {
-          reject(new Error("Fetch error: " + err.message));
+          let error = new Error("Cannot get clubs info: " + err.message);
+          console.log("getClubs():" + error);
+          reject(error);
         });
     }
   });
@@ -104,25 +114,15 @@ const getClubs = (user, search) => {
 
 const TopNav = withStyles(styles)(({ classes, router, lang, user }) => {
   const dispatch = useDispatch();
-  const [lastSearch, setLastSearch] = useState("");
-  const [search, setSearch] = useState("");
+  const search = useSelector(state => state.search.clubs);
+  const [clubAddOpen, setClubAddOpen] = useState(false);
 
   const handleChange = ev => {
-    setLastSearch(search);
-    setSearch(ev.target.value);
+    dispatch({
+      type: "search_clubs",
+      payload: ev.target.value
+    });
   };
-
-  useEffect(() => {
-    if (search !== lastSearch) {
-      // DEBUG:
-      console.log(`search = ${search}`);
-
-      dispatch({
-        type: "search_clubs",
-        payload: search
-      });
-    }
-  });
 
   return (
     <MuiAppBar color="inherit" position="fixed">
@@ -154,10 +154,19 @@ const TopNav = withStyles(styles)(({ classes, router, lang, user }) => {
           onChange={handleChange}
         />
 
-        <IconButton className={classes.nav} edge="end" color="inherit" onClick={() => {}}>
+        <IconButton
+          className={classes.nav}
+          edge="end"
+          color="inherit"
+          onClick={() => {
+            setClubAddOpen(true);
+          }}
+        >
           <Add />
         </IconButton>
       </Toolbar>
+
+      <ClubAdd lang={lang} user={user} open={clubAddOpen} setOpen={setClubAddOpen} />
     </MuiAppBar>
   );
 });
@@ -175,7 +184,127 @@ const ClubCard = withStyles(styles)(({ classes, lang, user, club }) => {
   const w350up = useMediaQuery("(min-width:350px)");
   const w480up = useMediaQuery("(min-width:480px)");
 
-  const [editorOpen, setEditorOpen] = useState(false);
+  const [clubEditOpen, setClubEditOpen] = useState(false);
+  const dispatch = useDispatch();
+
+  const clubAddPlayer = () => {
+    if (club.players && club.players.map(p => p.id == user.id).reduce((a, b) => a || b, false)) {
+      // DEBUG:
+      console.log("clubAddPlayer(): Club already had this player");
+    } else {
+      if (!club.players) club.players = [];
+
+      // DEBUG:
+      console.log("clubAddPlayer(): players:", club.players);
+
+      // Update DB:
+      let changes = { players: club.players };
+      changes.players.push({ id: user.id, facebook: user.facebook });
+      let apiReq = {
+        id: club.id,
+        data: changes
+      };
+      fetch(`${conf.urls.app}/api/clubs`, {
+        method: "PATCH",
+        headers: { authorization: `Bearer ${user.token}`, "content-type": "application/json" },
+        body: JSON.stringify(apiReq)
+      })
+        .then(response => {
+          if (response.ok) {
+            response
+              .json()
+              .then(apiRes => {
+                console.log("clubAddPlayer(): Success.", apiRes);
+
+                // Refresh club list
+                dispatch({
+                  type: "search_clubs",
+                  payload: undefined
+                });
+                setTimeout(() => {
+                  dispatch({
+                    type: "search_clubs",
+                    payload: ""
+                  });
+                }, 100);
+              })
+              .catch(err => {
+                let error = new Error("Invalid response format. " + err);
+                console.log("clubAddPlayer():", error);
+              });
+          } else {
+            let error = new Error("Invalid request");
+            console.log("clubAddPlayer():", error, response);
+          }
+        })
+        .catch(err => {
+          let error = new Error("Fetch failed. " + err);
+          console.log("clubAddPlayer():", error);
+        });
+    }
+  };
+
+  const playerAddClub = () => {
+    if (user.clubs && user.clubs.map(c => c.id == club.id).reduce((a, b) => a || b, false)) {
+      // DEBUG:
+      console.log("playerAddClub(): Player already in this club");
+    } else {
+      if (!user.clubs) user.clubs = [];
+
+      // DEBUG:
+      console.log("playerAddClub(): clubs:", user.clubs);
+
+      // Update DB:
+      let changes = { clubs: user.clubs };
+      changes.clubs.push({ id: club.id, name: club.name });
+      let apiReq = {
+        id: user.id,
+        data: changes
+      };
+      fetch(`${conf.urls.app}/api/players`, {
+        method: "PATCH",
+        headers: { authorization: `Bearer ${user.token}`, "content-type": "application/json" },
+        body: JSON.stringify(apiReq)
+      })
+        .then(response => {
+          if (response.ok) {
+            response
+              .json()
+              .then(apiRes => {
+                console.log("playerAddClub(): Success.", apiRes);
+
+                // Refresh club list
+                dispatch({
+                  type: "search_clubs",
+                  payload: undefined
+                });
+                setTimeout(() => {
+                  dispatch({
+                    type: "search_clubs",
+                    payload: ""
+                  });
+                }, 100);
+              })
+              .catch(err => {
+                let error = new Error("Invalid response format. " + err);
+                console.log("playerAddClub():", error);
+              });
+          } else {
+            let error = new Error("Invalid request");
+            console.log("playerAddClub():", error, response);
+          }
+        })
+        .catch(err => {
+          let error = new Error("Fetch failed. " + err);
+          console.log("playerAddClub():", error);
+        });
+    }
+  };
+
+  const handleJoinClub = () => {
+    clubAddPlayer();
+    playerAddClub();
+  };
 
   return (
     <Card>
@@ -194,13 +323,11 @@ const ClubCard = withStyles(styles)(({ classes, lang, user, club }) => {
               {club.name}
             </Typography>
             <Typography variant="body2" color="textSecondary">
-              About: {club.description}
+              {/* {`${conf.labels.address[lang]}: ${club.address}`} */}
+              {`${club.address}`}
             </Typography>
             <Typography variant="body2" color="textSecondary">
-              Address: {club.address}
-            </Typography>
-            <Typography variant="body2" color="textSecondary">
-              Contact: {club.contacts}
+              {club.description}
             </Typography>
           </CardContent>
         </Grid>
@@ -214,9 +341,9 @@ const ClubCard = withStyles(styles)(({ classes, lang, user, club }) => {
                 className={w480up ? classes.fab480up : classes.fab480dn}
                 color="secondary"
                 onClick={() => {
-                  setEditorOpen(true);
+                  setClubEditOpen(true);
                 }}
-                disabled={false}
+                disabled={!(club.admins ? club.admins.map(adm => adm.id == user.id).reduce((a, b) => a || b, false) : false)}
               >
                 <EditIcon />
               </Fab>
@@ -226,9 +353,14 @@ const ClubCard = withStyles(styles)(({ classes, lang, user, club }) => {
               <Fab
                 variant="extended"
                 size={w480up ? "medium" : "small"}
-                onClick={() => {}}
+                onClick={handleJoinClub}
                 color="secondary"
-                disabled={user && user.clubs && club && club.id in user.clubs}
+                disabled={
+                  club.players &&
+                  club.players.map(p => p.id == user.id).reduce((a, b) => a || b, false) &&
+                  user.clubs &&
+                  user.clubs.map(c => c.id == club.id).reduce((a, b) => a || b, false)
+                }
               >
                 {w350up ? <JoinIcon className={classes.fabIcon} /> : ""}
                 {`${conf.labels.join[lang]} ${conf.labels.club[lang]}`}
@@ -238,7 +370,7 @@ const ClubCard = withStyles(styles)(({ classes, lang, user, club }) => {
         </Grid>
       </Grid>
 
-      <ClubEdit _club={club} open={editorOpen} setOpen={setEditorOpen} />
+      <ClubEdit lang={lang} user={user} theClub={club} open={clubEditOpen} setOpen={setClubEditOpen} />
     </Card>
   );
 });
@@ -254,23 +386,30 @@ ClubCard.propTypes = {
 // -----------------------------------------------------------------------------
 
 const ClubList = withStyles(styles)(({ classes, router }) => {
-  const [listData, setListData] = useState({ records: [] });
+  const [data, setData] = useState({ records: [] });
 
   const lang = useSelector(state => state.lang);
   const user = useSelector(state => state.user);
-
   const search = useSelector(state => state.search.clubs);
+
+  const refreshClubList = () => {
+    console.log("refreshClubList(): Getting club list...");
+    getClubs(user, search)
+      .then(apiRes => {
+        // console.log(`refreshClubList(): Latest club list:`, apiRes);
+        setData(apiRes);
+      })
+      .catch(err => {
+        console.log("refreshClubList(): Failed to get clubs:", err.message);
+      });
+  };
 
   useEffect(() => {
     if (!user) {
       // router.push(conf.urls.app);
       router.goBack();
     } else {
-      getClubs(user, search)
-        .then(clubs => setListData(clubs))
-        .catch(err => {
-          console.log("Failed to get clubs: " + err.message);
-        });
+      refreshClubList();
     }
   }, [search]);
 
@@ -279,8 +418,8 @@ const ClubList = withStyles(styles)(({ classes, router }) => {
       <TopNav router={router} lang={lang} user={user} />
 
       <Grid container spacing={2} className={classes.content}>
-        {listData.records
-          ? listData.records.map(club => (
+        {data.records
+          ? data.records.map(club => (
               <Grid xs={12} item key={club.id}>
                 <ClubCard xs={12} router={router} lang={lang} user={user} club={club}></ClubCard>
               </Grid>

@@ -13,8 +13,8 @@ export async function authCheck(db, apiReq) {
   //     admins: [],
   //     ...
   //   },
-  //   token: "",
-  //   function: ""
+  //   token: "ABCD1234ABCD1234ABCD1234ABCD1234ABCD1234ABCD1234ABCD1234ABCD1234",
+  //   function: "xxxx yyyy"
   // }
   logger.debug(`auth.check(): apiReq = ${JSON.stringify(apiReq)}`);
 
@@ -23,48 +23,96 @@ export async function authCheck(db, apiReq) {
       token: apiReq.token
     };
 
-    // Authentication & authorization
-    db.collection("players")
-      .find({ token: apiReq.token })
-      .limit(1)
-      .next()
-      .then(player => {
-        if (player) {
-          // Authentication: success
-          logger.debug(`auth.check(): A player/user found with ${JSON.stringify(filter)}: ${JSON.stringify(player)}`);
+    if (!apiReq.function) {
+      let error = new Error(`auth.check(): Authentication failed, apiReq.function is undefined`);
+      logger.debug(error);
+      reject(error);
+    } else {
+      // Authentication & authorization
+      db.collection("players")
+        .find({ token: apiReq.token })
+        .limit(1)
+        .next()
+        .then(user => {
+          if (!user) {
+            let error = new Error(`auth.check(): Authentication failed, user not found with ${JSON.stringify(filter)}`);
+            logger.debug(error);
+            reject(error);
+          } else {
+            // Authentication success => check authorization
+            logger.debug(`auth.check(): User found: ${JSON.stringify(user)}`);
 
-          // Authorization:
-          //   Read, Create => always allowed
-          //   Update: can only modify him self, or must be admin of the object
-          let authorized = true;
+            // Authorization:
+            //   Read, Create => always allowed
+            //   Update: can only modify him self, or must be admin (owner) of the object
+            let fitems = apiReq.function.split(/[ ]+/, 2);
+            let fname = fitems[0],
+              ftarget = fitems[1];
+            logger.debug(`auth.check(): fitems = ${fitems.join(", ")}, fname = ${fname}, ftarget = ${ftarget}`);
 
-          if (apiReq.function && apiReq.function.startsWith("update")) {
-            authorized = false;
-            if (apiReq.data && apiReq.data.id == player._id) {
-              authorized = true;
+            if (!fname || !ftarget) {
+              let error = new Error("auth.check(): Authorization failed: function name or target is undefined");
+              logger.debug(error);
+              reject(error);
             } else {
-              if (apiReq.admins) {
-                apiReq.admins.foreach(adm => {
-                  authorized = authorized || player._id == adm.id;
-                });
+              if ("update" == fname) {
+                if (!apiReq.data || !apiReq.id) {
+                  let error = new Error("auth.check(): Authorization failed: target id/data not set");
+                  logger.debug(error);
+                  reject(error);
+
+                  // DEBUG
+                  if (apiReq.id == user._id) {
+                    // Modifying him self => OK
+                    apiReq.user = { id: user._id, facebook: user.facebook };
+                    resolve(apiReq);
+                  } else {
+                    db.collection(ftarget)
+                      .find({ _id: ObjectId(apiReq.id) })
+                      .limit(1)
+                      .next()
+                      .then(target => {
+                        let authorized = false;
+
+                        if (target && target.admins) {
+                          target.admins.foreach(adm => {
+                            if (adm._id == user._id) {
+                              // user is owner (admin) of target => OK
+                              apiReq.user = { id: user._id, facebook: user.facebook };
+                              resolve(apiReq);
+                            }
+                          });
+                        }
+
+                        if (!authorized) {
+                          let error = new Error("auth.check(): Authorization failed: not self nor owner");
+                          logger.debug(error);
+                          reject(error);
+                        }
+                      })
+                      .catch(err => {
+                        let error = new Error(`auth.check(): Authorization failed: ${err}`);
+                        logger.debug(error);
+                        reject(error);
+                      });
+                  }
+                } else {
+                  apiReq.user = { id: user._id, facebook: user.facebook };
+                  resolve(apiReq);
+                }
+              } else {
+                apiReq.user = { id: user._id, facebook: user.facebook };
+                resolve(apiReq);
               }
             }
           }
-
-          if (authorized) {
-            resolve(apiReq);
-          } else {
-            reject(Error("Not authorized"));
-          }
-        } else {
-          logger.debug(`auth.check(): No player/user found with ${JSON.stringify(filter)}`);
-          reject(Error("Authentication failed"));
-        }
-      })
-      .catch(err => {
-        logger.debug(`auth.check(): Server error: ${err}`);
-        reject(err);
-      });
+        })
+        .catch(err => {
+          let error = new Error(`auth.check(): find() error. Authorization failed: ${err}`);
+          logger.debug(error);
+          reject(error);
+        });
+    }
   });
 }
 

@@ -62,6 +62,7 @@ export default async (db, app, passport) => {
               }
             )
             .then(() => {
+              //
               const returnedObject = player => {
                 return {
                   id: player._id,
@@ -71,6 +72,7 @@ export default async (db, app, passport) => {
                   token: player.token
                 };
               };
+
               db.collection("players")
                 .find({ fbId: profile.id })
                 .limit(1)
@@ -164,18 +166,18 @@ export default async (db, app, passport) => {
   //   receive user logout request from app
   //   => delete user's token in db
   // -------------------------------------
-  app.get(conf.auth.facebook.logout.url + "/:id", (req, res) => {
+  app.get(conf.auth.facebook.logout.url, (req, res) => {
     // DEBUG:
     logger.debug(`handleLogout(): req headers = ${JSON.stringify(req.headers)}`);
-    logger.debug(`handleLogout(): req params (rest-api)  = ${JSON.stringify(req.params)}`);
+    logger.debug(`handleLogout(): req query (rest-api)  = ${JSON.stringify(req.query)}`);
 
-    if (!req.params.id || !req.headers["authorization"]) {
-      let err = new Error("Invalid params");
-      logger.warn(`handleLogout(): ${err}. id=${req.params.id}, auth-header=${req.headers["authorization"]}`);
+    if (!req.query.id || !req.headers["authorization"]) {
+      let err = new Error("Invalid query");
+      logger.warn(`handleLogout(): ${err}. id=${req.query.id}, auth-header=${req.headers["authorization"]}`);
       res.status(400).json(err);
     } else {
       // Authorization check => find()
-      let playerId = new ObjectId(req.params.id);
+      let playerId = new ObjectId(req.query.id);
       let token = req.headers["authorization"].substr("Bearer ".length);
       db.collection("players")
         .find({ _id: playerId, token: token })
@@ -260,7 +262,7 @@ export default async (db, app, passport) => {
   //   hadle passport callback after login failed
   // -------------------------------------
   app.get(conf.auth.facebook.login.cbUrlFailure, (req, res) => {
-    logger.debug(`${conf.auth.facebook.login.cbUrlFailure}: login failed, req.params = ${JSON.stringify(req.params)}`);
+    logger.debug(`${conf.auth.facebook.login.cbUrlFailure}: login failed, req.query = ${JSON.stringify(req.query)}`);
     logger.debug(`${conf.auth.facebook.login.cbUrlFailure}: login failed, req.err = ${JSON.stringify(req.err)}`);
 
     let uri2App = encodeURI(`${conf.appDomain}${conf.appUrl}`);

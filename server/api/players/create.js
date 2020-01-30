@@ -20,6 +20,7 @@ export default (db, app) => {
       return;
     } else {
       apiReq.token = req.headers["authorization"].substr("Bearer ".length);
+      apiReq.function = "create players";
 
       authCheck(db, apiReq)
         .then(apiReq => {
