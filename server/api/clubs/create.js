@@ -10,10 +10,10 @@ import { validate } from "./Club.js";
 // {
 // 	"data": {
 // 	    "status": "active",
-// 	    "name": "Tennis Angels 3",
-// 	    "address": "76 An Duong",
+// 	    "name": "Tennis Gió Mùa",
+// 	    "address": "Cụm 2 sân mái che, đối diện sân bóng BCA",
 // 	    "admins": [],
-// 	    "description": "",
+// 	    "notes": "",
 // 	    "avatar": "",
 // 	    "changes": []
 //     },
@@ -28,9 +28,8 @@ import { validate } from "./Club.js";
 export default (db, app) => {
   app.post(conf.api.clubs.url, (req, res) => {
     // DEBUG:
-    logger.debug(`api.clubs.create(): req headers = ${JSON.stringify(req.headers)}`);
-    logger.debug(`api.clubs.create(): req params  = ${JSON.stringify(req.params)}`);
-    logger.debug(`api.clubs.create(): req body    = ${JSON.stringify(req.body)}`);
+    logger.debug(`api.clubs.create(): req auth = ${JSON.stringify(req.headers["authorization"])}`);
+    logger.debug(`api.clubs.create(): req body = ${JSON.stringify(req.body)}`);
 
     let apiReq = req.body;
     if (!apiReq || !apiReq.data || !req.headers["authorization"]) {

@@ -5,13 +5,15 @@ import logger from "../../logger";
 // -----------------------------------------------------------------------------
 
 const fieldList = {
-  status: "required", // active/inactive
-  name: "required",
-  facebook: "optional",
-  avatar: "optional",
-  contacts: "optional",
-  clubs: "required",
-  updates: "optional"
+  id: "optional", // ObjectId
+  status: "optional", // String (active/inactive)
+  name: "required", // String
+  facebook: "optional", // String
+  notes: "optional", // String
+  avatar: "optional", // Url string
+  clubs: "optional", // Array of club {id, name}
+  admins: "optional", // Array of user {id, name}
+  changes: "optional" // Array of change { date: Date, user: {id, name}, change: String }
 };
 
 // -------------------------------------

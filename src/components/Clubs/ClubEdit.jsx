@@ -133,7 +133,7 @@ const ClubEditor = withStyles(styles)(({ classes, lang, user, theClub, open, set
     setClub(_club);
 
     let _changes = {};
-    ["id", "status", "name", "address", "players", "admins", "description", "avatar", "changes"].map(k => {
+    ["id", "status", "name", "address", "players", "admins", "notes", "avatar", "changes"].map(k => {
       if (JSON.stringify(_club[k]) != JSON.stringify(theClub[k])) {
         _changes[k] = _club[k];
       }
@@ -167,8 +167,8 @@ const ClubEditor = withStyles(styles)(({ classes, lang, user, theClub, open, set
 
           <Grid item xs={9}>
             <DialogContent className={classes.content}>
-              {/* ["id", "status", "name", "address", "players", "admins", "description", "avatar", "changes"] */}
-              {["name", "address", "description", "avatar"].map(k => {
+              {/* ["id", "status", "name", "address", "players", "admins", "notes", "avatar", "changes"] */}
+              {["name", "address", "notes", "avatar"].map(k => {
                 let v = club[k];
                 return (
                   <TextField

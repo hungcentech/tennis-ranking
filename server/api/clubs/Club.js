@@ -6,14 +6,14 @@ import logger from "../../logger";
 
 const fieldList = {
   id: "optional", // ObjectId
-  status: "optional", // String
+  status: "optional", // String (active/inactive)
   name: "required", // String
   address: "required", // String
-  players: "optional", // Array of user {id, facebook}, includes official players & guests
-  admins: "optional", // Array of user {id, facebook}
-  description: "optional", // String
+  notes: "optional", // String
   avatar: "optional", // Url string
-  changes: "optional" // Array of change { date: Date, user: {id, facebook}, change: String }
+  players: "optional", // Array of users {id, name, mem}, includes members & guests
+  admins: "optional", // Array of user {id, name}
+  changes: "optional" // Array of changes { date: Date, user: {id, name}, change: String }
 };
 
 // -------------------------------------

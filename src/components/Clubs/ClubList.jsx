@@ -327,7 +327,7 @@ const ClubCard = withStyles(styles)(({ classes, lang, user, club }) => {
               {`${club.address}`}
             </Typography>
             <Typography variant="body2" color="textSecondary">
-              {club.description}
+              {club.notes}
             </Typography>
           </CardContent>
         </Grid>

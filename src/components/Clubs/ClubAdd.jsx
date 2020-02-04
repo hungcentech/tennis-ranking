@@ -155,8 +155,8 @@ const ClubAdd = withStyles(styles)(({ classes, lang, user, open, setOpen }) => {
 
           <Grid item xs={9}>
             <DialogContent className={classes.content}>
-              {/* ["id", "status", "name", "address", "players", "admins", "description", "avatar", "changes"] */}
-              {["name", "address", "description", "avatar"].map(k => {
+              {/* ["id", "status", "name", "address", "players", "admins", "notes", "avatar", "changes"] */}
+              {["name", "address", "notes", "avatar"].map(k => {
                 let v = club[k];
                 return (
                   <TextField

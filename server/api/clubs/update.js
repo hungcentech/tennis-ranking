@@ -14,7 +14,7 @@ import { ObjectId } from "mongodb";
 // 	    "name": "Tennis Angels 3",
 // 	    "address": "76 An Duong",
 // 	    "admins": [],
-// 	    "description": "",
+// 	    "notes": "",
 // 	    "avatar": "",
 // 	    "changes": []
 //     },
