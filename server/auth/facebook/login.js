@@ -88,18 +88,21 @@ export default async (db, app, passport) => {
                     logger.debug(`passport.FacebookStrategy(): player not found => creating new user...`);
 
                     // Insert new player
+                    let newPlayer = {
+                      name: profile.displayName,
+                      fbId: profile.id,
+                      facebook: profile.displayName,
+                      gender: profile.gender,
+                      email: profile.emails && profile.emails.length > 0 ? profile.emails[0].value : undefined,
+                      avatar: profile.photos && profile.photos.length > 0 ? profile.photos[0].value : undefined,
+                      birthday: profile._json ? profile._json.birthday : undefined,
+                      token: accessToken,
+                      tokenDate: new Date(),
+                      created: new Date()
+                    };
+
                     db.collection("players")
-                      .insertOne({
-                        name: profile.displayName,
-                        fbId: profile.id,
-                        facebook: profile.displayName,
-                        gender: profile.gender,
-                        email: profile.emails && profile.emails.length > 0 ? profile.emails[0].value : undefined,
-                        avatar: profile.photos && profile.photos.length > 0 ? profile.photos[0].value : undefined,
-                        birthday: profile._json ? profile._json.birthday : undefined,
-                        token: accessToken,
-                        tokenDate: new Date()
-                      })
+                      .insertOne(newPlayer)
                       .then(result =>
                         db
                           .collection("players")

@@ -10,10 +10,10 @@ import { validate } from "./Club.js";
 // {
 // 	"data": {
 // 	    "status": "active",
-// 	    "name": "Tennis Gió Mùa",
-// 	    "address": "Cụm 2 sân mái che, đối diện sân bóng BCA",
+// 	    "name": "CLB Tennis Gió Mùa",
+// 	    "address": "Cụm 2 sân mái che, đối diện cổng sân bóng BCA Nguyễn Xiển, Hà Nội",
 // 	    "admins": [],
-// 	    "notes": "",
+// 	    "notes": "CN 9:00-14:00",
 // 	    "avatar": "",
 // 	    "changes": []
 //     },
@@ -21,7 +21,7 @@ import { validate } from "./Club.js";
 //      "_id":"12341341234134",
 //      "facebook": "Le Manh Hung"
 //     },
-// 	"change":"test"
+//  "changes": array of change { date: Date, user: {id, facebook}, change: String }
 // }
 // -----------------------------------------------------------------------------
 
@@ -45,12 +45,7 @@ export default (db, app) => {
         .then(apiReq => {
           validate(apiReq)
             .then(validated => {
-              // update changes: array of {date: Date, user: {id, facebook}, change: {k1: change1, k2: change2...} }
-              let change = {
-                date: new Date(),
-                user: validated.user,
-                change: { create: true }
-              };
+              validated.data.created = new Date();
 
               db.collection("clubs")
                 .insertOne(validated.data)

@@ -32,7 +32,7 @@ export default (db, app) => {
     logger.debug(`api.players.create(): req body = ${JSON.stringify(req.body)}`);
 
     let apiReq = req.body;
-    if (!apiReq || !apiReq.user || !apiReq.user.id || !apiReq.data || !req.headers["authorization"]) {
+    if (!apiReq || !apiReq.data || !req.headers["authorization"]) {
       let error = Error("Invalid request data.");
       logger.debug(`api.players.create(): error = ${error.message}`);
       res.status(422).json(error);
@@ -45,12 +45,7 @@ export default (db, app) => {
         .then(apiReq => {
           validate(apiReq)
             .then(validated => {
-              // update changes: array of {date: Date, user: {id, facebook}, change: {k1: change1, k2: change2...} }
-              let change = {
-                date: new Date(),
-                user: validated.user,
-                change: { create: true }
-              };
+              validated.data.created = new Date();
 
               db.collection("players")
                 .insertOne(validated.data)

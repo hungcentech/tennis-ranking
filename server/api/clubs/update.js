@@ -7,22 +7,12 @@ import { validate } from "./Club.js";
 import { ObjectId } from "mongodb";
 
 // -----------------------------------------------------------------------------
-// PUT:
+// POST:
 // {
+// 	"id":"5e40c4be59e6b47f3de9f178",
 // 	"data": {
-// 	    "status": "active",
-// 	    "name": "Tennis Angels 3",
-// 	    "address": "76 An Duong",
-// 	    "admins": [],
-// 	    "notes": "",
-// 	    "avatar": "",
-// 	    "changes": []
-//     },
-// 	"user": {
-//      "_id":"12341341234134",
-//      "facebook": "Le Manh Hung"
-//     },
-//  "changes": array of change { date: Date, user: {id, facebook}, change: String }
+// 	    "notes": "CN 9:00-14:00",
+//     }
 // }
 // -----------------------------------------------------------------------------
 

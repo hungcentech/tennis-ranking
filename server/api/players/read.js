@@ -39,30 +39,55 @@ export default (db, app) => {
             filter = {
               $or: [
                 { name: { $regex: `.*${filter.search}.*`, $options: "i" } },
-                { facebook: { $regex: `.*${filter.search}.*`, $options: "i" } },
-                { email: { $regex: `.*${filter.search}.*`, $options: "i" } }
+                { facebook: { $regex: `.*${filter.search}.*`, $options: "i" } }
               ]
             };
           }
-          logger.debug(`api.players.read(): authorization success. filter = ${JSON.stringify(filter)}`);
+          logger.debug(`api.players.read(): Authorization success. filter = ${JSON.stringify(filter)}`);
 
           db.collection("players")
             .find(filter) // .collation({ locale: "vi", strength: 3 })
-            .limit(0)
+            // .limit(3)
             .toArray()
             .then(players => {
-              const meta = { total: players.length };
-              const resObj = { meta: meta, records: players };
-              logger.debug(`api.players.read(): result = ${JSON.stringify(resObj)}`);
-              res.json(resObj);
+              // _id => id
+              players.map(player => {
+                player.id = player._id;
+                player._id = undefined;
+                player.changes = undefined;
+              });
+              // DEBUG:
+              logger.debug(`api.players.read(): players = ${JSON.stringify(players)}`);
+
+              db.collection("players")
+                .countDocuments(filter)
+                .then(playersCount => {
+                  logger.debug(`api.players.read(): players count = ${playersCount}`);
+
+                  const meta = {
+                    length: players.length,
+                    count: playersCount
+                  };
+                  const resObj = { meta: meta, records: players };
+                  logger.debug(`api.players.read(): result = ${JSON.stringify(resObj)}`);
+                  res.json(resObj);
+                })
+                .catch(err => {
+                  logger.debug(`api.players.read(): countDocuments() err = ${err}`);
+                });
+            })
+            .catch(err => {
+              logger.debug(`api.players.read(): find() error = ${err}`);
             });
         })
         .catch(err => {
-          logger.warn(`api.players.read(): err = ${JSON.stringify(err)}`);
-          res.status(400).json({ error: `${err}` });
+          logger.warn(`api.players.read(): ${err.message}`);
+          res.status(400).json(err);
         });
     }
   });
+
+  // ------------------------------------
 };
 
 // -----------------------------------------------------------------------------

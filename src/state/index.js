@@ -5,7 +5,7 @@ import { createStore } from "redux";
 // -----------------------------------------------------------------------------
 
 const INITIAL_STATE = {
-  lang: "en",
+  lang: "vi",
   user: undefined, // { _id: undefined, token: undefined, name: undefined, avatar: undefined, facebook: undefined },
   search: { clubs: undefined },
   time: 0 // timestamp

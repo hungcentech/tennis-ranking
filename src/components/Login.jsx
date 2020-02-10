@@ -7,7 +7,6 @@ import { withStyles } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 import {
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
@@ -22,7 +21,6 @@ import {
 import { Cancel as CloseIcon, Facebook as LoginIcon } from "@material-ui/icons";
 
 import conf from "../conf";
-import { blue } from "@material-ui/core/colors";
 
 // -----------------------------------------------------------------------------
 
