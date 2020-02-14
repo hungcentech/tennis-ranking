@@ -66,9 +66,9 @@ export default async (db, app, passport) => {
               const returnedObject = player => {
                 return {
                   id: player._id,
-                  name: player.name,
-                  facebook: player.facebook,
-                  avatar: player.avatar,
+                  // name: player.name,
+                  // facebook: player.facebook,
+                  // avatar: player.avatar,
                   token: player.token
                 };
               };

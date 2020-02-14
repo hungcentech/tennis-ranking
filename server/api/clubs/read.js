@@ -39,7 +39,8 @@ export default (db, app) => {
             filter = {
               $or: [
                 { name: { $regex: `.*${filter.search}.*`, $options: "i" } },
-                { address: { $regex: `.*${filter.search}.*`, $options: "i" } }
+                { address: { $regex: `.*${filter.search}.*`, $options: "i" } },
+                { notes: { $regex: `.*${filter.search}.*`, $options: "i" } }
               ]
             };
           }

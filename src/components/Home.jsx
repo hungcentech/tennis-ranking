@@ -47,7 +47,6 @@ const Home = withStyles(styles)(({ classes, router }) => {
   useEffect(() => {
     // DEBUG
     // console.log("query:", router.location.query);
-    // console.log("user:", user);
 
     let data = router.location.query;
     Object.keys(data).map(key => {
@@ -58,15 +57,39 @@ const Home = withStyles(styles)(({ classes, router }) => {
 
     if (!user) {
       if (data && data.id && data.token) {
-        dispatch({
-          type: "user_update",
-          payload: data
-        });
-        // DEBUG
-        // console.log("user_update triggered.");
+        // Get user details from API
+        fetch(`${conf.urls.app}/api/players?token=${data.token}`, {
+          method: "GET",
+          headers: { authorization: `Bearer ${data.token}`, "content-type": "application/json" }
+        })
+          .then(response => {
+            if (response.ok) {
+              response
+                .json()
+                .then(apiRes => {
+                  console.log("More user details:", apiRes);
+
+                  dispatch({
+                    type: "user_update",
+                    payload: apiRes.records[0]
+                  });
+                })
+                .catch(err => {
+                  let error = new Error("Invalid response format. " + err);
+                  console.log(error);
+                });
+            } else {
+              let error = new Error("Invalid request");
+              console.log(error, response);
+            }
+          })
+          .catch(err => {
+            let error = new Error("Fetch failed. " + err);
+            console.log(error);
+          });
       } else {
         // DEBUG
-        console.log("user_update not ready: invalid user data:", data);
+        console.log("Invalid user data:", data);
       }
     }
   }, []);
@@ -82,7 +105,7 @@ const Home = withStyles(styles)(({ classes, router }) => {
                 className={classes.card}
                 onClick={() => {
                   user
-                    ? user.clubId
+                    ? user.clubs && user.clubs.length > 0
                       ? router.push(`${conf.urls.app + item.url}`)
                       : router.push(`${conf.urls.app + conf.urls.clubs}`)
                     : setLoginDialogOpen(true);

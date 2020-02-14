@@ -5,22 +5,16 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { initStore } from "./state";
-import { useDispatch, useSelector } from "react-redux";
 import { Router, Route, Redirect, browserHistory, withRouter } from "react-router";
 
 import { createMuiTheme, ThemeProvider, withStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import { Paper } from "@material-ui/core";
-import { grey } from "@material-ui/core/colors";
 import { purple, yellow } from "@material-ui/core/colors";
-import { pink, blue } from "@material-ui/core/colors";
 
 import AppBar from "./components/AppBar.jsx";
 import Home from "./components/Home.jsx";
 import ClubList from "./components/Clubs/ClubList.jsx";
-import PlayerList from "./components/PlayerList.jsx";
-
-import conf from "./conf";
+import PlayerList from "./components/Players/PlayerList.jsx";
 
 // -----------------------------------------------------------------------------
 

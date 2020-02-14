@@ -11,8 +11,8 @@ import { Grid, Card, CardContent, CardMedia, Typography, Fab, IconButton, Button
 import { ArrowBackIos, Search, Add, Edit as EditIcon, SportsTennis as JoinIcon } from "@material-ui/icons";
 
 import conf from "../../conf";
-import ClubAdd from "./ClubAdd.jsx";
-import ClubEdit from "./ClubEdit.jsx";
+import PlayerAdd from "./PlayerAdd.jsx";
+import PlayerEdit from "./PlayerEdit.jsx";
 
 // -----------------------------------------------------------------------------
 
@@ -66,16 +66,16 @@ const styles = theme => {
 
 // -----------------------------------------------------------------------------
 
-const getClubs = (user, search) => {
+const getPlayers = (user, search) => {
   return new Promise((resolve, reject) => {
     // DEBUG:
-    // console.log("getClubs(): user =", user);
+    // console.log("getPlayers(): user =", user);
     if (!user) {
-      reject(new Error("getClub(): user not set"));
+      reject(new Error("getPlayer(): user not set"));
     } else {
-      let uri = `${conf.urls.app}/api/clubs` + (search ? "?search=" + search : "");
+      let uri = `${conf.urls.app}/api/players` + (search ? "?search=" + search : "");
       // DEBUG:
-      // console.log("getClubs(): uri =", uri);
+      // console.log("getPlayers(): uri =", uri);
 
       fetch(uri, {
         method: "GET",
@@ -87,23 +87,23 @@ const getClubs = (user, search) => {
               .json()
               .then(apiRes => {
                 //DEBUG:
-                console.log("getClubs(): apiRes =", apiRes);
+                console.log("getPlayers(): apiRes =", apiRes);
                 resolve(apiRes);
               })
               .catch(err => {
                 let error = new Error("Invalid response format: " + err.message);
-                console.log("getClubs():" + error);
+                console.log("getPlayers():" + error);
                 reject(error);
               });
           } else {
             let error = new Error("Response received with error");
-            console.log("getClubs():", error);
+            console.log("getPlayers():", error);
             reject(error);
           }
         })
         .catch(err => {
-          let error = new Error("Cannot get clubs info: " + err.message);
-          console.log("getClubs():" + error);
+          let error = new Error("Cannot get players info: " + err.message);
+          console.log("getPlayers():" + error);
           reject(error);
         });
     }
@@ -114,12 +114,12 @@ const getClubs = (user, search) => {
 
 const TopNav = withStyles(styles)(({ classes, router, lang, user }) => {
   const dispatch = useDispatch();
-  const search = useSelector(state => state.search.clubs);
-  const [clubAddOpen, setClubAddOpen] = useState(false);
+  const search = useSelector(state => state.search.players);
+  const [playerAddOpen, setPlayerAddOpen] = useState(false);
 
   const handleChange = ev => {
     dispatch({
-      type: "search_clubs",
+      type: "search_players",
       payload: ev.target.value
     });
   };
@@ -142,7 +142,7 @@ const TopNav = withStyles(styles)(({ classes, router, lang, user }) => {
 
         <TextField
           className={classes.navSearch}
-          placeholder={user && user.clubName ? user.clubName : `${conf.labels.find[lang]} ${conf.labels.club[lang]}`}
+          placeholder={user && user.playerName ? user.playerName : `${conf.labels.find[lang]} ${conf.labels.player[lang]}`}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -159,14 +159,14 @@ const TopNav = withStyles(styles)(({ classes, router, lang, user }) => {
           edge="end"
           color="inherit"
           onClick={() => {
-            setClubAddOpen(true);
+            setPlayerAddOpen(true);
           }}
         >
           <Add />
         </IconButton>
       </Toolbar>
 
-      <ClubAdd lang={lang} user={user} open={clubAddOpen} setOpen={setClubAddOpen} />
+      <PlayerAdd lang={lang} user={user} open={playerAddOpen} setOpen={setPlayerAddOpen} />
     </MuiAppBar>
   );
 });
@@ -180,131 +180,14 @@ TopNav.propTypes = {
 
 // -----------------------------------------------------------------------------
 
-const ClubCard = withStyles(styles)(({ classes, lang, user, club }) => {
+const PlayerCard = withStyles(styles)(({ classes, lang, user, player }) => {
   const w350up = useMediaQuery("(min-width:350px)");
   const w480up = useMediaQuery("(min-width:480px)");
 
-  const [clubEditOpen, setClubEditOpen] = useState(false);
+  const [playerEditOpen, setPlayerEditOpen] = useState(false);
   const dispatch = useDispatch();
 
-  const clubAddPlayer = () => {
-    if (club.players && club.players.map(p => p.id == user.id).reduce((a, b) => a || b, false)) {
-      // DEBUG:
-      console.log("clubAddPlayer(): Club already had this player");
-    } else {
-      if (!club.players) club.players = [];
-
-      // DEBUG:
-      console.log("clubAddPlayer(): players:", club.players);
-
-      // Update DB:
-      let changes = { players: club.players };
-      changes.players.push({ id: user.id, facebook: user.facebook });
-      let apiReq = {
-        id: club.id,
-        data: changes
-      };
-      fetch(`${conf.urls.app}/api/clubs`, {
-        method: "PATCH",
-        headers: { authorization: `Bearer ${user.token}`, "content-type": "application/json" },
-        body: JSON.stringify(apiReq)
-      })
-        .then(response => {
-          if (response.ok) {
-            response
-              .json()
-              .then(apiRes => {
-                console.log("clubAddPlayer(): Success.", apiRes);
-
-                // Refresh club list
-                dispatch({
-                  type: "search_clubs",
-                  payload: undefined
-                });
-                setTimeout(() => {
-                  dispatch({
-                    type: "search_clubs",
-                    payload: ""
-                  });
-                }, 100);
-              })
-              .catch(err => {
-                let error = new Error("Invalid response format. " + err);
-                console.log("clubAddPlayer():", error);
-              });
-          } else {
-            let error = new Error("Invalid request");
-            console.log("clubAddPlayer():", error, response);
-          }
-        })
-        .catch(err => {
-          let error = new Error("Fetch failed. " + err);
-          console.log("clubAddPlayer():", error);
-        });
-    }
-  };
-
-  const playerAddClub = () => {
-    if (user.clubs && user.clubs.map(c => c.id == club.id).reduce((a, b) => a || b, false)) {
-      // DEBUG:
-      console.log("playerAddClub(): Player already in this club");
-    } else {
-      if (!user.clubs) user.clubs = [];
-
-      // DEBUG:
-      console.log("playerAddClub(): clubs:", user.clubs);
-
-      // Update DB:
-      let changes = { clubs: user.clubs };
-      changes.clubs.push({ id: club.id, name: club.name });
-      let apiReq = {
-        id: user.id,
-        data: changes
-      };
-      fetch(`${conf.urls.app}/api/players`, {
-        method: "PATCH",
-        headers: { authorization: `Bearer ${user.token}`, "content-type": "application/json" },
-        body: JSON.stringify(apiReq)
-      })
-        .then(response => {
-          if (response.ok) {
-            response
-              .json()
-              .then(apiRes => {
-                console.log("playerAddClub(): Success.", apiRes);
-
-                // Refresh club list
-                dispatch({
-                  type: "search_clubs",
-                  payload: undefined
-                });
-                setTimeout(() => {
-                  dispatch({
-                    type: "search_clubs",
-                    payload: ""
-                  });
-                }, 100);
-              })
-              .catch(err => {
-                let error = new Error("Invalid response format. " + err);
-                console.log("playerAddClub():", error);
-              });
-          } else {
-            let error = new Error("Invalid request");
-            console.log("playerAddClub():", error, response);
-          }
-        })
-        .catch(err => {
-          let error = new Error("Fetch failed. " + err);
-          console.log("playerAddClub():", error);
-        });
-    }
-  };
-
-  const handleJoinClub = () => {
-    clubAddPlayer();
-    playerAddClub();
-  };
+  const handleJoinPlayer = () => {};
 
   return (
     <Card>
@@ -312,7 +195,7 @@ const ClubCard = withStyles(styles)(({ classes, lang, user, club }) => {
         <Grid item xs={4}>
           <CardMedia
             className={w480up ? classes.avatar480up : classes.avatar480dn}
-            image={club.avatar ? club.avatar : conf.urls.app + "/img/tennis.jpg"}
+            image={player.avatar ? player.avatar : conf.urls.app + "/img/tennis.jpg"}
             title=""
           />
         </Grid>
@@ -320,14 +203,14 @@ const ClubCard = withStyles(styles)(({ classes, lang, user, club }) => {
         <Grid item xs={8}>
           <CardContent>
             <Typography variant="h6" color="inherit">
-              {club.name}
+              {player.name}
             </Typography>
             <Typography variant="body2" color="textSecondary">
-              {/* {`${conf.labels.address[lang]}: ${club.address}`} */}
-              {`${club.address}`}
+              {/* {`${conf.labels.address[lang]}: ${player.address}`} */}
+              {`${player.address}`}
             </Typography>
             <Typography variant="body2" color="textSecondary">
-              {club.notes}
+              {player.notes}
             </Typography>
           </CardContent>
         </Grid>
@@ -341,9 +224,11 @@ const ClubCard = withStyles(styles)(({ classes, lang, user, club }) => {
                 className={w480up ? classes.fab480up : classes.fab480dn}
                 color="secondary"
                 onClick={() => {
-                  setClubEditOpen(true);
+                  setPlayerEditOpen(true);
                 }}
-                disabled={!(club.admins ? club.admins.map(adm => adm.id == user.id).reduce((a, b) => a || b, false) : false)}
+                disabled={
+                  !(player.admins ? player.admins.map(adm => adm.id == user.id).reduce((a, b) => a || b, false) : false)
+                }
               >
                 <EditIcon />
               </Fab>
@@ -353,57 +238,52 @@ const ClubCard = withStyles(styles)(({ classes, lang, user, club }) => {
               <Fab
                 variant="extended"
                 size={w480up ? "medium" : "small"}
-                onClick={handleJoinClub}
+                onClick={handleJoinPlayer}
                 color="secondary"
-                disabled={
-                  club.players &&
-                  club.players.map(p => p.id == user.id).reduce((a, b) => a || b, false) &&
-                  user.clubs &&
-                  user.clubs.map(c => c.id == club.id).reduce((a, b) => a || b, false)
-                }
+                disabled={true}
               >
                 {w350up ? <JoinIcon className={classes.fabIcon} /> : ""}
-                {`${conf.labels.join[lang]} ${conf.labels.club[lang]}`}
+                {`${conf.labels.join[lang]} ${conf.labels.player[lang]}`}
               </Fab>
             </Grid>
           </Grid>
         </Grid>
       </Grid>
 
-      <ClubEdit lang={lang} user={user} theClub={club} open={clubEditOpen} setOpen={setClubEditOpen} />
+      <PlayerEdit lang={lang} user={user} thePlayer={player} open={playerEditOpen} setOpen={setPlayerEditOpen} />
     </Card>
   );
 });
 
 // -------------------------------------
 
-ClubCard.propTypes = {
+PlayerCard.propTypes = {
   router: PropTypes.object.isRequired,
   lang: PropTypes.string.isRequired,
-  club: PropTypes.object.isRequired
+  player: PropTypes.object.isRequired
 };
 
 // -----------------------------------------------------------------------------
 
-const ClubList = withStyles(styles)(({ classes, router }) => {
+const PlayerList = withStyles(styles)(({ classes, router }) => {
   const [data, setData] = useState({ records: [] });
 
   const lang = useSelector(state => state.lang);
   const user = useSelector(state => state.user);
-  const search = useSelector(state => state.search.clubs);
+  const search = useSelector(state => state.search.players);
 
-  const refreshClubList = () => {
+  const refreshPlayerList = () => {
     // DEBUG:
-    // console.log(`refreshClubList(): user = ${JSON.stringify(user)}`);
+    // console.log(`refreshPlayerList(): user = ${JSON.stringify(user)}`);
 
-    getClubs(user, search)
+    getPlayers(user, search)
       .then(apiRes => {
-        // console.log(`refreshClubList(): Latest club list:`, apiRes);
+        // console.log(`refreshPlayerList(): Latest player list:`, apiRes);
 
         setData(apiRes);
       })
       .catch(err => {
-        console.log("refreshClubList(): Failed to get clubs:", err.message);
+        console.log("refreshPlayerList(): Failed to get players:", err.message);
       });
   };
 
@@ -412,7 +292,7 @@ const ClubList = withStyles(styles)(({ classes, router }) => {
       // router.push(conf.urls.app);
       router.goBack();
     } else {
-      refreshClubList();
+      refreshPlayerList();
     }
   }, [search]);
 
@@ -422,9 +302,9 @@ const ClubList = withStyles(styles)(({ classes, router }) => {
 
       <Grid container spacing={2} className={classes.content}>
         {data.records
-          ? data.records.map(club => (
-              <Grid xs={12} item key={club.id}>
-                <ClubCard xs={12} router={router} lang={lang} user={user} club={club}></ClubCard>
+          ? data.records.map(player => (
+              <Grid xs={12} item key={player.id}>
+                <PlayerCard xs={12} router={router} lang={lang} user={user} player={player}></PlayerCard>
               </Grid>
             ))
           : ""}
@@ -435,12 +315,12 @@ const ClubList = withStyles(styles)(({ classes, router }) => {
 
 // -------------------------------------
 
-ClubList.propTypes = {
+PlayerList.propTypes = {
   router: PropTypes.object.isRequired
 };
 
 // ------------------------------------
 
-export default ClubList;
+export default PlayerList;
 
 // -----------------------------------------------------------------------------

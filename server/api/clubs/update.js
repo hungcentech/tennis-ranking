@@ -3,17 +3,17 @@
 import logger from "../../logger";
 import conf from "../../conf";
 import { authCheck } from "../../auth";
-import { validate } from "./Club.js";
 import { ObjectId } from "mongodb";
 
 // -----------------------------------------------------------------------------
-// POST:
+// PATCH:
 // {
 // 	"id":"5e40c4be59e6b47f3de9f178",
 // 	"data": {
 // 	    "notes": "CN 9:00-14:00",
 //     }
 // }
+
 // -----------------------------------------------------------------------------
 
 export default (db, app) => {
@@ -56,7 +56,7 @@ export default (db, app) => {
                   change: {}
                 };
                 Object.keys(apiReq.data).forEach(k => {
-                  change.change[k] = `${club[k]} => ${apiReq.data[k]}`;
+                  change.change[k] = `${JSON.stringify(club[k])} => ${JSON.stringify(apiReq.data[k])}`;
                 });
                 // DEBUG:
                 logger.debug(`api.clubs.update(): change = ${JSON.stringify(change)}`);
